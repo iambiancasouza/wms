@@ -1,0 +1,89 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { cn } from "@/lib/utils"
+
+interface LeafProps {
+  size: number
+  left: number
+  top: number
+  rotation: number
+  type: number
+  blur?: boolean
+}
+
+const leafTypes = [
+  // Folha oval simples
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 160">
+    <path d="M50,0 C70,40 90,80 50,160 C10,80 30,40 50,0 Z" fill="#7db956"/>
+    <path d="M50,0 C50,40 50,120 50,160" fill="none" stroke="#7db956" strokeOpacity="0.6" strokeWidth="2"/>
+  </svg>`,
+
+  // Folha mais arredondada
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 140">
+    <path d="M60,0 C90,30 120,70 60,140 C0,70 30,30 60,0 Z" fill="#6ca744"/>
+    <path d="M60,0 C60,40 60,100 60,140" fill="none" stroke="#6ca744" strokeOpacity="0.6" strokeWidth="2"/>
+  </svg>`,
+
+  // Folha mais pontiaguda
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 180">
+    <path d="M50,0 C75,45 85,90 50,180 C15,90 25,45 50,0 Z" fill="#5b9333"/>
+    <path d="M50,0 C50,45 50,135 50,180" fill="none" stroke="#5b9333" strokeOpacity="0.6" strokeWidth="2"/>
+  </svg>`,
+
+  // Folha pequena
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 100">
+    <path d="M40,0 C60,25 70,50 40,100 C10,50 20,25 40,0 Z" fill="#4d8326"/>
+    <path d="M40,0 C40,25 40,75 40,100" fill="none" stroke="#4d8326" strokeOpacity="0.6" strokeWidth="1.5"/>
+  </svg>`,
+]
+
+function StaticLeaf({ size, left, top, rotation, type, blur }: LeafProps) {
+  const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(leafTypes[type % leafTypes.length])}`
+
+  return (
+    <div
+      className={cn("absolute", blur && "blur-[2px]")}
+      style={{
+        left: `${left}%`,
+        top: `${top}%`,
+        width: `${size}px`,
+        height: `${size * 1.6}px`,
+        backgroundImage: `url("${svgUrl}")`,
+        backgroundSize: "contain",
+        backgroundRepeat: "no-repeat",
+        transform: `rotate(${rotation}deg)`,
+      }}
+    />
+  )
+}
+
+export function StaticLeaves() {
+  const [leaves, setLeaves] = useState<LeafProps[]>([])
+
+  useEffect(() => {
+    const leafCount = window.innerWidth < 768 ? 20 : 35
+    const newLeaves: LeafProps[] = []
+
+    for (let i = 0; i < leafCount; i++) {
+      newLeaves.push({
+        size: Math.random() * (window.innerWidth < 768 ? 20 : 40) + 15,
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        rotation: Math.random() * 360,
+        type: Math.floor(Math.random() * leafTypes.length),
+        blur: Math.random() < 0.3,
+      })
+    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLeaves(newLeaves)
+  }, [])
+
+  return (
+    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+      {leaves.map((leaf, index) => (
+        <StaticLeaf key={index} {...leaf} />
+      ))}
+    </div>
+  )
+}
