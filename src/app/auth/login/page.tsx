@@ -60,9 +60,8 @@ export default function LoginPage() {
       router.push("/") 
       router.refresh()
       
-    } catch (error) {
+    } catch {
       toast.error("Ocorreu um erro ao fazer login")
-      console.log(error)
     } finally {
       setIsLoading(false)
     }
