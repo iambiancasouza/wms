@@ -34,13 +34,12 @@ export default function ProductsPage() {
   }, [])
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
 
-  // Data fetching
   const fetchProducts = useCallback(async () => {
     try {
       const { data, error } = await supabase.from('products').select('*').order('created_at', { ascending: false })
       if (error) throw error
       setProducts(data || [])
-    } catch (error) {
+    } catch {
       toast.error('Erro ao carregar coleção')
     } finally {
       setIsLoading(false)
@@ -49,7 +48,6 @@ export default function ProductsPage() {
 
   useEffect(() => { fetchProducts() }, [fetchProducts])
 
-  // Lógica de Deletar/Consumir
   const confirmDelete = async () => {
     if (!deletingProduct) return
     try {
@@ -101,7 +99,7 @@ export default function ProductsPage() {
     try {
       await supabase.from('products').update({ is_favorite: newStatus }).eq('id', product.id)
       newStatus ? toast.success('Adicionado aos seus favoritos 💚') : toast.info('Removido dos seus favoritos')
-    } catch (error) {
+    } catch {
       setProducts(current => current.map(p => p.id === product.id ? { ...p, is_favorite: !newStatus } : p))
       toast.error('Erro ao atualizar favorito')
     }
@@ -127,7 +125,6 @@ export default function ProductsPage() {
         </div>
       ) : filteredProducts.length === 0 ? (
         
-        /* Empty State */
         <div className="flex flex-col items-center justify-center py-16 text-center animate-in zoom-in duration-300">
           <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm">
             <Package className="w-8 h-8 text-gray-300" />

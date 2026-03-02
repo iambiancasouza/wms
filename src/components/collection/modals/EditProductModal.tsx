@@ -9,7 +9,6 @@ import { Loader2, Upload, X, DollarSign, Sun, Moon, Calendar } from 'lucide-reac
 import { toast } from 'sonner'
 import { Product } from '@/types/product'
 
-// Copie o array Category para cá temporariamente (ou mova para um arquivo de constantes global)
 const Category = [
   { id: 'all', label: 'Todos', icon: '✨' },
   { id: 'limpeza', label: 'Limpeza', icon: '🧼' },
