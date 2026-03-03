@@ -19,7 +19,7 @@ export function Hero() {
   // mt-[68px]
   return (
     <section className="relative w-full min-h-[calc(100dvh-68px)] flex items-center justify-center">
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden [mask-image:linear-gradient(to_bottom,black_80%,transparent_100%)]">
+      <div className="absolute -top-[400px] bottom-0 inset-x-0 pointer-events-none z-0 [mask-image:linear-gradient(to_bottom,black_80%,transparent_100%)]">
         <FallingLeaves />
       </div>
       <div className="container mx-auto px-6 md:px-8 lg:px-16 relative z-10 w-full py-10 lg:py-0">

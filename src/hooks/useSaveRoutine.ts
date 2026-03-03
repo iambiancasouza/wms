@@ -1,4 +1,3 @@
-// src/hooks/useSaveRoutine.ts
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
@@ -31,7 +30,7 @@ export function useSaveRoutine() {
       if (error) throw error
 
       toast.success('Rotina registrada com sucesso! ✨')
-      onSuccess() // Executa a função de fechar o modal e recarregar a página
+      onSuccess() 
     } catch (error) {
       console.error(error)
       toast.error('Erro ao salvar sua rotina. Tente novamente.')

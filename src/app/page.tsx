@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Hero } from '@/components/home/Hero'
 import { RoutineDashboard } from '@/components/home/RoutineDashboard'
 import { JournalingModal } from '@/components/collection/modals/JournalingModal'
-import { RoutineHistoryModal } from '@/components/collection/modals/RoutineHistoryModal' // <-- Import do novo modal
+import { RoutineHistoryModal } from '@/components/collection/modals/RoutineHistoryModal' 
 import { useHomeData } from '@/hooks/useHomeData'
 
 export default function Home() {
@@ -14,7 +14,7 @@ export default function Home() {
   const [journalingPeriod, setJournalingPeriod] = useState<
     'diurna' | 'noturna' | null
   >(null)
-  const [selectedHistoryDate, setSelectedHistoryDate] = useState<Date | null>(null) // <-- Novo estado para o calendário
+  const [selectedHistoryDate, setSelectedHistoryDate] = useState<Date | null>(null) 
 
   const handleOpenJournalingAction = (period: 'diurna' | 'noturna') => {
     setJournalingPeriod(period)
@@ -33,7 +33,7 @@ export default function Home() {
         <RoutineDashboard
           completedDates={completedDates}
           onOpenJournalingAction={handleOpenJournalingAction}
-          onOpenDayDetailsAction={(date) => setSelectedHistoryDate(date)} // <-- Ação que passa a data clicada
+          onOpenDayDetailsAction={(date) => setSelectedHistoryDate(date)} 
         />
       )}
 
