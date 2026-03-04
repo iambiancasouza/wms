@@ -18,7 +18,7 @@ export function Hero() {
   }
   // mt-[68px]
   return (
-    <section className="relative w-full min-h-[calc(100dvh-68px)] flex items-center justify-center">
+    <section className="relative w-full min-h-[calc(100dvh-70px)]  flex items-center justify-center">
       <div className="absolute -top-[400px] bottom-0 inset-x-0 pointer-events-none z-0 [mask-image:linear-gradient(to_bottom,black_80%,transparent_100%)]">
         <FallingLeaves />
       </div>

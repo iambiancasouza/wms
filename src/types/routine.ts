@@ -9,3 +9,11 @@ export interface RoutineItem {
   order: number;
   is_completed?: boolean; 
 }
+
+export interface RoutineRecord {
+  id: string
+  user_id: string
+  period: 'diurna' | 'noturna'
+  products: Product[]
+  created_at: string
+}

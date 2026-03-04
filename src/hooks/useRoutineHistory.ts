@@ -1,17 +1,8 @@
-// src/hooks/useRoutineHistory.ts
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { startOfDay, endOfDay } from 'date-fns'
-import { Product } from '@/types/product'
+import { RoutineRecord } from '@/types/routine'
 
-// É ESTA PARTE AQUI QUE ESTÁ FALTANDO OU SEM O "export" AÍ NO SEU ARQUIVO:
-export interface RoutineRecord {
-  id: string
-  user_id: string
-  period: 'diurna' | 'noturna'
-  products: Product[]
-  created_at: string
-}
 
 export function useRoutineHistory(date: Date) {
   const supabase = createClient()

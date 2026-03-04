@@ -68,7 +68,6 @@ export default function LoginPage() {
   }
 
   return (
-    /* fixed inset-0 trava a tela completamente. pb-24 compensa a BottomNavbar para centralizar visualmente */
     <div className="fixed inset-0 z-0 flex items-center justify-center overflow-hidden bg-[#f0f5ed] px-4 pb-16 md:pb-0">
       
       <StaticLeaves />
