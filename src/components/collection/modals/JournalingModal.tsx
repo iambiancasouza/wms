@@ -1,9 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { X, Plus, Check, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { format } from 'date-fns'
+import { format, isToday } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { useSaveRoutine } from '@/hooks/useSaveRoutine'
 import { Product } from '@/types/product'
@@ -30,18 +31,24 @@ interface JournalingModalProps {
   period: 'diurna' | 'noturna'
   onCloseAction: () => void
   products: Product[]
+  initialSelectedProducts?: Product[]
+  targetDate?: Date
 }
 
 export function JournalingModal({
   period,
   onCloseAction,
-  products
+  products,
+  initialSelectedProducts,
+  targetDate
 }: JournalingModalProps) {
   const { saveRoutine, isSaving } = useSaveRoutine()
 
   const [selectedCategory, setSelectedCategory] = useState<string>('limpeza')
-  const [routineItems, setRoutineItems] = useState<Product[]>([])
-  const today = new Date()
+  const [routineItems, setRoutineItems] = useState<Product[]>(initialSelectedProducts || [])
+  
+  const activeDate = targetDate || new Date()
+  const isEditingToday = isToday(activeDate)
 
   const filteredProducts = products.filter(p => p.category === selectedCategory)
 
@@ -57,29 +64,28 @@ export function JournalingModal({
   }
 
   const handleSave = () => {
-    saveRoutine(period, routineItems, onCloseAction)
+    saveRoutine(period, routineItems, activeDate, onCloseAction)
   }
 
   return (
     <div className="fixed inset-0 z-[110] bg-[#f0f5ed] animate-in slide-in-from-bottom duration-500 overflow-y-auto no-scrollbar">
-      {/* Background de Folhas fixo no fundo */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <StaticLeaves />
       </div>
 
       <div className="relative z-10 w-full min-h-full p-4 md:p-6 py-6 md:py-10">
         <div className="w-full max-w-2xl mx-auto bg-white/60 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[40px] p-6 md:p-8 space-y-8 flex flex-col h-auto min-h-[85vh]">
-          {/* Header */}
+          
           <div className="flex justify-between items-start">
             <div className="space-y-1.5">
               <h2 className="text-3xl font-bold text-[#3a6b4d] font-poppins tracking-tight">
-                Rotina de hoje
+                {isEditingToday ? 'Rotina de hoje' : 'Editar rotina'}
               </h2>
               <p className="text-[#3a6b4d]/70 text-[10px] font-bold uppercase tracking-[0.2em] flex items-center gap-1.5">
-                <span>{formatDayOfWeek(today)}</span>,
-                <span>{format(today, 'dd')}</span>
+                <span>{formatDayOfWeek(activeDate)}</span>,
+                <span>{format(activeDate, 'dd')}</span>
                 <span>DE</span>
-                <span>{format(today, 'MMMM', { locale: ptBR })}</span>
+                <span>{format(activeDate, 'MMMM', { locale: ptBR })}</span>
               </p>
             </div>
             <button
@@ -90,7 +96,6 @@ export function JournalingModal({
             </button>
           </div>
 
-          {/* Badges de Categorias */}
           <div className="w-full">
             <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
               {Categories.map(cat => {
@@ -113,7 +118,6 @@ export function JournalingModal({
             </div>
           </div>
 
-          {/* Lista de Produtos p/ Seleção */}
           <div className="space-y-4">
             <h4 className="text-[10px] font-black text-[#3a6b4d]/40 uppercase tracking-[0.2em] pl-1">
               Selecione seus produtos
@@ -128,9 +132,7 @@ export function JournalingModal({
                 </div>
               ) : (
                 filteredProducts.map((p: Product) => {
-                  const isItemInRoutine = routineItems.some(
-                    item => item.id === p.id
-                  )
+                  const isItemInRoutine = routineItems.some(item => item.id === p.id)
                   return (
                     <button
                       key={p.id}
@@ -162,25 +164,53 @@ export function JournalingModal({
             </div>
           </div>
 
-          {/*  Produtos Inseridos */}
           <div className="space-y-4 flex-1">
-            <div className="bg-[#f0f5ed]/30 border-2 border-dashed border-[#8ec5a0] rounded-[32px] p-3.5 min-h-[160px] flex flex-wrap gap-3 items-start shadow-inner">
-              {routineItems.length === 0 ? (
-                <div className="text-center w-full mt-10 text-gray-400 space-y-2 flex flex-col items-center"></div>
-              ) : (
-                routineItems.map((item: Product) => (
-                  <div
-                    key={item.id}
-                    className="bg-[#3a6b4d]/10 px-2 py-2 rounded-xl shadow-sm border border-[#3a6b4d]/30 flex items-center gap-2.5 animate-in zoom-in"
-                  >
-                    <span className="text-xs font-bold text-gray-800">
-                      {item.name}
-                    </span>
-                    <button onClick={() => toggleProductSelection(item)}>
-                      <X className="w-3 h-3 text-[#3a6b4d] transition-colors" />
-                    </button>
+            <h4 className="text-[10px] font-black text-[#3a6b4d]/40 uppercase tracking-[0.2em] pl-1">
+              Sua Caixa de Rotina
+            </h4>
+
+            <div className="bg-[#f0f5ed]/30 border-2 border-dashed border-[#8ec5a0] rounded-[32px] p-5 min-h-[160px] flex flex-col shadow-inner w-full">
+              
+              <div className="flex flex-wrap justify-center gap-4 w-full">
+                {routineItems.length === 0 ? (
+                  <div className="text-center w-full mt-6 text-gray-400">
+                    <p className="text-sm">Sua caixa está vazia.</p>
                   </div>
-                ))
+                ) : (
+                  routineItems.map((item: Product) => (
+                    <button
+                      key={item.id}
+                      onClick={() => toggleProductSelection(item)}
+                      title="Clique para remover"
+                      className="relative flex flex-col items-center justify-center rounded-full shadow-sm border border-[#8ec5a0]/30 w-[100px] h-[100px] overflow-hidden shrink-0 animate-in zoom-in bg-[#eef4f0] hover:opacity-80 transition-opacity active:scale-95"
+                    >
+                      {item.image_url ? (
+                        <Image 
+                          src={item.image_url} 
+                          alt={item.name} 
+                          fill
+                          sizes="100px"
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="relative z-10 flex flex-col items-center justify-center text-center w-full px-2">
+                          <span className="text-[8px] font-black text-[#5a9e74] uppercase tracking-wider truncate w-full">
+                            {item.brand}
+                          </span>
+                          <span className="text-[10px] font-bold text-[#1e3c2c] leading-tight line-clamp-2 w-full mt-0.5">
+                            {item.name}
+                          </span>
+                        </div>
+                      )}
+                    </button>
+                  ))
+                )}
+              </div>
+
+              {routineItems.length > 0 && (
+                <p className="text-[10px] text-[#5a9e74]/70 text-center mt-auto pt-6 font-medium tracking-wide">
+                  Para remover um produto, basta clicar sobre ele.
+                </p>
               )}
             </div>
           </div>
