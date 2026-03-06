@@ -19,9 +19,8 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { StaticLeaves } from '@/components/layout/staticLeaves'
-import { Product } from '@/types/product' // A tipagem separada foi importada aqui
+import { Product } from '@/types/product' 
 
-// Tipagem local apenas para os campos enquanto estão sendo digitados (antes de ir pro banco)
 interface ProductFormData {
   name: string
   brand: string
@@ -44,11 +43,10 @@ export default function NewProductPage() {
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
 
-  // Estado do formulário agora está fortemente tipado
   const [formData, setFormData] = useState<ProductFormData>({
     name: '',
     brand: '',
-    category: 'limpeza', // Ajustado para bater com a primeira option do seu select
+    category: 'limpeza', 
     usage_frequency: 'both', 
     quantity: 1,
     price: '',
@@ -232,12 +230,13 @@ export default function NewProductPage() {
                   <option value="antioxidante">Antioxidante</option>
                   <option value="tratamento">Tratamento/Slow-aging</option>
                   <option value="tratamento">Tretinoína</option>
+                  <option value="tratamento">Ácido azeláico</option>
                   <option value="barreira">Barreira/Reparador</option>
                   <option value="olhos">Área dos olhos</option>
                   <option value="protecao">Protetor</option>
                   <option value="mascara">Máscara</option>
-                  <option value="beauty tech">Dispositivo</option>
-                  <option value="Outros">Outros</option>
+                  <option value="beauty_tech">Dispositivo</option>
+                  <option value="outros">Outros</option>
                 </select>
               </div>
             </div>

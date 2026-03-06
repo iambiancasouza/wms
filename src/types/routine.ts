@@ -13,7 +13,7 @@ export interface RoutineItem {
 export interface RoutineRecord {
   id: string
   user_id: string
-  period: 'diurna' | 'noturna'
+  period: 'diurna' | 'noturna' 
   products: Product[]
   created_at: string
 }

@@ -1,7 +1,7 @@
-// src/components/home/RoutineDashboard.tsx
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { Sun, Moon, ChevronLeft, ChevronRight } from 'lucide-react'
 import {
   format,
@@ -38,23 +38,33 @@ export function RoutineDashboard({
 
   const startDayIndex = getDay(monthStart)
   const emptyDays = Array.from({ length: startDayIndex }, (_, i) => i)
-  const firstRowDays = daysInMonth.slice(0, 7 - startDayIndex)
+  const firstRowDays = daysInMonth.slice(0, 30 - startDayIndex)
 
   return (
-    <section className="relative w-full py-8">
+    // Mantive o z-30 e bg-[#f0f5ed] para garantir que as folhas da Hero se escondam aqui atrás (correção anterior do iOS)
+    <section className="relative w-full py-8 bg-[#f0f5ed] z-30">
       <div className="container mx-auto px-6 relative z-10">
-        <h3
-          className="text-lg md:text-xl lg:text-2xl font-black text-[#3a6b4d]/60 uppercase tracking-[0.1em] mb-5 text-center"
-        >
+        <h3 className="text-lg md:text-xl lg:text-2xl font-black text-[#3a6b4d]/60 uppercase tracking-[0.1em] mb-5 text-center">
           Registrar rotina
         </h3>
-        <div className="bg-white/40 backdrop-blur-xl rounded-[32px] p-5 md:p-5 border border-white shadow-2xl shadow-[#3a6b4d]/5">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+
+        <div className="relative rounded-[20px] p-5 md:p-5 border-white/70 shadow-xl shadow-[#3a6b4d]/10 overflow-hidden isolate">
+          <Image
+            src="/centellaAsiatica.png"
+            alt="Centella Asiatica Background"
+            fill
+            className="object-cover opacity-[0.80]  pointer-events-none"
+          />
+
+          <div className="absolute inset-0 z-[-1] bg-white/70 backdrop-blur-sm pointer-events-none" />
+
+          {/* CONTEÚDO (Mantido no z-10 para ficar por cima de tudo) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-12 relative z-10">
             {/* LADO ESQUERDO: Calendário no Topo, Cards Embaixo */}
             <div className="flex flex-col gap-6 w-full max-w-md mx-auto lg:mx-0">
               {/* 1. CALENDÁRIO (1 Linha / Primeira Semana) */}
-              <div className="w-full bg-white/40 backdrop-blur-xl rounded-[32px] p-5 md:p-8 border-2 border-white shadow-xl shadow-[#3a6b4d]/5">
-                <div className="flex justify-between items-center mb-5 px-2">
+              <div className="w-full bg-white/40 backdrop-blur-xl rounded-[32px] p-2 md:p-8 border-2 border-white/30 shadow-xl shadow-[#3a6b4d]/5">
+                <div className="flex justify-between items-center mb-3 px-1">
                   <button
                     onClick={prevMonth}
                     className="p-2 text-gray-400 hover:text-[#3a6b4d] transition-colors rounded-full hover:bg-white/50 active:scale-95"
@@ -76,7 +86,7 @@ export function RoutineDashboard({
                   {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((d, i) => (
                     <span
                       key={`header-${i}`}
-                      className="text-[10px] font-black text-[#3a6b4d]/40 mb-2"
+                      className="text-[10px] font-black text-[#3a6b4d]/40 mb-1"
                     >
                       {d}
                     </span>
@@ -105,9 +115,9 @@ export function RoutineDashboard({
                           className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold transition-all
                           ${
                             isToday
-                              ? 'bg-[#3a6b4d]/80 text-white shadow-md'
+                              ? 'bg-[#3a6b4d]/70 text-white shadow-md'
                               : hasRoutine
-                                ? 'bg-[#3a6b4d]/10 text-gray-500 cursor-pointer hover:bg-[#3a6b4d]/20 active:scale-95'
+                                ? 'text-gray-400 cursor-pointer hover:bg-[#3a6b4d]/20 active:scale-95'
                                 : 'text-gray-500 cursor-default opacity-50 hover:opacity-100'
                           } 
                         `}
@@ -116,7 +126,7 @@ export function RoutineDashboard({
                         </button>
 
                         {hasRoutine && !isToday && (
-                          <div className="absolute bottom-0 w-1 h-1 bg-[#3a6b4d]/50 rounded-full" />
+                          <div className="absolute bottom-[0] w-[5px] h-[5px] bg-[#3a6b4d]/30 rounded-full" />
                         )}
                       </div>
                     )
@@ -128,7 +138,7 @@ export function RoutineDashboard({
               <div className="w-full grid grid-cols-2 gap-4">
                 <button
                   onClick={() => onOpenJournalingAction('diurna')}
-                  className="group h-32 lg:h-[140px] bg-white/40 backdrop-blur-xl rounded-[32px] border-2 border-white shadow-sm flex flex-col items-center justify-center gap-3 active:scale-95 transition-all"
+                  className="group h-32 lg:h-[140px] bg-white/50 backdrop-blur-xl rounded-[32px] border-2 border-white/30 shadow-sm flex flex-col items-center justify-center gap-3 active:scale-95 transition-all hover:bg-white/70"
                 >
                   <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-400 group-hover:bg-orange-100 transition-colors">
                     <Sun className="w-6 h-6" />
@@ -140,7 +150,7 @@ export function RoutineDashboard({
 
                 <button
                   onClick={() => onOpenJournalingAction('noturna')}
-                  className="group h-32 lg:h-[140px] bg-white/40 backdrop-blur-xl rounded-[32px] border-2 border-white shadow-sm flex flex-col items-center justify-center gap-3 active:scale-95 transition-all"
+                  className="group h-32 lg:h-[140px] bg-white/50 backdrop-blur-xl rounded-[32px] border-2 border-white/30 shadow-sm flex flex-col items-center justify-center gap-3 active:scale-95 transition-all hover:bg-white/70"
                 >
                   <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-400 group-hover:bg-indigo-100 transition-colors">
                     <Moon className="w-6 h-6" />
@@ -153,7 +163,7 @@ export function RoutineDashboard({
             </div>
 
             {/* LADO DIREITO: Totalmente vazio (reservado para implementações futuras) */}
-            <div className="hidden lg:block w-full h-full border-2 border-dashed border-[#3a6b4d]/10 rounded-[32px] bg-white/20  flex-col items-center justify-center text-[#3a6b4d]/30 font-bold text-sm tracking-widest uppercase">
+            <div className="hidden lg:block w-full h-full border-2 border-dashed border-[#3a6b4d]/10 rounded-[32px] bg-white/20 flex-col items-center justify-center text-[#3a6b4d]/30 font-bold text-sm tracking-widest uppercase">
               {/* Espaço reservado */}
             </div>
           </div>

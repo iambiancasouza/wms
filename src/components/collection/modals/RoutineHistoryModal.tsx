@@ -13,7 +13,7 @@ interface RoutineHistoryModalProps {
   date: Date
   onCloseAction: () => void
   onEditAction: (period: 'diurna' | 'noturna', products: Product[]) => void
-  allProducts: Product[] // Recebe o catálogo atualizado
+  allProducts: Product[]
 }
 
 export function RoutineHistoryModal({
@@ -30,6 +30,10 @@ export function RoutineHistoryModal({
   const rotinaNoturna = routines.find(
     (r: RoutineRecord) => r.period === 'noturna'
   )
+
+  // Extrai os produtos se existirem, ou um array vazio se o usuário nunca tiver registrado
+  const diurnaProducts = rotinaDiurna?.products || []
+  const noturnaProducts = rotinaNoturna?.products || []
 
   return (
     <div className="fixed inset-0 z-[120] bg-[#f0f5ed] animate-in slide-in-from-bottom duration-500 overflow-y-auto no-scrollbar">
@@ -65,39 +69,33 @@ export function RoutineHistoryModal({
                 Buscando registros...
               </p>
             </div>
-          ) : routines.length === 0 ? (
-            <div className="bg-white/60 border border-white p-8 rounded-[32px] text-center w-full">
-              <p className="text-gray-500 text-sm font-medium">
-                Nenhum registro encontrado para este dia.
-              </p>
-            </div>
           ) : (
+            // AQUI ESTÁ A MUDANÇA: Os cards aparecem SEMPRE, mesmo vazios.
             <div className="space-y-6">
               
-              {/* CARD DIURNA */}
-              {rotinaDiurna && (
-                <div className="bg-white/80 backdrop-blur-xl border border-white rounded-[32px] p-6 shadow-sm space-y-5">
-                  <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#fdeee4] to-[#f4d7c3] flex items-center justify-center text-[#c78255]">
-                        <Sun className="w-5 h-5" strokeWidth={2.5} />
-                      </div>
-                      <h3 className="font-bold text-gray-800 tracking-wide">
-                        Rotina da Manhã
-                      </h3>
+              {/* CARD DIURNA - SEMPRE RENDERIZADO */}
+              <div className="bg-white/80 backdrop-blur-xl border border-white rounded-[32px] p-6 shadow-sm space-y-5">
+                <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#fdeee4] to-[#f4d7c3] flex items-center justify-center text-[#c78255]">
+                      <Sun className="w-5 h-5" strokeWidth={2.5} />
                     </div>
-                    <button 
-                      onClick={() => onEditAction('diurna', rotinaDiurna.products)}
-                      className="p-2 text-gray-400 hover:text-[#c78255] transition-colors rounded-full hover:bg-orange-50 active:scale-95"
-                      title="Editar Rotina da Manhã"
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </button>
+                    <h3 className="font-bold text-gray-800 tracking-wide">
+                      Rotina da Manhã
+                    </h3>
                   </div>
+                  <button 
+                    onClick={() => onEditAction('diurna', diurnaProducts)}
+                    className="p-2 text-gray-400 hover:text-[#c78255] transition-colors rounded-full hover:bg-orange-50 active:scale-95"
+                    title={diurnaProducts.length > 0 ? "Editar Rotina da Manhã" : "Adicionar Rotina da Manhã"}
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </button>
+                </div>
 
-                  <div className="flex flex-wrap justify-center gap-4 w-full">
-                    {rotinaDiurna.products.map((item: Product) => {
-                      // O SEGREDO: Pega o produto do catálogo atualizado para garantir a foto
+                <div className="flex flex-wrap justify-center gap-4 w-full">
+                  {diurnaProducts.length > 0 ? (
+                    diurnaProducts.map((item: Product) => {
                       const freshProduct = (allProducts || []).find(p => p.id === item.id) || item;
 
                       return (
@@ -125,35 +123,40 @@ export function RoutineHistoryModal({
                           )}
                         </div>
                       )
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* CARD NOTURNA */}
-              {rotinaNoturna && (
-                <div className="bg-white/80 backdrop-blur-xl border border-white rounded-[32px] p-6 shadow-sm space-y-5">
-                  <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#f0f2fb] to-[#e1e6f7] flex items-center justify-center text-[#8695c5]">
-                        <Moon className="w-5 h-5" strokeWidth={2.5} />
-                      </div>
-                      <h3 className="font-bold text-gray-800 tracking-wide">
-                        Rotina da Noite
-                      </h3>
+                    })
+                  ) : (
+                    // Estado Vazio caso o usuário não tenha feito a rotina da manhã
+                    <div className="flex flex-col items-center justify-center py-4 text-gray-400 w-full text-center">
+                      <p className="text-sm font-medium">Nenhum produto registrado.</p>
+                      <p className="text-[10px] mt-1 tracking-wide uppercase text-gray-300">Clique no lápis para adicionar</p>
                     </div>
-                    <button 
-                      onClick={() => onEditAction('noturna', rotinaNoturna.products)}
-                      className="p-2 text-gray-400 hover:text-[#8695c5] transition-colors rounded-full hover:bg-indigo-50 active:scale-95"
-                      title="Editar Rotina da Noite"
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </button>
-                  </div>
+                  )}
+                </div>
+              </div>
 
-                  <div className="flex flex-wrap justify-center gap-4 w-full">
-                    {rotinaNoturna.products.map((item: Product) => {
-                      // O SEGREDO: Pega o produto do catálogo atualizado para garantir a foto
+              {/* CARD NOTURNA - SEMPRE RENDERIZADO */}
+              <div className="bg-white/80 backdrop-blur-xl border border-white rounded-[32px] p-6 shadow-sm space-y-5">
+                <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#f0f2fb] to-[#e1e6f7] flex items-center justify-center text-[#8695c5]">
+                      <Moon className="w-5 h-5" strokeWidth={2.5} />
+                    </div>
+                    <h3 className="font-bold text-gray-800 tracking-wide">
+                      Rotina da Noite
+                    </h3>
+                  </div>
+                  <button 
+                    onClick={() => onEditAction('noturna', noturnaProducts)}
+                    className="p-2 text-gray-400 hover:text-[#8695c5] transition-colors rounded-full hover:bg-indigo-50 active:scale-95"
+                    title={noturnaProducts.length > 0 ? "Editar Rotina da Noite" : "Adicionar Rotina da Noite"}
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="flex flex-wrap justify-center gap-4 w-full">
+                  {noturnaProducts.length > 0 ? (
+                    noturnaProducts.map((item: Product) => {
                       const freshProduct = (allProducts || []).find(p => p.id === item.id) || item;
 
                       return (
@@ -181,10 +184,17 @@ export function RoutineHistoryModal({
                           )}
                         </div>
                       )
-                    })}
-                  </div>
+                    })
+                  ) : (
+                    // Estado Vazio caso o usuário não tenha feito a rotina da noite
+                    <div className="flex flex-col items-center justify-center py-4 text-gray-400 w-full text-center">
+                      <p className="text-sm font-medium">Nenhum produto registrado.</p>
+                      <p className="text-[10px] mt-1 tracking-wide uppercase text-gray-300">Clique no lápis para adicionar</p>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
+
             </div>
           )}
         </div>

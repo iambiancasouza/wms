@@ -64,7 +64,17 @@ export function JournalingModal({
   }
 
   const handleSave = () => {
-    saveRoutine(period, routineItems, activeDate, onCloseAction)
+    // SOLUÇÃO DO BUG "OUTROS": Sanitização dos dados antes de salvar.
+    // Isso garante que o Supabase não rejeite o JSON por conter campos metadados indesejados.
+    const sanitizedItems = routineItems.map(item => ({
+      id: item.id,
+      name: item.name,
+      brand: item.brand,
+      category: item.category,
+      image_url: item.image_url
+    })) as Product[]
+
+    saveRoutine(period, sanitizedItems, activeDate, onCloseAction)
   }
 
   return (
