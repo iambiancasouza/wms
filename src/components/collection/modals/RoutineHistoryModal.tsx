@@ -12,7 +12,7 @@ import { StaticLeaves } from '@/components/layout/staticLeaves'
 interface RoutineHistoryModalProps {
   date: Date
   onCloseAction: () => void
-  onEditAction: (period: 'diurna' | 'noturna', products: Product[]) => void
+  onEditAction: (period: 'diurna' | 'noturna', products: Product[], routineId?: string) => void
   allProducts: Product[]
 }
 
@@ -31,7 +31,6 @@ export function RoutineHistoryModal({
     (r: RoutineRecord) => r.period === 'noturna'
   )
 
-  // Extrai os produtos se existirem, ou um array vazio se o usuário nunca tiver registrado
   const diurnaProducts = rotinaDiurna?.products || []
   const noturnaProducts = rotinaNoturna?.products || []
 
@@ -70,10 +69,9 @@ export function RoutineHistoryModal({
               </p>
             </div>
           ) : (
-            // AQUI ESTÁ A MUDANÇA: Os cards aparecem SEMPRE, mesmo vazios.
             <div className="space-y-6">
               
-              {/* CARD DIURNA - SEMPRE RENDERIZADO */}
+              {/* CARD DIURNA - SEMPRE VISÍVEL */}
               <div className="bg-white/80 backdrop-blur-xl border border-white rounded-[32px] p-6 shadow-sm space-y-5">
                 <div className="flex items-center justify-between border-b border-gray-100 pb-4">
                   <div className="flex items-center gap-3">
@@ -85,7 +83,8 @@ export function RoutineHistoryModal({
                     </h3>
                   </div>
                   <button 
-                    onClick={() => onEditAction('diurna', diurnaProducts)}
+                    // NOVO: Passando o rotinaDiurna.id garantindo atualização precisa
+                    onClick={() => onEditAction('diurna', diurnaProducts, rotinaDiurna?.id)}
                     className="p-2 text-gray-400 hover:text-[#c78255] transition-colors rounded-full hover:bg-orange-50 active:scale-95"
                     title={diurnaProducts.length > 0 ? "Editar Rotina da Manhã" : "Adicionar Rotina da Manhã"}
                   >
@@ -125,7 +124,6 @@ export function RoutineHistoryModal({
                       )
                     })
                   ) : (
-                    // Estado Vazio caso o usuário não tenha feito a rotina da manhã
                     <div className="flex flex-col items-center justify-center py-4 text-gray-400 w-full text-center">
                       <p className="text-sm font-medium">Nenhum produto registrado.</p>
                       <p className="text-[10px] mt-1 tracking-wide uppercase text-gray-300">Clique no lápis para adicionar</p>
@@ -134,7 +132,7 @@ export function RoutineHistoryModal({
                 </div>
               </div>
 
-              {/* CARD NOTURNA - SEMPRE RENDERIZADO */}
+              {/* CARD NOTURNA - SEMPRE VISÍVEL */}
               <div className="bg-white/80 backdrop-blur-xl border border-white rounded-[32px] p-6 shadow-sm space-y-5">
                 <div className="flex items-center justify-between border-b border-gray-100 pb-4">
                   <div className="flex items-center gap-3">
@@ -146,7 +144,8 @@ export function RoutineHistoryModal({
                     </h3>
                   </div>
                   <button 
-                    onClick={() => onEditAction('noturna', noturnaProducts)}
+                    // NOVO: Passando o rotinaNoturna.id garantindo atualização precisa
+                    onClick={() => onEditAction('noturna', noturnaProducts, rotinaNoturna?.id)}
                     className="p-2 text-gray-400 hover:text-[#8695c5] transition-colors rounded-full hover:bg-indigo-50 active:scale-95"
                     title={noturnaProducts.length > 0 ? "Editar Rotina da Noite" : "Adicionar Rotina da Noite"}
                   >
@@ -186,7 +185,6 @@ export function RoutineHistoryModal({
                       )
                     })
                   ) : (
-                    // Estado Vazio caso o usuário não tenha feito a rotina da noite
                     <div className="flex flex-col items-center justify-center py-4 text-gray-400 w-full text-center">
                       <p className="text-sm font-medium">Nenhum produto registrado.</p>
                       <p className="text-[10px] mt-1 tracking-wide uppercase text-gray-300">Clique no lápis para adicionar</p>

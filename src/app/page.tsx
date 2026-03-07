@@ -11,41 +11,51 @@ import { Product } from '@/types/product'
 export default function Home() {
   const { completedDates, allProducts, loading, refresh } = useHomeData()
   
+  // Estado completo que gerencia todo o ciclo de vida de Criação e Edição
   const [journalingConfig, setJournalingConfig] = useState<{
     period: 'diurna' | 'noturna' | null;
     targetDate?: Date;
     initialProducts?: Product[];
+    routineId?: string; 
   }>({ period: null })
 
   const [selectedHistoryDate, setSelectedHistoryDate] = useState<Date | null>(null) 
 
+  // Ação de Criar (Vem do Dashboard)
   const handleOpenJournalingAction = (period: 'diurna' | 'noturna') => {
     setJournalingConfig({ 
       period, 
       targetDate: new Date(), 
-      initialProducts: []     
+      initialProducts: [],
+      routineId: undefined
     })
   }
 
-  const handleEditRoutineAction = (period: 'diurna' | 'noturna', products: Product[]) => {
+  // Ação de Editar (Vem do RoutineHistoryModal)
+  const handleEditRoutineAction = (period: 'diurna' | 'noturna', products: Product[], routineId?: string) => {
     if (!selectedHistoryDate) return;
     const dateToEdit = selectedHistoryDate;
+    
+    // Fecha o modal de histórico
     setSelectedHistoryDate(null);
     
+    // Abre o modal de edição passando o ID exato para o banco de dados
     setJournalingConfig({
       period,
       targetDate: dateToEdit, 
-      initialProducts: products 
+      initialProducts: products,
+      routineId: routineId 
     });
   }
 
+  // Ao fechar, limpa o estado e manda a página atualizar (refresh) os dados do Supabase
   const handleCloseJournalingAction = () => {
     setJournalingConfig({ period: null })
     refresh()
   }
 
   return (
-    <main className="w-full min-h-[100dvh] bg-[#f0f5ed]">
+    <main className="bg-[#f0f5ed] min-h-[100dvh]">
       <Hero />
       
       {!loading && (
@@ -63,6 +73,7 @@ export default function Home() {
           onCloseAction={handleCloseJournalingAction}
           targetDate={journalingConfig.targetDate}
           initialSelectedProducts={journalingConfig.initialProducts}
+          routineId={journalingConfig.routineId}
         />
       )}
 

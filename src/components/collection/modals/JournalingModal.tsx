@@ -33,6 +33,7 @@ interface JournalingModalProps {
   products: Product[]
   initialSelectedProducts?: Product[]
   targetDate?: Date
+  routineId?: string
 }
 
 export function JournalingModal({
@@ -40,15 +41,28 @@ export function JournalingModal({
   onCloseAction,
   products,
   initialSelectedProducts,
-  targetDate
+  targetDate,
+  routineId
 }: JournalingModalProps) {
   const { saveRoutine, isSaving } = useSaveRoutine()
 
   const [selectedCategory, setSelectedCategory] = useState<string>('limpeza')
+  
+  // Inicia com os produtos passados pela prop, sem precisar de useEffect
   const [routineItems, setRoutineItems] = useState<Product[]>(initialSelectedProducts || [])
   
   const activeDate = targetDate || new Date()
+  
+  // Usamos as duas variáveis no título, então não haverá warning
   const isEditingToday = isToday(activeDate)
+  const isEditingMode = !!routineId 
+
+  // Definindo o título dinâmico baseado se é edição ou criação de hoje/passado
+  const modalTitle = isEditingMode 
+    ? 'Editar rotina' 
+    : isEditingToday 
+      ? 'Rotina de hoje' 
+      : 'Nova rotina passada'
 
   const filteredProducts = products.filter(p => p.category === selectedCategory)
 
@@ -64,8 +78,6 @@ export function JournalingModal({
   }
 
   const handleSave = () => {
-    // SOLUÇÃO DO BUG "OUTROS": Sanitização dos dados antes de salvar.
-    // Isso garante que o Supabase não rejeite o JSON por conter campos metadados indesejados.
     const sanitizedItems = routineItems.map(item => ({
       id: item.id,
       name: item.name,
@@ -74,7 +86,7 @@ export function JournalingModal({
       image_url: item.image_url
     })) as Product[]
 
-    saveRoutine(period, sanitizedItems, activeDate, onCloseAction)
+    saveRoutine(period, sanitizedItems, activeDate, onCloseAction, routineId)
   }
 
   return (
@@ -89,7 +101,7 @@ export function JournalingModal({
           <div className="flex justify-between items-start">
             <div className="space-y-1.5">
               <h2 className="text-3xl font-bold text-[#3a6b4d] font-poppins tracking-tight">
-                {isEditingToday ? 'Rotina de hoje' : 'Editar rotina'}
+                {modalTitle}
               </h2>
               <p className="text-[#3a6b4d]/70 text-[10px] font-bold uppercase tracking-[0.2em] flex items-center gap-1.5">
                 <span>{formatDayOfWeek(activeDate)}</span>,
@@ -236,7 +248,7 @@ export function JournalingModal({
               ) : (
                 <>
                   <Check className="w-6 h-6" />
-                  Salvar Rotina
+                  {isEditingMode ? 'Salvar Edição' : 'Salvar Rotina'}
                 </>
               )}
             </Button>

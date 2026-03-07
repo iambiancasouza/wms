@@ -1,65 +1,66 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { startOfDay, endOfDay } from 'date-fns'
 import { Product } from '@/types/product'
-import { toast } from 'sonner' // Assumindo que você usa sonner para notificações
+import { toast } from 'sonner'
+
+import {
+  deleteRoutine,
+  updateRoutine,
+  createRoutine
+} from '@/services/routine.service'
 
 export function useSaveRoutine() {
   const [isSaving, setIsSaving] = useState(false)
+
   const supabase = createClient()
 
   const saveRoutine = async (
     period: 'diurna' | 'noturna',
     products: Product[],
-    date: Date, // NOVO: Agora aceita a data exata da rotina
-    onSuccess?: () => void
+    date: Date,
+    onSuccess?: () => void,
+    routineId?: string
   ) => {
     setIsSaving(true)
+
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const {
+        data: { user }
+      } = await supabase.auth.getUser()
+
       if (!user) throw new Error('Usuário não autenticado')
 
-      // Pega o início e fim do dia que o usuário selecionou
-      const start = startOfDay(date).toISOString()
-      const end = endOfDay(date).toISOString()
+      if (routineId) {
+        if (products.length === 0) {
+          await deleteRoutine(routineId)
 
-      // 1. Verifica se já existe uma rotina para este dia e período específico
-      const { data: existingRoutine } = await supabase
-        .from('user_routines')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('period', period)
-        .gte('created_at', start)
-        .lte('created_at', end)
-        .single()
+          toast.success('Rotina removida com sucesso!')
+        } else {
+          await updateRoutine(routineId, products)
 
-      if (existingRoutine) {
-        // 2A. Se existir, fazemos um UPDATE (Edição)
-        const { error } = await supabase
-          .from('user_routines')
-          .update({ products })
-          .eq('id', existingRoutine.id)
-
-        if (error) throw error
+          toast.success('Rotina atualizada com sucesso!')
+        }
       } else {
-        // 2B. Se não existir, fazemos um INSERT normal (Criação)
-        const { error } = await supabase
-          .from('user_routines')
-          .insert({
-            user_id: user.id,
-            period,
-            products,
-            created_at: date.toISOString() // Salva usando a data do dia selecionado
-          })
+        if (products.length === 0) {
+          toast.error('Adicione pelo menos um produto para salvar.')
+          setIsSaving(false)
+          return
+        }
 
-        if (error) throw error
+        await createRoutine(user.id, period, products, date)
+
+        toast.success('Rotina salva com sucesso!')
       }
 
-      toast.success('Rotina salva com sucesso!')
       if (onSuccess) onSuccess()
     } catch (error) {
       console.error('Erro ao salvar rotina:', error)
-      toast.error('Erro ao salvar a rotina.')
+
+      if (error instanceof Error && error.message === 'RLS_BLOCKED') {
+        toast.error('Erro no Supabase: Ação bloqueada pelas políticas de RLS!')
+      } else {
+        toast.error('Ocorreu um erro ao processar sua rotina.')
+      }
     } finally {
       setIsSaving(false)
     }
