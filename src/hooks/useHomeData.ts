@@ -1,39 +1,45 @@
-// src/hooks/useHomeData.ts
 import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { parseISO } from 'date-fns'
-import { Product } from '@/types/product'
+import { Product, Routine } from '@/types/db'
+import { getUserRoutines, getActiveProducts } from '@/services/home.service'
 
 export function useHomeData() {
   const supabase = createClient()
+
+  const [routines, setRoutines] = useState<Routine[]>([])
   const [completedDates, setCompletedDates] = useState<Date[]>([])
   const [allProducts, setAllProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
 
   const fetchData = useCallback(async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        // Busca datas com rotina
-        const { data: routines } = await supabase
-          .from('user_routines')
-          .select('created_at')
-          .eq('user_id', user.id)
+      const {
+        data: { user }
+      } = await supabase.auth.getUser()
 
-        if (routines) {
-          setCompletedDates(routines.map(r => parseISO(r.created_at)))
-        }
+      if (!user) return
 
-        // Busca produtos ativos
-        const { data: products } = await supabase
-          .from('products')
-          .select('*')
-          .neq('status', 'finished')
+      const routinesData = await getUserRoutines(user.id)
+
+      if (routinesData) {
+        setRoutines(routinesData as Routine[])
         
-        if (products) setAllProducts(products as Product[])
+        const dates = routinesData
+          .filter((r) => r.routine_date !== null)
+          .map((r) => {
+            const [year, month, day] = r.routine_date!.split('-').map(Number)
+            return new Date(year, month - 1, day)
+          })
+
+        setCompletedDates(dates)
+      }
+
+      const products = await getActiveProducts()
+
+      if (products) {
+        setAllProducts(products)
       }
     } catch {
-      // Silencioso
     } finally {
       setLoading(false)
     }
@@ -43,5 +49,11 @@ export function useHomeData() {
     fetchData()
   }, [fetchData])
 
-  return { completedDates, allProducts, loading, refresh: fetchData }
+  return {
+    routines,
+    completedDates,
+    allProducts,
+    loading,
+    refresh: fetchData
+  }
 }

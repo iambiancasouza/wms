@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Product } from '@/types/product'
+import { Product } from '@/types/db'
 import { toast } from 'sonner'
 
 import {
@@ -54,7 +54,8 @@ export function useSaveRoutine() {
 
       if (onSuccess) onSuccess()
     } catch (error) {
-      console.error('Erro ao salvar rotina:', error)
+      console.error('Erro completo:', error)
+      console.log('Erro JSON:', JSON.stringify(error, null, 2))
 
       if (error instanceof Error && error.message === 'RLS_BLOCKED') {
         toast.error('Erro no Supabase: Ação bloqueada pelas políticas de RLS!')

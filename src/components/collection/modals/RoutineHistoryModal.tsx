@@ -1,18 +1,18 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
-import { X, CalendarDays, Sun, Moon, Loader2, Pencil } from 'lucide-react'
-import { format } from 'date-fns'
+import { X,  Sun, Moon, Loader2, Pencil, ChevronLeft, ChevronRight } from 'lucide-react'
+import { format, addDays, subDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { useRoutineHistory } from '@/hooks/useRoutineHistory'
-import { Product } from '@/types/product'
-import { RoutineRecord } from '@/types/routine'
+import { Product, Routine } from '@/types/db'
 import { StaticLeaves } from '@/components/layout/staticLeaves'
 
 interface RoutineHistoryModalProps {
   date: Date
   onCloseAction: () => void
-  onEditAction: (period: 'diurna' | 'noturna', products: Product[], routineId?: string) => void
+  onEditAction: (period: 'diurna' | 'noturna', products: Product[], routineId?: string, editDate?: Date) => void
   allProducts: Product[]
 }
 
@@ -22,17 +22,15 @@ export function RoutineHistoryModal({
   onEditAction,
   allProducts
 }: RoutineHistoryModalProps) {
-  const { routines, loading } = useRoutineHistory(date)
+  const [currentDate, setCurrentDate] = useState(date)
 
-  const rotinaDiurna = routines.find(
-    (r: RoutineRecord) => r.period === 'diurna'
-  )
-  const rotinaNoturna = routines.find(
-    (r: RoutineRecord) => r.period === 'noturna'
-  )
+  const { routines, loading } = useRoutineHistory(currentDate)
 
-  const diurnaProducts = rotinaDiurna?.products || []
-  const noturnaProducts = rotinaNoturna?.products || []
+  const rotinaDiurna = routines.find((r: Routine) => r.period === 'diurna')
+  const rotinaNoturna = routines.find((r: Routine) => r.period === 'noturna')
+
+  const diurnaProducts = (rotinaDiurna?.products as unknown as Product[]) || []
+  const noturnaProducts = (rotinaNoturna?.products as unknown as Product[]) || []
 
   return (
     <div className="fixed inset-0 z-[120] bg-[#f0f5ed] animate-in slide-in-from-bottom duration-500 overflow-y-auto no-scrollbar">
@@ -44,14 +42,28 @@ export function RoutineHistoryModal({
         <div className="w-full max-w-2xl mx-auto bg-white/60 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[40px] p-6 md:p-8 space-y-8 flex flex-col h-auto min-h-[80vh]">
           
           <div className="flex justify-between items-start">
-            <div className="space-y-1">
+            <div className="space-y-2">
               <h2 className="text-xl font-black text-[#1e3c2c] uppercase tracking-widest">
                 Rotina de:
               </h2>
-              <p className="text-[#5f8c73] text-[11px] font-bold uppercase tracking-[0.2em] flex items-center gap-1.5">
-                <CalendarDays className="w-4 h-4" />
-                {format(date, "dd 'de' MMMM, yyyy", { locale: ptBR })}
-              </p>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => setCurrentDate(subDays(currentDate, 1))}
+                  className="p-1 rounded-full hover:bg-white/60 text-[#5f8c73] transition-colors"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <p className="text-[#5f8c73] text-[10px] font-bold uppercase tracking-[0.1em] flex items-center">
+
+                  {format(currentDate, "dd 'de' MMMM, yyyy", { locale: ptBR })}
+                </p>
+                <button 
+                  onClick={() => setCurrentDate(addDays(currentDate, 1))}
+                  className="p-1 rounded-full hover:bg-white/60 text-[#5f8c73] transition-colors"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
             </div>
             <button
               onClick={onCloseAction}
@@ -71,7 +83,6 @@ export function RoutineHistoryModal({
           ) : (
             <div className="space-y-6">
               
-              {/* CARD DIURNA - SEMPRE VISÍVEL */}
               <div className="bg-white/80 backdrop-blur-xl border border-white rounded-[32px] p-6 shadow-sm space-y-5">
                 <div className="flex items-center justify-between border-b border-gray-100 pb-4">
                   <div className="flex items-center gap-3">
@@ -83,8 +94,7 @@ export function RoutineHistoryModal({
                     </h3>
                   </div>
                   <button 
-                    // NOVO: Passando o rotinaDiurna.id garantindo atualização precisa
-                    onClick={() => onEditAction('diurna', diurnaProducts, rotinaDiurna?.id)}
+                    onClick={() => onEditAction('diurna', diurnaProducts, rotinaDiurna?.id, currentDate)}
                     className="p-2 text-gray-400 hover:text-[#c78255] transition-colors rounded-full hover:bg-orange-50 active:scale-95"
                     title={diurnaProducts.length > 0 ? "Editar Rotina da Manhã" : "Adicionar Rotina da Manhã"}
                   >
@@ -132,7 +142,6 @@ export function RoutineHistoryModal({
                 </div>
               </div>
 
-              {/* CARD NOTURNA - SEMPRE VISÍVEL */}
               <div className="bg-white/80 backdrop-blur-xl border border-white rounded-[32px] p-6 shadow-sm space-y-5">
                 <div className="flex items-center justify-between border-b border-gray-100 pb-4">
                   <div className="flex items-center gap-3">
@@ -144,8 +153,7 @@ export function RoutineHistoryModal({
                     </h3>
                   </div>
                   <button 
-                    // NOVO: Passando o rotinaNoturna.id garantindo atualização precisa
-                    onClick={() => onEditAction('noturna', noturnaProducts, rotinaNoturna?.id)}
+                    onClick={() => onEditAction('noturna', noturnaProducts, rotinaNoturna?.id, currentDate)}
                     className="p-2 text-gray-400 hover:text-[#8695c5] transition-colors rounded-full hover:bg-indigo-50 active:scale-95"
                     title={noturnaProducts.length > 0 ? "Editar Rotina da Noite" : "Adicionar Rotina da Noite"}
                   >

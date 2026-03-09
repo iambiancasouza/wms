@@ -19,7 +19,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { StaticLeaves } from '@/components/layout/staticLeaves'
-import { Product } from '@/types/product' 
+import { Product } from '@/types/db' 
 
 interface ProductFormData {
   name: string

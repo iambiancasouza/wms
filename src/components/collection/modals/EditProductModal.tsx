@@ -15,7 +15,7 @@ import {
   Calendar
 } from 'lucide-react'
 import { toast } from 'sonner'
-import { Product } from '@/types/product'
+import { Product } from '@/types/db'
 
 const Category = [
   { id: 'all', label: 'Todos', icon: '✨' },

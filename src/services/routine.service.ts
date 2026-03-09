@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/client'
-import { Product } from '@/types/product'
+import { Product } from '@/types/db'
+import { format } from "date-fns"
 
 const supabase = createClient()
 
@@ -44,7 +45,7 @@ export async function createRoutine(
       user_id: userId,
       period,
       products,
-      created_at: date.toISOString()
+      routine_date: format(date, "yyyy-MM-dd")
     })
 
   if (error) throw error

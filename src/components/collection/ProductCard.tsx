@@ -1,7 +1,7 @@
 // src/components/collection/ProductCard.tsx
 import Image from 'next/image'
 import { Sparkles, Package, Heart, Calendar, Edit2, Trash2 } from 'lucide-react'
-import { Product } from '@/types/product'
+import { Product } from '@/types/db'
 
 // Helper formatador de data isolado aqui
 const formatDate = (dateString: string | null) => {

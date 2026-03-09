@@ -4,51 +4,72 @@ import { useState } from 'react'
 import { Hero } from '@/components/home/Hero'
 import { RoutineDashboard } from '@/components/home/RoutineDashboard'
 import { JournalingModal } from '@/components/collection/modals/JournalingModal'
-import { RoutineHistoryModal } from '@/components/collection/modals/RoutineHistoryModal' 
+import { RoutineHistoryModal } from '@/components/collection/modals/RoutineHistoryModal'
 import { useHomeData } from '@/hooks/useHomeData'
-import { Product } from '@/types/product'
+import { Product } from '@/types/db'
+import { format } from 'date-fns'
 
 export default function Home() {
-  const { completedDates, allProducts, loading, refresh } = useHomeData()
-  
-  // Estado completo que gerencia todo o ciclo de vida de Criação e Edição
+  const { routines, completedDates, allProducts, loading, refresh } = useHomeData()
+
+  const today = new Date()
+  const todayStr = format(today, 'yyyy-MM-dd')
+  const todayRoutines = routines.filter(r => r.routine_date === todayStr)
+
   const [journalingConfig, setJournalingConfig] = useState<{
-    period: 'diurna' | 'noturna' | null;
-    targetDate?: Date;
-    initialProducts?: Product[];
-    routineId?: string; 
+    period: 'diurna' | 'noturna' | null
+    targetDate?: Date
+    initialProducts?: Product[]
+    routineId?: string
   }>({ period: null })
 
-  const [selectedHistoryDate, setSelectedHistoryDate] = useState<Date | null>(null) 
+  const [selectedHistoryDate, setSelectedHistoryDate] = useState<Date | null>(null)
 
-  // Ação de Criar (Vem do Dashboard)
   const handleOpenJournalingAction = (period: 'diurna' | 'noturna') => {
-    setJournalingConfig({ 
-      period, 
-      targetDate: new Date(), 
-      initialProducts: [],
-      routineId: undefined
+    const existingRoutine = todayRoutines.find(r => r.period === period)
+
+    setJournalingConfig({
+      period,
+      targetDate: today,
+      initialProducts: (existingRoutine?.products as unknown as Product[]) || [],
+      routineId: existingRoutine?.id
     })
   }
 
-  // Ação de Editar (Vem do RoutineHistoryModal)
-  const handleEditRoutineAction = (period: 'diurna' | 'noturna', products: Product[], routineId?: string) => {
-    if (!selectedHistoryDate) return;
-    const dateToEdit = selectedHistoryDate;
-    
-    // Fecha o modal de histórico
-    setSelectedHistoryDate(null);
-    
-    // Abre o modal de edição passando o ID exato para o banco de dados
+  const handleNavigateJournalingDate = (newDate: Date) => {
+    if (!journalingConfig.period) return
+    const dateStr = format(newDate, 'yyyy-MM-dd')
+    const existingRoutine = routines.find(
+      (r) => r.routine_date === dateStr && r.period === journalingConfig.period
+    )
+
     setJournalingConfig({
-      period,
-      targetDate: dateToEdit, 
-      initialProducts: products,
-      routineId: routineId 
-    });
+      period: journalingConfig.period,
+      targetDate: newDate,
+      initialProducts: (existingRoutine?.products as unknown as Product[]) || [],
+      routineId: existingRoutine?.id
+    })
   }
 
-  // Ao fechar, limpa o estado e manda a página atualizar (refresh) os dados do Supabase
+  const handleEditRoutineAction = (
+    period: 'diurna' | 'noturna',
+    products: Product[],
+    routineId?: string,
+    editDate?: Date
+  ) => {
+    const dateToEdit = editDate || selectedHistoryDate
+    if (!dateToEdit) return
+
+    setSelectedHistoryDate(null)
+
+    setJournalingConfig({
+      period,
+      targetDate: dateToEdit,
+      initialProducts: products,
+      routineId
+    })
+  }
+
   const handleCloseJournalingAction = () => {
     setJournalingConfig({ period: null })
     refresh()
@@ -57,32 +78,35 @@ export default function Home() {
   return (
     <main className="bg-[#f0f5ed] min-h-[100dvh]">
       <Hero />
-      
+
       {!loading && (
         <RoutineDashboard
           completedDates={completedDates}
+          todayRoutines={todayRoutines}
           onOpenJournalingAction={handleOpenJournalingAction}
-          onOpenDayDetailsAction={(date) => setSelectedHistoryDate(date)} 
+          onOpenDayDetailsAction={(date) => setSelectedHistoryDate(date)}
         />
       )}
 
       {journalingConfig.period && (
         <JournalingModal
+          // A prop "key" foi removida daqui para impedir que o modal desmonte ao navegar!
           period={journalingConfig.period}
           products={allProducts}
           onCloseAction={handleCloseJournalingAction}
           targetDate={journalingConfig.targetDate}
           initialSelectedProducts={journalingConfig.initialProducts}
           routineId={journalingConfig.routineId}
+          onNavigateDateAction={handleNavigateJournalingDate}
         />
       )}
 
       {selectedHistoryDate && (
-        <RoutineHistoryModal 
-          date={selectedHistoryDate} 
-          onCloseAction={() => setSelectedHistoryDate(null)} 
+        <RoutineHistoryModal
+          date={selectedHistoryDate}
+          onCloseAction={() => setSelectedHistoryDate(null)}
           onEditAction={handleEditRoutineAction}
-          allProducts={allProducts} 
+          allProducts={allProducts}
         />
       )}
     </main>

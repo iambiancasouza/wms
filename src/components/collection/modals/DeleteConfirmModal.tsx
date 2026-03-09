@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { AlertTriangle, Package } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Product } from '@/types/product'
+import { Product } from '@/types/db'
 
 export function DeleteConfirmModal({
   product,

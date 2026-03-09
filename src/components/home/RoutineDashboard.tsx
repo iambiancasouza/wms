@@ -14,15 +14,18 @@ import {
   getDay
 } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { Routine } from '@/types/db'
 
 interface RoutineDashboardProps {
   completedDates: Date[]
+  todayRoutines: Routine[]
   onOpenJournalingAction: (period: 'diurna' | 'noturna') => void
   onOpenDayDetailsAction: (date: Date) => void
 }
 
 export function RoutineDashboard({
   completedDates,
+  todayRoutines,
   onOpenJournalingAction,
   onOpenDayDetailsAction
 }: RoutineDashboardProps) {
@@ -40,8 +43,10 @@ export function RoutineDashboard({
   const emptyDays = Array.from({ length: startDayIndex }, (_, i) => i)
   const firstRowDays = daysInMonth.slice(0, 30 - startDayIndex)
 
+  const hasDiurna = todayRoutines.some(r => r.period === 'diurna')
+  const hasNoturna = todayRoutines.some(r => r.period === 'noturna')
+
   return (
-    // Mantive o z-30 e bg-[#f0f5ed] para garantir que as folhas da Hero se escondam aqui atrás (correção anterior do iOS)
     <section className="relative w-full py-8 bg-[#f0f5ed] z-30">
       <div className="container mx-auto px-6 relative z-10">
         <h3 className="text-lg md:text-xl lg:text-2xl font-black text-[#3a6b4d]/60 uppercase tracking-[0.1em] mb-5 text-center">
@@ -58,11 +63,8 @@ export function RoutineDashboard({
 
           <div className="absolute inset-0 z-[-1] bg-white/70 backdrop-blur-sm pointer-events-none" />
 
-          {/* CONTEÚDO (Mantido no z-10 para ficar por cima de tudo) */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-12 relative z-10">
-            {/* LADO ESQUERDO: Calendário no Topo, Cards Embaixo */}
             <div className="flex flex-col gap-6 w-full max-w-md mx-auto lg:mx-0">
-              {/* 1. CALENDÁRIO (1 Linha / Primeira Semana) */}
               <div className="w-full bg-white/40 backdrop-blur-xl rounded-[32px] p-2 md:p-8 border-2 border-white/30 shadow-xl shadow-[#3a6b4d]/5">
                 <div className="flex justify-between items-center mb-3 px-1">
                   <button
@@ -134,7 +136,6 @@ export function RoutineDashboard({
                 </div>
               </div>
 
-              {/* 2. CARDS DIURNA / NOTURNA */}
               <div className="w-full grid grid-cols-2 gap-4">
                 <button
                   onClick={() => onOpenJournalingAction('diurna')}
@@ -144,7 +145,7 @@ export function RoutineDashboard({
                     <Sun className="w-6 h-6" />
                   </div>
                   <span className="font-bold text-gray-500 text-sm">
-                    Diurna
+                    {hasDiurna ? 'Editar' : 'Diurna'}
                   </span>
                 </button>
 
@@ -156,15 +157,13 @@ export function RoutineDashboard({
                     <Moon className="w-6 h-6" />
                   </div>
                   <span className="font-bold text-gray-500 text-sm">
-                    Noturna
+                    {hasNoturna ? 'Editar' : 'Noturna'}
                   </span>
                 </button>
               </div>
             </div>
 
-            {/* LADO DIREITO: Totalmente vazio (reservado para implementações futuras) */}
             <div className="hidden lg:block w-full h-full border-2 border-dashed border-[#3a6b4d]/10 rounded-[32px] bg-white/20 flex-col items-center justify-center text-[#3a6b4d]/30 font-bold text-sm tracking-widest uppercase">
-              {/* Espaço reservado */}
             </div>
           </div>
         </div>

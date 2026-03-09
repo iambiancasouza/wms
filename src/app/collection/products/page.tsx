@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Package, Plus, ArrowUp } from 'lucide-react'
 import { toast } from 'sonner'
-import { Product } from '@/types/product'
+import { Product } from '@/types/db'
 
 import { EditProductModal } from '@/components/collection/modals/EditProductModal'
 import { DeleteConfirmModal } from '@/components/collection/modals/DeleteConfirmModal'
