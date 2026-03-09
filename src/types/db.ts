@@ -16,3 +16,7 @@ export type ProcedureInsert = TablesInsert<'procedures'>
 
 export type ProductUpdate = TablesUpdate<'products'>
 export type RoutineUpdate = TablesUpdate<'user_routines'>
+
+export function safeQuantity(q: number | null | undefined) {
+  return q ?? 1
+}
