@@ -19,7 +19,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { StaticLeaves } from '@/components/layout/staticLeaves'
-import { Product } from '@/types/db' 
+import { Product } from '@/types/db'
 
 interface ProductFormData {
   name: string
@@ -41,13 +41,13 @@ export default function NewProductPage() {
 
   const [isLoading, setIsLoading] = useState(false)
   const [imageFile, setImageFile] = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>('')
 
   const [formData, setFormData] = useState<ProductFormData>({
     name: '',
     brand: '',
-    category: 'limpeza', 
-    usage_frequency: 'both', 
+    category: 'limpeza',
+    usage_frequency: 'both',
     quantity: 1,
     price: '',
     opened_at: '',
@@ -73,53 +73,56 @@ export default function NewProductPage() {
     setIsLoading(true)
 
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const {
+        data: { user }
+      } = await supabase.auth.getUser()
+
       if (!user) throw new Error('Usuário não autenticado')
 
-      let image_url = null
+      let image_url: string = ''
 
-      // Upload da Imagem
+      // Upload da imagem
       if (imageFile) {
         const fileExt = imageFile.name.split('.').pop()
         const fileName = `${user.id}/${Date.now()}.${fileExt}`
+
         const { error: uploadError } = await supabase.storage
           .from('products')
           .upload(fileName, imageFile)
-        
+
         if (uploadError) throw uploadError
-        
-        const { data: { publicUrl } } = supabase.storage
+
+        const { data } = supabase.storage
           .from('products')
           .getPublicUrl(fileName)
-        
-        image_url = publicUrl
+
+        image_url = data.publicUrl
       }
 
       const priceValue = formData.price
-        ? parseFloat(formData.price.replace(',', '.'))
+        ? Number(formData.price.replace(',', '.'))
         : null
 
-      
       const newProduct: Omit<Product, 'id' | 'created_at'> = {
         user_id: user.id,
         name: formData.name,
         brand: formData.brand,
         category: formData.category,
         usage_frequency: formData.usage_frequency,
-        quantity: Number(formData.quantity) || 1,
+        quantity: Number(formData.quantity) > 0 ? Number(formData.quantity) : 1,
         price: priceValue,
         status: formData.status,
         opened_at: formData.opened_at || null,
         expiry_date: formData.expiry_date || null,
         review: formData.review || null,
         image_url: image_url,
-        is_favorite: false 
+        is_favorite: false
       }
 
       const { error } = await supabase.from('products').insert(newProduct)
 
       if (error) throw error
-      
+
       toast.success('Produto salvo!')
       router.push('/collection/products')
       router.refresh()
@@ -134,7 +137,7 @@ export default function NewProductPage() {
   return (
     <div className="container mx-auto px-4 py-3 max-w-lg relative">
       <StaticLeaves />
-      
+
       {/* Cabeçalho */}
       <div className="flex items-center gap-2 mb-6 relative z-10">
         <Link href="/collection/products">
@@ -151,7 +154,6 @@ export default function NewProductPage() {
 
       <div className="bg-white/80 backdrop-blur-md rounded-3xl p-6 shadow-lg border border-white/60 relative z-10">
         <form onSubmit={handleSave} className="space-y-6">
-          
           {/* FOTO */}
           <div className="flex justify-center">
             <div
@@ -254,9 +256,26 @@ export default function NewProductPage() {
                 </div>
 
                 {[
-                  { id: 'am', label: 'Manhã', icon: <Sun className="w-5 h-5" /> },
-                  { id: 'both', label: 'Ambos', icon: <div className="flex -space-x-1"><Sun className="w-4 h-4" /><Moon className="w-4 h-4" /></div> },
-                  { id: 'pm', label: 'Noite', icon: <Moon className="w-5 h-5" /> }
+                  {
+                    id: 'am',
+                    label: 'Manhã',
+                    icon: <Sun className="w-5 h-5" />
+                  },
+                  {
+                    id: 'both',
+                    label: 'Ambos',
+                    icon: (
+                      <div className="flex -space-x-1">
+                        <Sun className="w-4 h-4" />
+                        <Moon className="w-4 h-4" />
+                      </div>
+                    )
+                  },
+                  {
+                    id: 'pm',
+                    label: 'Noite',
+                    icon: <Moon className="w-5 h-5" />
+                  }
                 ].map(item => {
                   const isActive = formData.usage_frequency === item.id
                   return (
@@ -264,13 +283,20 @@ export default function NewProductPage() {
                       key={item.id}
                       type="button"
                       onClick={() =>
-                        setFormData({ ...formData, usage_frequency: item.id as 'am' | 'pm' | 'both' })
+                        setFormData({
+                          ...formData,
+                          usage_frequency: item.id as 'am' | 'pm' | 'both'
+                        })
                       }
                       title={item.label}
                       className="relative w-11 h-11 rounded-full flex items-center justify-center z-10 transition-transform active:scale-90"
                     >
-                      {!isActive && <div className="absolute inset-0 rounded-full border border-white/40 bg-white/20 -z-10" />}
-                      <div className={`transition-colors duration-300 ${isActive ? 'text-[#3a6b4d] scale-110' : 'text-gray-400 hover:text-gray-600'}`}>
+                      {!isActive && (
+                        <div className="absolute inset-0 rounded-full border border-white/40 bg-white/20 -z-10" />
+                      )}
+                      <div
+                        className={`transition-colors duration-300 ${isActive ? 'text-[#3a6b4d] scale-110' : 'text-gray-400 hover:text-gray-600'}`}
+                      >
                         {item.icon}
                       </div>
                     </button>
@@ -341,7 +367,9 @@ export default function NewProductPage() {
                   setFormData({
                     ...formData,
                     status: 'open',
-                    opened_at: formData.opened_at || new Date().toISOString().split('T')[0]
+                    opened_at:
+                      formData.opened_at ||
+                      new Date().toISOString().split('T')[0]
                   })
                 }
                 className={`flex-1 text-xs font-bold rounded-lg transition-all duration-200 ${formData.status === 'open' ? 'bg-white text-[#3a6b4d] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}

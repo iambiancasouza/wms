@@ -94,53 +94,53 @@ export type Database = {
       }
       products: {
         Row: {
-          brand: string | null
-          category: string | null
+          brand: string
+          category: string
           created_at: string | null
           expiry_date: string | null
           id: string
-          image_url: string | null
-          is_favorite: boolean | null
+          image_url: string
+          is_favorite: boolean
           name: string
           opened_at: string | null
           price: number | null
-          quantity: number | null
+          quantity: number
           review: string | null
-          status: string | null
+          status: string
           usage_frequency: string | null
           user_id: string
         }
         Insert: {
-          brand?: string | null
-          category?: string | null
+          brand?: string
+          category?: string
           created_at?: string | null
           expiry_date?: string | null
           id?: string
-          image_url?: string | null
-          is_favorite?: boolean | null
+          image_url?: string
+          is_favorite?: boolean
           name: string
           opened_at?: string | null
           price?: number | null
-          quantity?: number | null
+          quantity?: number
           review?: string | null
-          status?: string | null
+          status?: string
           usage_frequency?: string | null
           user_id: string
         }
         Update: {
-          brand?: string | null
-          category?: string | null
+          brand?: string
+          category?: string
           created_at?: string | null
           expiry_date?: string | null
           id?: string
-          image_url?: string | null
-          is_favorite?: boolean | null
+          image_url?: string
+          is_favorite?: boolean
           name?: string
           opened_at?: string | null
           price?: number | null
-          quantity?: number | null
+          quantity?: number
           review?: string | null
-          status?: string | null
+          status?: string
           usage_frequency?: string | null
           user_id?: string
         }
