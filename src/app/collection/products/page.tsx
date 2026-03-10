@@ -28,7 +28,6 @@ export default function ProductsPage() {
 
   const [showScrollTop, setShowScrollTop] = useState(false)
 
-  /* ---------------- Scroll Top ---------------- */
 
   useEffect(() => {
     const handleScroll = () => setShowScrollTop(window.scrollY > 300)
@@ -42,7 +41,6 @@ export default function ProductsPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  /* ---------------- Fetch Products ---------------- */
 
   const fetchProducts = useCallback(async () => {
     try {
@@ -68,7 +66,6 @@ export default function ProductsPage() {
     fetchProducts()
   }, [fetchProducts])
 
-  /* ---------------- Confirm Delete ---------------- */
 
   const confirmDelete = async () => {
     const product = deletingProduct
@@ -109,7 +106,6 @@ export default function ProductsPage() {
 
       const currentQty = product.quantity ?? 1
 
-      /* ---- Se ainda existem unidades ---- */
 
       if (currentQty > 1) {
         const newQty = currentQty - 1
@@ -145,7 +141,6 @@ export default function ProductsPage() {
         )
       } else {
 
-      /* ---- Se acabou o estoque ---- */
         const { error } = await supabase
           .from('products')
           .delete()
@@ -165,7 +160,6 @@ export default function ProductsPage() {
     }
   }
 
-  /* ---------------- Favoritar ---------------- */
 
   const toggleFavorite = async (product: Product) => {
     const newStatus = !product.is_favorite
@@ -198,7 +192,6 @@ export default function ProductsPage() {
     }
   }
 
-  /* ---------------- Filtros ---------------- */
   const filteredProducts = products.filter(product => {
     const matchesQuery =
       product.name.toLowerCase().includes(query.toLowerCase()) ||
@@ -210,11 +203,9 @@ export default function ProductsPage() {
     return matchesQuery && matchesCategory
   })
 
-  /* ---------------- Render ---------------- */
 
   return (
     <div className="container mx-auto px-4 pb-20 mt-4">
-      {/* Modais */}
 
       {editingProduct && (
         <EditProductModal
@@ -232,7 +223,6 @@ export default function ProductsPage() {
         />
       )}
 
-      {/* Loading */}
 
       {isLoading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 justify-items-center">
@@ -244,7 +234,6 @@ export default function ProductsPage() {
           ))}
         </div>
       ) : filteredProducts.length === 0 ? (
-        /* Empty state */
 
         <div className="flex flex-col items-center justify-center py-16 text-center animate-in zoom-in duration-300">
           <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm">
@@ -268,7 +257,7 @@ export default function ProductsPage() {
           </Link>
         </div>
       ) : (
-        /* Grid */
+        
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 animate-in fade-in duration-500">
           {filteredProducts.map(product => (
@@ -295,7 +284,6 @@ export default function ProductsPage() {
         </div>
       )}
 
-      {/* Scroll Top */}
 
       <button
         onClick={scrollToTop}

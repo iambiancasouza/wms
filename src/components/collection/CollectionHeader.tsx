@@ -49,7 +49,7 @@ export function CollectionHeader() {
   }
 
   return (
-    <div className="pt-6 pb-6 w-full">
+    <div className="pt-6 pb-6 w-full z-10">
       {/* Título e Busca */}
       <div className="container mx-auto px-4 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3 self-start md:self-auto">

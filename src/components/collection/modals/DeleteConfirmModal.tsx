@@ -13,12 +13,10 @@ export function DeleteConfirmModal({
   onConfirm: () => void
 }) {
 
-  /* ---------- normalização segura ---------- */
 
   const quantity = product.quantity ?? 1
   const isConsumption = quantity > 1
 
-  /* ---------- trava scroll + ESC ---------- */
 
   useEffect(() => {
 

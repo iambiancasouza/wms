@@ -16,13 +16,13 @@ export function Hero() {
       router.push('/auth/sign-up')
     }
   }
-  // mt-[68px]
+  
   return (
-    <section className="relative w-full min-h-[calc(100dvh-70px)]  flex items-center justify-center">
-      <div className="absolute -top-[400px] bottom-0 inset-x-0 pointer-events-none z-0 [mask-image:linear-gradient(to_bottom,black_80%,transparent_100%)]">
+    <section className="relative w-full min-h-[calc(100dvh-80px)]  flex items-center justify-center">
+      <div className="absolute -top-[300px] bottom-0 inset-x-0 pointer-events-none z-40 [mask-image:linear-gradient(to_bottom,black_95%,transparent_100%)]">
         <FallingLeaves />
       </div>
-      <div className="container mx-auto px-6 md:px-8 lg:px-16 relative z-10 w-full py-10 lg:py-0">
+      <div className="container mx-auto px-6 md:px-8 lg:px-16 relative z-50 w-full py-10 lg:py-0">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center w-full">
           <div className="flex flex-col items-center lg:items-start space-y-4 lg:space-y-6 text-center lg:text-left w-full">
             <div className="space-y-2">

@@ -13,7 +13,6 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="relative min-h-[100dvh] w-full pb-4 overflow-x-hidden flex flex-col">
-      {/* Esconde a Navbar global se estiver na rota /quiz */}
       {pathname !== '/quiz' && <Navbar />}
 
       <main className="relative flex-1 w-full">

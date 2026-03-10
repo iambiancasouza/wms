@@ -9,6 +9,7 @@ import { useHomeData } from '@/hooks/useHomeData'
 import { Product } from '@/types/db'
 import { format } from 'date-fns'
 
+
 export default function Home() {
   const { routines, completedDates, allProducts, loading, refresh } = useHomeData()
 
@@ -78,8 +79,8 @@ export default function Home() {
   return (
     <main className="bg-[#f0f5ed] min-h-[100dvh]">
       <Hero />
-
-      {!loading && (
+      
+      {!loading &&  (
         <RoutineDashboard
           completedDates={completedDates}
           todayRoutines={todayRoutines}
@@ -90,7 +91,6 @@ export default function Home() {
 
       {journalingConfig.period && (
         <JournalingModal
-          // A prop "key" foi removida daqui para impedir que o modal desmonte ao navegar!
           period={journalingConfig.period}
           products={allProducts}
           onCloseAction={handleCloseJournalingAction}
