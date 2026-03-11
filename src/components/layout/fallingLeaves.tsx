@@ -55,8 +55,7 @@ function Leaf({ size, left, delay, duration, type, blur }: LeafProps) {
 export function FallingLeaves() {
   const [leaves, setLeaves] = useState<LeafProps[]>([])
 
-  useEffect(() => {
-    // Usamos setTimeout para evitar o erro de 'cascading renders' apontado pelo ESLint
+  useEffect(() => { 
     const timeoutId = setTimeout(() => {
       const leafCount = window.innerWidth < 768 ? 20 : 35
       const newLeaves: LeafProps[] = []
@@ -78,7 +77,7 @@ export function FallingLeaves() {
   }, [])
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+    <div className="inset-0 overflow-hidden pointer-events-none z-0">
       {leaves.map((leaf, index) => (
         <Leaf key={index} {...leaf} />
       ))}

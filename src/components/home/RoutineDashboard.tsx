@@ -47,7 +47,8 @@ export function RoutineDashboard({
   const hasNoturna = todayRoutines.some(r => r.period === 'noturna')
 
   return (
-    <section className="relative w-full py-8 bg-[#f0f5ed] z-30">
+   
+    <section className="relative w-full py-6 z-30">
       <div className="container mx-auto px-6 relative z-10">
         <h3 className="text-lg md:text-xl lg:text-2xl font-black text-[#3a6b4d]/75 uppercase tracking-[0.1em] mb-5 text-center">
           Registrar rotina
