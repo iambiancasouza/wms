@@ -15,6 +15,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+  height: -webkit-fill-available;
+}
+
+body {
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
+}
+
 
 /* --- SCROLLBAR off --- */
 

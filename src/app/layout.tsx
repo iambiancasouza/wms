@@ -40,9 +40,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" >
       <body
-        className={`${inter.className} ${poppins.variable} antialiased w-full bg-[#f0f5ed]`}
+        className={`${inter.className} ${poppins.variable} antialiased w-full bg-[#f0f5ed]  padding-top: env(safe-area-inset-top)`}
       >
         <ClientLayout>
           <div className="w-full flex flex-col">{children}</div>

@@ -1,17 +1,19 @@
 'use client'
 
 import { useState } from 'react'
+import { MobileHeader } from '@/components/home/MobileHeader' // Importação do novo componente
 import { Hero } from '@/components/home/Hero'
 import { RoutineDashboard } from '@/components/home/RoutineDashboard'
 import { JournalingModal } from '@/components/collection/modals/JournalingModal'
 import { RoutineHistoryModal } from '@/components/collection/modals/RoutineHistoryModal'
+import { StaticLeaves } from '@/components/layout/staticLeaves'
 import { useHomeData } from '@/hooks/useHomeData'
 import { Product } from '@/types/db'
 import { format } from 'date-fns'
 
-
 export default function Home() {
-  const { routines, completedDates, allProducts, loading, refresh } = useHomeData()
+  const { routines, completedDates, allProducts, loading, refresh } =
+    useHomeData()
 
   const today = new Date()
   const todayStr = format(today, 'yyyy-MM-dd')
@@ -24,7 +26,9 @@ export default function Home() {
     routineId?: string
   }>({ period: null })
 
-  const [selectedHistoryDate, setSelectedHistoryDate] = useState<Date | null>(null)
+  const [selectedHistoryDate, setSelectedHistoryDate] = useState<Date | null>(
+    null
+  )
 
   const handleOpenJournalingAction = (period: 'diurna' | 'noturna') => {
     const existingRoutine = todayRoutines.find(r => r.period === period)
@@ -32,7 +36,8 @@ export default function Home() {
     setJournalingConfig({
       period,
       targetDate: today,
-      initialProducts: (existingRoutine?.products as unknown as Product[]) || [],
+      initialProducts:
+        (existingRoutine?.products as unknown as Product[]) || [],
       routineId: existingRoutine?.id
     })
   }
@@ -41,13 +46,14 @@ export default function Home() {
     if (!journalingConfig.period) return
     const dateStr = format(newDate, 'yyyy-MM-dd')
     const existingRoutine = routines.find(
-      (r) => r.routine_date === dateStr && r.period === journalingConfig.period
+      r => r.routine_date === dateStr && r.period === journalingConfig.period
     )
 
     setJournalingConfig({
       period: journalingConfig.period,
       targetDate: newDate,
-      initialProducts: (existingRoutine?.products as unknown as Product[]) || [],
+      initialProducts:
+        (existingRoutine?.products as unknown as Product[]) || [],
       routineId: existingRoutine?.id
     })
   }
@@ -78,16 +84,22 @@ export default function Home() {
 
   return (
     <main className="bg-[#f0f5ed] min-h-[100dvh]">
+      <MobileHeader />
+
       <Hero />
-      
-      {!loading &&  (
-        <RoutineDashboard
-          completedDates={completedDates}
-          todayRoutines={todayRoutines}
-          onOpenJournalingAction={handleOpenJournalingAction}
-          onOpenDayDetailsAction={(date) => setSelectedHistoryDate(date)}
-        />
-      )}
+
+      <div className="relative w-full min-h-[50vh]">
+        <div className="relative z-10">
+          {!loading && (
+            <RoutineDashboard
+              completedDates={completedDates}
+              todayRoutines={todayRoutines}
+              onOpenJournalingAction={handleOpenJournalingAction}
+              onOpenDayDetailsAction={date => setSelectedHistoryDate(date)}
+            />
+          )}
+        </div>
+      </div>
 
       {journalingConfig.period && (
         <JournalingModal
