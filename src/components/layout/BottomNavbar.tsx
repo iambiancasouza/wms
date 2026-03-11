@@ -41,8 +41,8 @@ export function BottomNavbar() {
 
   return (
     <>
-      <div className="fixed bottom-1 left-1 right-1 bg-white/60 shadow-md backdrop-blur-md rounded-full z-[100] md:hidden pointer-events-none">
-        <nav className="border border-[#e0e8dd] rounded-full px-4 pt-2 flex justify-around items-center pointer-events-auto shadow-[0_-5px_20px_rgba(0,0,0,0.03)]">
+      <div className="fixed bottom-1 left-6 right-6 bg-white/60 shadow-md backdrop-blur-md rounded-full z-[100] md:hidden pointer-events-none">
+        <nav className="border-2 border-[#e0e8dd] rounded-full px-4 pt-2 flex justify-around items-center pointer-events-auto shadow-[0_-5px_20px_rgba(0,0,0,0.03)]">
           {navItems.map(item => {
             const isActive = pathname === item.path
             const Icon = item.icon
