@@ -49,23 +49,23 @@ export function RoutineDashboard({
   return (
     <section className="relative w-full py-8 bg-[#f0f5ed] z-30">
       <div className="container mx-auto px-6 relative z-10">
-        <h3 className="text-lg md:text-xl lg:text-2xl font-black text-[#3a6b4d]/60 uppercase tracking-[0.1em] mb-5 text-center">
+        <h3 className="text-lg md:text-xl lg:text-2xl font-black text-[#3a6b4d]/75 uppercase tracking-[0.1em] mb-5 text-center">
           Registrar rotina
         </h3>
 
-        <div className="relative rounded-[20px] p-5 md:p-5 border-white/70 shadow-xl shadow-[#3a6b4d]/10 overflow-hidden isolate">
+        <div className="relative rounded-[20px] p-4 md:p-5 border-white/70 shadow-xl shadow-[#3a6b4d]/10 overflow-hidden isolate">
           <Image
-            src="/centellaAsiatica.png"
+            src="/img.png"
             alt="Centella Asiatica Background"
             fill
-            className="object-cover opacity-[0.80]  pointer-events-none"
+            className="object-cover opacity-[0.70]  pointer-events-none"
           />
 
           <div className="absolute inset-0 z-[-1] bg-white/70 backdrop-blur-sm pointer-events-none" />
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-12 relative z-10">
             <div className="flex flex-col gap-6 w-full max-w-md mx-auto lg:mx-0">
-              <div className="w-full bg-white/40 backdrop-blur-xl rounded-[32px] p-2 md:p-8 border-2 border-white/30 shadow-xl shadow-[#3a6b4d]/5">
+              <div className="w-full bg-white/40 backdrop-blur-xl rounded-[32px] p-3 md:p-5 border-2 border-white/30 shadow-xl shadow-[#3a6b4d]/5">
                 <div className="flex justify-between items-center mb-3 px-1">
                   <button
                     onClick={prevMonth}
@@ -84,11 +84,11 @@ export function RoutineDashboard({
                   </button>
                 </div>
 
-                <div className="grid grid-cols-7 gap-y-4 gap-x-1 text-center">
+                <div className="grid grid-cols-7 gap-y-2 gap-x-1 text-center">
                   {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((d, i) => (
                     <span
                       key={`header-${i}`}
-                      className="text-[10px] font-black text-[#3a6b4d]/40 mb-1"
+                      className="text-[10px] font-black text-[#3a6b4d]/60 mb-1"
                     >
                       {d}
                     </span>
@@ -141,7 +141,7 @@ export function RoutineDashboard({
                   onClick={() => onOpenJournalingAction('diurna')}
                   className="group h-32 lg:h-[140px] bg-white/50 backdrop-blur-xl rounded-[32px] border-2 border-white/30 shadow-sm flex flex-col items-center justify-center gap-3 active:scale-95 transition-all hover:bg-white/70"
                 >
-                  <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-400 group-hover:bg-orange-100 transition-colors">
+                  <div className="w-12 h-12 rounded-full bg-[#3a6b4d]/10 shadow-md flex items-center justify-center text-white  transition-colors">
                     <Sun className="w-6 h-6" />
                   </div>
                   <span className="font-bold text-gray-500 text-sm">
@@ -153,7 +153,7 @@ export function RoutineDashboard({
                   onClick={() => onOpenJournalingAction('noturna')}
                   className="group h-32 lg:h-[140px] bg-white/50 backdrop-blur-xl rounded-[32px] border-2 border-white/30 shadow-sm flex flex-col items-center justify-center gap-3 active:scale-95 transition-all hover:bg-white/70"
                 >
-                  <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-400 group-hover:bg-indigo-100 transition-colors">
+                  <div className="w-12 h-12 rounded-full bg-[#3a6b4d]/10 shadow-md flex items-center justify-center text-gray-500  transition-colors">
                     <Moon className="w-6 h-6" />
                   </div>
                   <span className="font-bold text-gray-500 text-sm">
@@ -163,8 +163,7 @@ export function RoutineDashboard({
               </div>
             </div>
 
-            <div className="hidden lg:block w-full h-full border-2 border-dashed border-[#3a6b4d]/10 rounded-[32px] bg-white/20 flex-col items-center justify-center text-[#3a6b4d]/30 font-bold text-sm tracking-widest uppercase">
-            </div>
+            <div className="hidden lg:block w-full h-full border-2 border-dashed border-[#3a6b4d]/10 rounded-[32px] bg-white/20 flex-col items-center justify-center text-[#3a6b4d]/30 font-bold text-sm tracking-widest uppercase"></div>
           </div>
         </div>
       </div>

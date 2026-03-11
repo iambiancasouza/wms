@@ -32,8 +32,8 @@ export function BottomNavbar() {
 
   return (
     <>
-      <div className="fixed bottom-0 left-0 right-0 z-[100] md:hidden pointer-events-none">
-        <nav className="mx-auto bg-white/80 backdrop-blur-md border border-[#e0e8dd] rounded-tr-[30px] rounded-tl-[30px] px-4 pt-1 flex justify-around items-center pointer-events-auto shadow-[0_-5px_20px_rgba(0,0,0,0.03)]">
+      <div className="fixed bottom-0 left-0 right-0  z-[100] md:hidden pointer-events-none">
+        <nav className="mx-auto bg-white/80 backdrop-blur-md border border-[#e0e8dd] rounded-tr-[30px] rounded-tl-[30px] px-4 pt-2 flex justify-around items-center pointer-events-auto shadow-[0_-5px_20px_rgba(0,0,0,0.03)]">
           {navItems.map(item => {
             const isActive = pathname === item.path
             const Icon = item.icon
@@ -49,7 +49,7 @@ export function BottomNavbar() {
                   <Icon
                     size={22}
                     color='#5e9873'
-                    strokeWidth={isActive ? 1.6 : 1.2}
+                    strokeWidth={isActive ? 1.8 : 1.4}
                   />
                 </div>
 
