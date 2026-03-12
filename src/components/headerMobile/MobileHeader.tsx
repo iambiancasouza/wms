@@ -24,7 +24,7 @@ export function MobileHeader() {
         px-4
         border-b-2
         border-gray-200
-        bg-[#f0f5ed]/90 backdrop-blur-md
+        bg-[#f0f5ed]
         shadow-[0_10px_30px_rgba(0,0,0,0.08)]
         rounded-b-[34px]
       "
