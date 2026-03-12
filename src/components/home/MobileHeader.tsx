@@ -8,40 +8,40 @@ export function MobileHeader() {
   const { isLoggedIn, userName } = useAuth()
 
   const displayName =
-    isLoggedIn && userName ? userName.split(' ')[0] : 'Você'
+    isLoggedIn && userName ? userName.split(' ')[0] : ''
 
   return (
     <header
       className="
-      fixed top-0 inset-x-0 z-[100]
+      fixed top-[-1] inset-x-0 z-[100]
       lg:hidden
-      px-5
+      px-4
       pb-4
-      pt-[calc(env(safe-area-inset-top)+8px)]
-      bg-
+      pt-[calc(env(safe-area-inset-top)+12px)]
+      bg-white/40
       backdrop-blur-md
-      border-2 border-white/40
+      border-2 border-white
       shadow-md
       rounded-b-[34px]
       flex items-center justify-between
     "
     >
-      {/* ESQUERDA — LOGO */}
-      <div className="flex-shrink-0">
+     
+     
+      <div className="relative flex-shrink-0 w-[90px] h-[45px] flex items-start justify-start">
         <Image
-          src="/logowms.png"
+          src="/wms_logo.png" 
           alt="WMS logo"
-          width={72}
-          height={28}
+          fill
           priority
-          className="object-contain"
+          className="object-contain scale-[4] " 
         />
       </div>
 
       {/* CENTRO */}
       <div className="flex flex-col items-center justify-center flex-1 px-2">
         <span className="font-bold text-[#4f7c60] text-[16px] tracking-wide leading-none">
-          Olá, {displayName}
+          Olá{displayName ? `, ${displayName}` : ''}
         </span>
 
         <button className="flex items-center gap-1 text-[#6f957a] mt-1 active:scale-95 transition-transform">
@@ -57,24 +57,23 @@ export function MobileHeader() {
       </div>
 
       {/* DIREITA */}
-      <div className="relative flex-shrink-0 flex items-center justify-end w-[80px]">
+      <div className="relative flex-shrink-0 flex items-center justify-end w-[85px]">
         <button className="relative text-[#4f7c60] active:scale-95 transition-transform">
           <Bell className="w-[26px] h-[26px]" strokeWidth={2.2} />
 
-          {/* badge */}
           <span
             className="
-            absolute -top-1 -right-1
-            flex h-[18px] w-[18px]
+            absolute -top-0.5 -right-0.5
+            flex h-[15px] w-[15px]
             items-center justify-center
             rounded-full
             bg-[#7eba6b]
-            border-[2px] border-white
+            border-[1.5px] border-white
             text-[9px] font-bold text-white
             shadow-sm
           "
           >
-            
+            1
           </span>
         </button>
       </div>
