@@ -1,9 +1,9 @@
 import { Tables, TablesInsert, TablesUpdate } from './database.types'
 
 
-export type Profile = Tables<'profiles'>
-export type ProfileInsert = TablesInsert<'profiles'>
-export type ProfileUpdate = TablesUpdate<'profiles'>
+// export type Profile = Tables<'profiles'>
+// export type ProfileInsert = TablesInsert<'profiles'>
+// export type ProfileUpdate = TablesUpdate<'profiles'>
 
 export type Product = Tables<'products'>
 export type Routine = Tables<'user_routines'>

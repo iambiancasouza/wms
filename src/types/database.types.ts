@@ -176,30 +176,30 @@ export type Database = {
         }
         Relationships: []
       }
-      profiles: {
-        Row: {
-          avatar_url: string | null
-          created_at: string | null
-          full_name: string | null
-          id: string
-          skin_type: string | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          created_at?: string | null
-          full_name?: string | null
-          id: string
-          skin_type?: string | null
-        }
-        Update: {
-          avatar_url?: string | null
-          created_at?: string | null
-          full_name?: string | null
-          id?: string
-          skin_type?: string | null
-        }
-        Relationships: []
-      }
+      // profiles: {
+        // Row: {
+          // avatar_url: string | null
+          // created_at: string | null
+          // full_name: string | null
+          // id: string
+          // skin_type: string | null
+        // }
+        // Insert: {
+          // avatar_url?: string | null
+          // created_at?: string | null
+          // full_name?: string | null
+          // id: string
+          // skin_type?: string | null
+        // }
+        // Update: {
+          // avatar_url?: string | null
+          // created_at?: string | null
+          // full_name?: string | null
+          // id?: string
+          // skin_type?: string | null
+        // }
+        // Relationships: []
+      // }
       user_routines: {
         Row: {
           created_at: string
