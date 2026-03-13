@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { ChevronDown, Bell } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
+import { useNotifications } from '@/hooks/useNotifications'
 
 // interface MobileHeaderProps {
   // onMoodClick: () => void
@@ -10,6 +11,7 @@ import { useAuth } from '@/hooks/useAuth'
 
 export function MobileHeader() {
   const { isLoggedIn, userName } = useAuth()
+  const { unreadCount } = useNotifications()
 
   const displayName =
     isLoggedIn && userName ? userName.split(' ')[0] : 'Skin lover'
@@ -45,9 +47,9 @@ export function MobileHeader() {
         </div>
 
         {/* CENTRO — SAUDAÇÃO */}
-        <div className="flex-1 flex flex-col items-center justify-center text-center ml-6">
+        <div className="flex-1 flex flex-col items-start justify-center text-center ml-6">
           <span className="font-medium text-gray-500 text-[16px] tracking-wide leading-none mt-1">
-            Olá{displayName ? `, ${displayName}` : ''}
+            Olá{displayName ? `, ${displayName}` : ''}!
           </span>
 
           <button className="flex items-center gap-1 text-[#6f957a] mt-1 active:scale-95 transition-transform">
@@ -67,16 +69,18 @@ export function MobileHeader() {
           <button className="relative text-[#4f7c60] active:scale-95 transition-transform">
             <Bell className="w-[26px] h-[26px]" strokeWidth={2.2} />
 
-            <span
-              className="
-                absolute top-0 right-0
-                block h-3 w-3
-                rounded-full
-                bg-[#7eba6b]
-                border-[1.5px] border-white
-                shadow-sm
-              "
-            />
+            {unreadCount > 0 && (
+              <span
+                className="
+                  absolute top-0 right-0
+                  block h-3 w-3
+                  rounded-full
+                  bg-[#7eba6b]
+                  border-[1.5px] border-white
+                  shadow-sm
+                "
+              />
+            )}
           </button>
         </div>
 

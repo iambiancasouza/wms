@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { X, Menu, LogOut } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
-import { Notifications } from '@/components/layout/Notifications'
+// import { Notifications } from '@/components/layout/Notifications'
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -150,7 +150,7 @@ export function Navbar() {
                     {userName}!
                   </span>
                 </span>
-                <Notifications />
+                {/* <Notifications /> */}
                 <Button
                   variant="ghost"
                   size="sm"
@@ -164,7 +164,7 @@ export function Navbar() {
             )}
             {/* Mobile menu toggle - visible only on mobile (md:hidden) */}
             <div className="md:hidden flex gap-0.5 items-center">
-              {isAuthenticated && <Notifications />}
+              isAuthenticated && 
               <button
                 className="p-1"
                 onClick={toggleMenu}
@@ -176,8 +176,7 @@ export function Navbar() {
                   <Menu className="text-[#3a6b4d]" size={24} />
                 )}
               </button>
-            </div>
-          </div>
+            </div>          </div>
         </div>
       </header>
 

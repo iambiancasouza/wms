@@ -36,7 +36,7 @@ export function useSaveRoutine() {
 
           toast.success('Rotina removida com sucesso!')
         } else {
-          await updateRoutine(routineId, products)
+          await updateRoutine(routineId, products, date)
 
           toast.success('Rotina atualizada com sucesso!')
         }
@@ -48,6 +48,7 @@ export function useSaveRoutine() {
         }
 
         await createRoutine(user.id, period, products, date)
+        
 
         toast.success('Rotina salva com sucesso!')
       }

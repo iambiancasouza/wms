@@ -1,36 +1,6 @@
 import { createClient } from '@/lib/supabase/client'
 import { Product } from '@/types/db'
-import { format } from "date-fns"
-
-const supabase = createClient()
-
-export async function deleteRoutine(routineId: string) {
-
-  const { data, error } = await supabase
-    .from('user_routines')
-    .delete()
-    .eq('id', routineId)
-    .select()
-
-  if (error) throw error
-  if (!data || data.length === 0) throw new Error('RLS_BLOCKED')
-
-  return data
-}
-
-export async function updateRoutine(routineId: string, products: Product[]) {
-
-  const { data, error } = await supabase
-    .from('user_routines')
-    .update({ products })
-    .eq('id', routineId)
-    .select()
-
-  if (error) throw error
-  if (!data || data.length === 0) throw new Error('RLS_BLOCKED')
-
-  return data
-}
+import { openProductsIfClosed } from '@/services/product.service'
 
 export async function createRoutine(
   userId: string,
@@ -38,15 +8,54 @@ export async function createRoutine(
   products: Product[],
   date: Date
 ) {
+  const supabase = createClient()
+
+  const routineDate = date.toISOString().split('T')[0]
 
   const { error } = await supabase
     .from('user_routines')
     .insert({
       user_id: userId,
       period,
-      products,
-      routine_date: format(date, "yyyy-MM-dd")
+      routine_date: routineDate,
+      products
     })
+
+  if (error) throw error
+
+  // abre produtos automaticamente
+  await openProductsIfClosed(products, routineDate)
+}
+
+export async function updateRoutine(
+  routineId: string,
+  products: Product[],
+  date: Date
+) {
+  const supabase = createClient()
+
+  const routineDate = date.toISOString().split('T')[0]
+
+  const { error } = await supabase
+    .from('user_routines')
+    .update({
+      products
+    })
+    .eq('id', routineId)
+
+  if (error) throw error
+
+  // 🔥 também abre produtos ao editar
+  await openProductsIfClosed(products, routineDate)
+}
+
+export async function deleteRoutine(routineId: string) {
+  const supabase = createClient()
+
+  const { error } = await supabase
+    .from('user_routines')
+    .delete()
+    .eq('id', routineId)
 
   if (error) throw error
 }
