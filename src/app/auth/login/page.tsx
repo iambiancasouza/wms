@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader2, Eye, EyeOff, ArrowLeft } from "lucide-react"
-import { toast } from "sonner"
+import { showToast } from "@/providers/ToasterProvider"
 import { StaticLeaves } from "@/components/layout/staticLeaves"
 
 export default function LoginPage() {
@@ -72,7 +72,7 @@ export default function LoginPage() {
       
       <StaticLeaves />
 
-      {/* Cartão Principal (Padronizado com AuthDrawer) */}
+     
       <div className="relative z-10 w-full max-w-[400px] bg-white/30 backdrop-blur-2xl border border-white/60 rounded-[32px] p-6 sm:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.1)] ring-1 ring-inset ring-white/50 animate-in fade-in zoom-in-95 duration-500">
         
         {/* CABEÇALHO (Seta + Textos alinhados sem sobreposição) */}

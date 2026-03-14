@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader2, Eye, EyeOff, ArrowLeft } from "lucide-react"
-import { toast } from "sonner"
+import { showToast } from "@/providers/ToasterProvider"
 import { StaticLeaves } from "@/components/layout/staticLeaves"
 
 export default function SignUpPage() {
