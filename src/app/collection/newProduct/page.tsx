@@ -17,7 +17,7 @@ import {
   Sun,
   Moon
 } from 'lucide-react'
-import { toast } from 'sonner'
+import { showToast } from '@/providers/ToasterProvider'
 import { StaticLeaves } from '@/components/layout/staticLeaves'
 import { Product } from '@/types/db'
 
@@ -123,12 +123,12 @@ export default function NewProductPage() {
 
       if (error) throw error
 
-      toast.success('Produto salvo!')
+      showToast.success('Produto salvo!')
       router.push('/collection/products')
       router.refresh()
     } catch (error) {
       console.error(error)
-      toast.error('Erro ao salvar')
+      showToast.error('Erro ao salvar')
     } finally {
       setIsLoading(false)
     }

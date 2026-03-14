@@ -1,5 +1,3 @@
-// src/components/collection/ProductCard.tsx
-
 import Image from 'next/image'
 import { Sparkles, Package, Heart, Calendar, Edit2, Trash2 } from 'lucide-react'
 import { Product } from '@/types/db'
@@ -30,7 +28,6 @@ export function ProductCard({
   onDelete: (p: Product) => void
 }) {
 
-  /* ---------- Normalizações seguras ---------- */
 
   const quantity = product.quantity ?? 1
   const brand = product.brand ?? ''

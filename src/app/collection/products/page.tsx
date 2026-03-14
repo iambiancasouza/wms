@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Package, Plus, ArrowUp } from 'lucide-react'
-import { toast } from 'sonner'
+import { showToast } from '@/providers/ToasterProvider'
 import { Product } from '@/types/db'
 
 import { EditProductModal } from '@/components/collection/modals/EditProductModal'
@@ -56,7 +56,7 @@ export default function ProductsPage() {
       setProducts(data ?? [])
     } catch (error) {
       console.error(error)
-      toast.error('Erro ao carregar coleção')
+      showToast.error('Erro ao carregar coleção')
     } finally {
       setIsLoading(false)
     }
@@ -136,7 +136,7 @@ export default function ProductsPage() {
           )
         )
 
-        toast.success(
+        showToast.success(
           `1 unidade finalizada. ${durationMsg || 'Estoque atualizado.'}`
         )
       } else {
@@ -150,11 +150,11 @@ export default function ProductsPage() {
 
         setProducts(current => current.filter(p => p.id !== product.id))
 
-        toast.success(`Produto finalizado! ${durationMsg}`)
+        showToast.success(`Produto finalizado! ${durationMsg}`)
       }
     } catch (error) {
       console.error(error)
-      toast.error('Erro ao processar')
+      showToast.error('Erro ao processar')
     } finally {
       setDeletingProduct(null)
     }
@@ -179,8 +179,8 @@ export default function ProductsPage() {
       if (error) throw error
 
       newStatus
-        ? toast.success('Adicionado aos favoritos 💚')
-        : toast.info('Removido dos favoritos')
+        ? showToast.success('Adicionado aos favoritos 💚')
+        : showToast.default('Removido dos favoritos')
     } catch {
       setProducts(current =>
         current.map(p =>
@@ -188,7 +188,7 @@ export default function ProductsPage() {
         )
       )
 
-      toast.error('Erro ao atualizar favorito')
+      showToast.error('Erro ao atualizar favorito')
     }
   }
 

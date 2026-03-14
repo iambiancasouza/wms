@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Product } from '@/types/db'
-import { toast } from 'sonner'
+import { showToast } from '@/providers/ToasterProvider'
 
 import {
   deleteRoutine,
@@ -34,15 +34,15 @@ export function useSaveRoutine() {
         if (products.length === 0) {
           await deleteRoutine(routineId)
 
-          toast.success('Rotina removida com sucesso!')
+          showToast.success('Rotina removida com sucesso!')
         } else {
           await updateRoutine(routineId, products, date)
 
-          toast.success('Rotina atualizada com sucesso!')
+          showToast.success('Rotina atualizada com sucesso!')
         }
       } else {
         if (products.length === 0) {
-          toast.error('Adicione pelo menos um produto para salvar.')
+          showToast.error('Adicione pelo menos um produto para salvar.')
           setIsSaving(false)
           return
         }
@@ -50,7 +50,7 @@ export function useSaveRoutine() {
         await createRoutine(user.id, period, products, date)
         
 
-        toast.success('Rotina salva com sucesso!')
+        showToast.success('Rotina salva com sucesso!')
       }
 
       if (onSuccess) onSuccess()
@@ -59,9 +59,9 @@ export function useSaveRoutine() {
       console.log('Erro JSON:', JSON.stringify(error, null, 2))
 
       if (error instanceof Error && error.message === 'RLS_BLOCKED') {
-        toast.error('Erro no Supabase: Ação bloqueada pelas políticas de RLS!')
+        showToast.error('Erro no Supabase: Ação bloqueada pelas políticas de RLS!')
       } else {
-        toast.error('Ocorreu um erro ao processar sua rotina.')
+        showToast.error('Ocorreu um erro ao processar sua rotina.')
       }
     } finally {
       setIsSaving(false)

@@ -36,7 +36,7 @@ export default function LoginPage() {
       if (error) throw error
     } catch (error) {
       console.error("Erro Google:", error)
-      toast.error("Erro ao iniciar login com Google")
+      showToast.error("Erro ao iniciar login com Google")
       setIsGoogleLoading(false)
     }
   }
@@ -52,16 +52,16 @@ export default function LoginPage() {
       })
 
       if (error) {
-        toast.error("Email ou palavra-passe incorretos")
+        showToast.error("Email ou palavra-passe incorretos")
         return
       }
 
-      toast.success("Login realizado com sucesso!")
+      showToast.success("Login realizado com sucesso!")
       router.push("/") 
       router.refresh()
       
     } catch {
-      toast.error("Ocorreu um erro ao fazer login")
+      showToast.error("Ocorreu um erro ao fazer login")
     } finally {
       setIsLoading(false)
     }

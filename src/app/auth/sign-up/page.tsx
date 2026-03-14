@@ -37,7 +37,7 @@ export default function SignUpPage() {
       if (error) throw error
     } catch (error) {
       console.error("Erro Google:", error)
-      toast.error("Erro ao iniciar login com Google")
+      showToast.error("Erro ao iniciar login com Google")
       setIsGoogleLoading(false)
     }
   }
@@ -62,7 +62,7 @@ export default function SignUpPage() {
       router.push("/")
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      toast.error(error.message || "Erro ao criar conta")
+      showToast.error(error.message || "Erro ao criar conta")
     } finally {
       setIsLoading(false)
     }

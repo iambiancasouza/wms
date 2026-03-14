@@ -14,7 +14,7 @@ import {
   Moon,
   Calendar
 } from 'lucide-react'
-import { toast } from 'sonner'
+import { showToast } from '@/providers/ToasterProvider'
 import { Product } from '@/types/db'
 
 const Category = [
@@ -129,11 +129,11 @@ export function EditProductModal({
         .eq('id', product.id)
 
       if (error) throw error
-      toast.success('Produto atualizado!')
+      showToast.success('Produto atualizado!')
       onUpdate()
       onClose()
     } catch (error) {
-      toast.error('Erro ao atualizar')
+      showToast.error('Erro ao atualizar')
       console.log(error)
     } finally {
       setIsLoading(false)
