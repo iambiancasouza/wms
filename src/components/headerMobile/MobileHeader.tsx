@@ -38,7 +38,7 @@ export function MobileHeader() {
               alt="WMS logo"
               fill
               priority
-              className="object-contain scale-[4] origin-center"
+              className="object-contain scale-[3.8] origin-center"
             />
           </div>
         </div>
