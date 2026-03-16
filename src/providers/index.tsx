@@ -1,7 +1,8 @@
 'use client'
 
-import { ToasterProvider } from './ToasterProvider'
- 
+import { AuthProvider } from '@/providers/UserAuthProvider'
+import { OnboardingProvider } from '@/providers/OnboardingProvider'
+import { ToasterProvider } from '@/providers/ToasterProvider'
 
 interface GlobalProvidersProps {
   children: React.ReactNode
@@ -9,11 +10,11 @@ interface GlobalProvidersProps {
 
 export function GlobalProviders({ children }: GlobalProvidersProps) {
   return (
-    <>
-    {/* authprovider */}
-      {children}
-      
-      <ToasterProvider />
-    </>
+    <AuthProvider>
+      <OnboardingProvider>
+        {children}
+        <ToasterProvider />
+      </OnboardingProvider>
+    </AuthProvider>
   )
 }

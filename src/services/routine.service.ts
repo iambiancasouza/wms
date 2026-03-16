@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/client'
 import { Product } from '@/types/db'
 import { openProductsIfClosed } from '@/services/product.service'
+import { format } from 'date-fns'
 
 export async function createRoutine(
   userId: string,
@@ -10,7 +11,7 @@ export async function createRoutine(
 ) {
   const supabase = createClient()
 
-  const routineDate = date.toISOString().split('T')[0]
+  const routineDate = format(date, 'yyyy-MM-dd')
 
   const { error } = await supabase
     .from('user_routines')
@@ -23,7 +24,6 @@ export async function createRoutine(
 
   if (error) throw error
 
-  // abre produtos automaticamente
   await openProductsIfClosed(products, routineDate)
 }
 
@@ -34,7 +34,7 @@ export async function updateRoutine(
 ) {
   const supabase = createClient()
 
-  const routineDate = date.toISOString().split('T')[0]
+  const routineDate = format(date, 'yyyy-MM-dd')
 
   const { error } = await supabase
     .from('user_routines')
@@ -45,7 +45,6 @@ export async function updateRoutine(
 
   if (error) throw error
 
-  // 🔥 também abre produtos ao editar
   await openProductsIfClosed(products, routineDate)
 }
 

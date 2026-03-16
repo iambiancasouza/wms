@@ -2,12 +2,9 @@
 
 import Image from 'next/image'
 import { ChevronDown, Bell } from 'lucide-react'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/providers/UserAuthProvider'
 import { useNotifications } from '@/hooks/useNotifications'
 
-// interface MobileHeaderProps {
-  // onMoodClick: () => void
-// }
 
 export function MobileHeader() {
   const { isLoggedIn, userName } = useAuth()

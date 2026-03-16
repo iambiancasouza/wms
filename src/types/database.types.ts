@@ -176,30 +176,66 @@ export type Database = {
         }
         Relationships: []
       }
-      // profiles: {
-        // Row: {
-          // avatar_url: string | null
-          // created_at: string | null
-          // full_name: string | null
-          // id: string
-          // skin_type: string | null
-        // }
-        // Insert: {
-          // avatar_url?: string | null
-          // created_at?: string | null
-          // full_name?: string | null
-          // id: string
-          // skin_type?: string | null
-        // }
-        // Update: {
-          // avatar_url?: string | null
-          // created_at?: string | null
-          // full_name?: string | null
-          // id?: string
-          // skin_type?: string | null
-        // }
-        // Relationships: []
-      // }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          birth_date: Date | string | null
+          concerns: string[] | null
+          created_at: string | null
+          full_name: string | null
+          goal: string | null
+          id: string
+          onboarding_completed: boolean | null
+          skin_type: string[] | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          birth_date?: string | null
+          concerns?: string[] | null
+          created_at?: string | null
+          full_name?: string | null
+          goal?: string | null
+          id: string
+          onboarding_completed?: boolean | null
+          skin_type?: string[] | null
+        }
+        Update: {
+          avatar_url?: string | null
+          birth_date?: string | null
+          concerns?: string[] | null
+          created_at?: string | null
+          full_name?: string | null
+          goal?: string | null
+          id?: string
+          onboarding_completed?: boolean | null
+          skin_type?: string[] | null
+        }
+        Relationships: []
+      }
+      skin_moods: {
+        Row: {
+          created_at: string | null
+          id: string
+          moods: string[] | null
+          notes: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          moods?: string[] | null
+          notes?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          moods?: string[] | null
+          notes?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_routines: {
         Row: {
           created_at: string

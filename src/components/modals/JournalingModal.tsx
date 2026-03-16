@@ -26,6 +26,7 @@ const Categories = [
   { id: 'protecao', label: 'Proteção' },
   { id: 'olhos', label: 'Área dos Olhos' },
   { id: 'tratamento', label: 'Tratamento' },
+  { id: 'beauty_tech', label: 'Dispositivo' },
   { id: 'outros', label: 'Outros' }
 ]
 

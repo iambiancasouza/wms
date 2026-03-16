@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { MobileHeader } from '@/components/headerMobile/MobileHeader' 
+import { MobileHeader } from '@/components/headerMobile/MobileHeader'
 
 import { Hero } from '@/components/home/Hero'
 import { RoutineDashboard } from '@/components/home/RoutineDashboard'
-import { JournalingModal } from '@/components/collection/modals/JournalingModal'
-import { RoutineHistoryModal } from '@/components/collection/modals/RoutineHistoryModal'
+import { JournalingModal } from '@/components/modals/JournalingModal'
+import { RoutineHistoryModal } from '@/components/modals/RoutineHistoryModal'
 import { useHomeData } from '@/hooks/useHomeData'
 import { Product } from '@/types/db'
 import { format } from 'date-fns'

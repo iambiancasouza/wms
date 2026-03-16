@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { FallingLeaves } from '@/components/layout/fallingLeaves'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/providers/UserAuthProvider'
 
 export function Hero() {
   const router = useRouter()

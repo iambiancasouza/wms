@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, Poppins } from 'next/font/google'
 import './globals.css'
 import ClientLayout from '@/components/layout/ClientLayout'
-import { BottomNavbar } from '@/components/layout/BottomNavbar'
 
 const inter = Inter({ subsets: ['latin'] })
 const poppins = Poppins({
@@ -17,6 +16,7 @@ export const metadata: Metadata = {
   description: 'Sua rotina de skincare merece esse cuidado a mais.',
   manifest: '/manifest.json',
   icons: {
+    // icon: '/icons/wms_logo.png',
     apple: '/icons/apple-touch-icon.png'
   },
   appleWebApp: {
@@ -41,15 +41,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="pt-BR" >
+    <html lang="pt-BR">
       <body
         className={`${inter.className} ${poppins.variable} antialiased w-full bg-[#f0f5ed]  padding-top: env(safe-area-inset-top)`}
       >
         <ClientLayout>
           <div className="w-full flex flex-col">{children}</div>
         </ClientLayout>
-
-        <BottomNavbar />
       </body>
     </html>
   )

@@ -9,8 +9,8 @@ import { Package, Plus, ArrowUp } from 'lucide-react'
 import { showToast } from '@/providers/ToasterProvider'
 import { Product } from '@/types/db'
 
-import { EditProductModal } from '@/components/collection/modals/EditProductModal'
-import { DeleteConfirmModal } from '@/components/collection/modals/DeleteConfirmModal'
+import { EditProductModal } from '@/components/modals/EditProductModal'
+import { DeleteConfirmModal } from '@/components/modals/DeleteConfirmModal'
 import { ProductCard } from '@/components/collection/ProductCard'
 
 export default function ProductsPage() {
@@ -28,7 +28,6 @@ export default function ProductsPage() {
 
   const [showScrollTop, setShowScrollTop] = useState(false)
 
-
   useEffect(() => {
     const handleScroll = () => setShowScrollTop(window.scrollY > 300)
 
@@ -40,7 +39,6 @@ export default function ProductsPage() {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
-
 
   const fetchProducts = useCallback(async () => {
     try {
@@ -65,7 +63,6 @@ export default function ProductsPage() {
   useEffect(() => {
     fetchProducts()
   }, [fetchProducts])
-
 
   const confirmDelete = async () => {
     const product = deletingProduct
@@ -106,7 +103,6 @@ export default function ProductsPage() {
 
       const currentQty = product.quantity ?? 1
 
-
       if (currentQty > 1) {
         const newQty = currentQty - 1
 
@@ -140,7 +136,6 @@ export default function ProductsPage() {
           `1 unidade finalizada. ${durationMsg || 'Estoque atualizado.'}`
         )
       } else {
-
         const { error } = await supabase
           .from('products')
           .delete()
@@ -159,7 +154,6 @@ export default function ProductsPage() {
       setDeletingProduct(null)
     }
   }
-
 
   const toggleFavorite = async (product: Product) => {
     const newStatus = !product.is_favorite
@@ -203,10 +197,8 @@ export default function ProductsPage() {
     return matchesQuery && matchesCategory
   })
 
-
   return (
     <div className="container mx-auto px-4 pb-20 mt-4">
-
       {editingProduct && (
         <EditProductModal
           product={editingProduct}
@@ -223,7 +215,6 @@ export default function ProductsPage() {
         />
       )}
 
-
       {isLoading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 justify-items-center">
           {[1, 2, 3, 4, 5, 6].map(i => (
@@ -234,7 +225,6 @@ export default function ProductsPage() {
           ))}
         </div>
       ) : filteredProducts.length === 0 ? (
-
         <div className="flex flex-col items-center justify-center py-16 text-center animate-in zoom-in duration-300">
           <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm">
             <Package className="w-8 h-8 text-gray-300" />
@@ -257,8 +247,6 @@ export default function ProductsPage() {
           </Link>
         </div>
       ) : (
-        
-
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 animate-in fade-in duration-500">
           {filteredProducts.map(product => (
             <ProductCard
@@ -283,7 +271,6 @@ export default function ProductsPage() {
           </Link>
         </div>
       )}
-
 
       <button
         onClick={scrollToTop}

@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Leaf, Heart, Calendar, LayoutGrid, User } from 'lucide-react'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/providers/UserAuthProvider'
 import { AuthDrawer } from '@/components/auth/AuthDrawer'
 
 const navItems = [

@@ -22,7 +22,7 @@ export function Navbar() {
     const getUserName = (user: any) => {
       if (!user) return null
       if (user.user_metadata?.full_name) {
-        return user.user_metadata.full_name.split(' ')[0] 
+        return user.user_metadata.full_name.split(' ')[0]
       }
       return user.email?.split('@')[0]
     }
@@ -164,7 +164,7 @@ export function Navbar() {
             )}
             {/* Mobile menu toggle - visible only on mobile (md:hidden) */}
             <div className="md:hidden flex gap-0.5 items-center">
-              isAuthenticated && 
+              isAuthenticated &&
               <button
                 className="p-1"
                 onClick={toggleMenu}
@@ -176,7 +176,8 @@ export function Navbar() {
                   <Menu className="text-[#3a6b4d]" size={24} />
                 )}
               </button>
-            </div>          </div>
+            </div>{' '}
+          </div>
         </div>
       </header>
 
