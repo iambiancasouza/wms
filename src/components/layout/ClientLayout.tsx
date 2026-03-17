@@ -26,16 +26,12 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         }, 10000)
 
         return () => clearTimeout(onboardingTimeout)
-      } else if (!profile) {
-        console.error(
-          "🚨 ALERTA: Usuário logado, mas NÃO existe na tabela 'profiles'!"
-        )
       }
     }
   }, [profile, isLoading, isLoggedIn, openOnboarding])
 
   return (
-    <div className="relative min-h-[100dvh] w-full pb-4 overflow-x-hidden flex flex-col">
+    <div className="relative min-h-[100dvh] w-full pb-24 md:pb-6 overflow-x-hidden flex flex-col">
       <Navbar />
 
       <main className="relative flex-1 w-full">

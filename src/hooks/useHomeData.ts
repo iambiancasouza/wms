@@ -4,7 +4,8 @@ import { Product, Routine } from '@/types/db'
 import { getUserRoutines, getActiveProducts } from '@/services/home.service'
 
 export function useHomeData() {
-  const supabase = createClient()
+  const [supabase] = useState(() => createClient())
+
 
   const [routines, setRoutines] = useState<Routine[]>([])
   const [completedDates, setCompletedDates] = useState<Date[]>([])

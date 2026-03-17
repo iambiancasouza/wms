@@ -14,7 +14,8 @@ import { DeleteConfirmModal } from '@/components/modals/DeleteConfirmModal'
 import { ProductCard } from '@/components/collection/ProductCard'
 
 export default function ProductsPage() {
-  const supabase = createClient()
+  const [supabase] = useState(() => createClient()) 
+  
   const searchParams = useSearchParams()
 
   const query = searchParams.get('q') || ''
@@ -30,9 +31,7 @@ export default function ProductsPage() {
 
   useEffect(() => {
     const handleScroll = () => setShowScrollTop(window.scrollY > 300)
-
     window.addEventListener('scroll', handleScroll)
-
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -80,11 +79,8 @@ export default function ProductsPage() {
 
         if (product.opened_at) {
           const start = new Date(product.opened_at)
-
           const diffTime = Math.abs(Date.now() - start.getTime())
-
           diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
           durationMsg = `Duração: ${diffDays} dias.`
         }
 
@@ -144,7 +140,6 @@ export default function ProductsPage() {
         if (error) throw error
 
         setProducts(current => current.filter(p => p.id !== product.id))
-
         showToast.success(`Produto finalizado! ${durationMsg}`)
       }
     } catch (error) {
@@ -181,7 +176,6 @@ export default function ProductsPage() {
           p.id === product.id ? { ...p, is_favorite: !newStatus } : p
         )
       )
-
       showToast.error('Erro ao atualizar favorito')
     }
   }
@@ -274,7 +268,7 @@ export default function ProductsPage() {
 
       <button
         onClick={scrollToTop}
-        className={`fixed bottom-16 right-8 z-20 p-3 rounded-full shadow-xl bg-[#8ec5a0] text-white hover:bg-[#5a9e74]/10 hover:scale-110 transition-all duration-300 border border-white/20 ${
+        className={`fixed bottom-[68] right-8 z-20 p-3 rounded-full shadow-xl bg-[#8ec5a0] text-white hover:bg-[#5a9e74]/10 hover:scale-110 transition-all duration-300 border border-white/20 ${
           showScrollTop
             ? 'opacity-100 translate-y-0'
             : 'opacity-0 translate-y-10 pointer-events-none'

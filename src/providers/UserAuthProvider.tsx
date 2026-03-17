@@ -1,10 +1,16 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState, useCallback, useMemo, ReactNode } from 'react'
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  ReactNode
+} from 'react'
 import { User } from '@supabase/supabase-js'
-import { getSession } from '@/services/auth.service'
 import { createClient } from '@/lib/supabase/client'
-import type { Database } from '@/types/database.types' 
+import type { Database } from '@/types/database.types'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 
@@ -24,57 +30,93 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  const supabase = useMemo(() => createClient(), [])
+  const [supabase] = useState(() => createClient())
 
-  const fetchProfile = useCallback(async (userId: string) => {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
+  const fetchProfile = useCallback(
+    async (userId: string) => {
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', userId)
+          .single()
 
-    if (!error && data) {
-      setProfile(data as Profile)
-    }
-  }, [supabase])
+        if (!error && data) {
+          setProfile(data as Profile)
+        }
+      } catch (error) {
+        console.error('Erro ao buscar perfil:', error)
+      }
+    },
+    [supabase]
+  )
 
-  const handleAuthStateChange = useCallback(async (sessionUser: User | null) => {
-    if (sessionUser) {
-      setUser(sessionUser)
-      await fetchProfile(sessionUser.id)
-    } else {
-      setUser(null)
-      setProfile(null)
-    }
-    setIsLoading(false)
-  }, [fetchProfile])
+  const handleAuthStateChange = useCallback(
+    async (sessionUser: User | null) => {
+      if (sessionUser) {
+        setUser(sessionUser)
+
+        setIsLoading(false)
+
+        await fetchProfile(sessionUser.id)
+      } else {
+        setUser(null)
+        setProfile(null)
+        setIsLoading(false)
+      }
+    },
+    [fetchProfile]
+  )
 
   useEffect(() => {
+    let mounted = true
+
     const initializeAuth = async () => {
-      const session = await getSession()
-      await handleAuthStateChange(session?.user ?? null)
+      try {
+        const {
+          data: { session },
+          error
+        } = await supabase.auth.getSession()
+        if (mounted && !error) {
+          await handleAuthStateChange(session?.user ?? null)
+        } else if (error) {
+          setIsLoading(false)
+        }
+      } catch {
+        if (mounted) setIsLoading(false)
+      }
     }
 
     initializeAuth()
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      await handleAuthStateChange(session?.user ?? null)
+    const {
+      data: { subscription }
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (mounted) {
+        await handleAuthStateChange(session?.user ?? null)
+      }
     })
 
-    return () => subscription.unsubscribe()
+    return () => {
+      mounted = false
+      subscription.unsubscribe()
+    }
   }, [handleAuthStateChange, supabase])
 
-  const userName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Visitante'
+  const userName =
+    user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Visitante'
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      profile,
-      isLoggedIn: !!user,
-      isLoading,
-      userName,
-      refreshProfile: () => user ? fetchProfile(user.id) : Promise.resolve()
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        profile,
+        isLoggedIn: !!user,
+        isLoading,
+        userName,
+        refreshProfile: () => (user ? fetchProfile(user.id) : Promise.resolve())
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )
