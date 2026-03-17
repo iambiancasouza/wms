@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react' // 1. Importe o Suspense
 import { usePathname } from 'next/navigation'
 import { StaticLeaves } from '@/components/layout/staticLeaves'
 import { Navbar } from '@/components/layout/navbar'
@@ -36,19 +36,22 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
       <main className="relative flex-1 w-full">
         {!isHome && <StaticLeaves />}
-        {children}
+
+        <Suspense fallback={null}>{children}</Suspense>
       </main>
 
       <OnboardingModal isOpen={isOpen} onCloseAction={closeOnboarding} />
-
       <BottomNavbar />
     </div>
   )
 }
 
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
+export default function ClientLayout({
+  children
+}: {
+  children: React.ReactNode
+}) {
   return (
-   
     <GlobalProviders>
       <AuthProvider>
         <LayoutContent>{children}</LayoutContent>
