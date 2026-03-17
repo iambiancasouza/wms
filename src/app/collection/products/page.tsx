@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { useAuth } from '@/providers/UserAuthProvider'
 import { Button } from '@/components/ui/button'
-import { Package, Plus, ArrowUp } from 'lucide-react'
+import { Package, Plus, ArrowUp, Loader2 } from 'lucide-react'
 import { showToast } from '@/providers/ToasterProvider'
 import { Product } from '@/types/db'
 
@@ -13,7 +13,7 @@ import { EditProductModal } from '@/components/modals/EditProductModal'
 import { DeleteConfirmModal } from '@/components/modals/DeleteConfirmModal'
 import { ProductCard } from '@/components/collection/ProductCard'
 
-export default function ProductsPage() {
+function ProductsContent() {
   const { supabase } = useAuth()
 
   const searchParams = useSearchParams()
@@ -280,5 +280,19 @@ export default function ProductsPage() {
         <ArrowUp className="w-6 h-6" />
       </button>
     </div>
+  )
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center min-h-[50vh]">
+          <Loader2 className="w-8 h-8 animate-spin text-[#3a6b4d]" />
+        </div>
+      }
+    >
+      <ProductsContent />
+    </Suspense>
   )
 }

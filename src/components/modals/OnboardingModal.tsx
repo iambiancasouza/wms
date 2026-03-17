@@ -126,7 +126,7 @@ export default function OnboardingModal({ isOpen, onCloseAction }: Props) {
 
           <div className="relative z-10 w-full min-h-full p-4 md:p-6 py-6 md:py-10 flex items-center justify-center">
             
-            <div className="w-full max-w-2xl mx-auto bg-white/60 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[40px] p-6 md:p-8 flex flex-col h-fit relative">
+            <div className="w-full max-w-2xl mx-auto bg-white/60 backdrop-blur-md border border-white/80 shadow-md rounded-[40px] p-6 md:p-8 flex flex-col h-fit relative">
               
               {step < 3 && !isSaving && (
                 <button
@@ -263,7 +263,6 @@ export default function OnboardingModal({ isOpen, onCloseAction }: Props) {
                 {step < 3 && (
                   <div className="pt-8 w-full border-t border-white/50 mt-6">
                     {step === 0 && (
-                      // FORÇANDO FLEX-ROW: Botões lado a lado idênticos à referência (image_b979f9.png)
                       <div className="flex flex-row items-center justify-between gap-3 w-full">
                         <button
                           onClick={onCloseAction}

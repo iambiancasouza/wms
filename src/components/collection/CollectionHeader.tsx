@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Search, ChevronDown, X, ArrowLeft, Plus } from 'lucide-react'
@@ -20,7 +20,7 @@ const Category = [
   { id: 'beauty_tech', label: 'Dispositivo', icon: '⚡' }
 ]
 
-export function CollectionHeader() {
+function CollectionHeaderContent() {
   const pathname = usePathname()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -31,7 +31,6 @@ export function CollectionHeader() {
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false)
   const currentCategory = searchParams.get('category') || 'all'
   
-  // Não mostra o header na tela de Novo Produto
   if (pathname.includes('/collection/newProduct')) return null
 
   const handleSearch = (term: string) => {
@@ -50,7 +49,6 @@ export function CollectionHeader() {
 
   return (
     <div className="pt-6 pb-6 w-full z-10">
-      {/* Título e Busca */}
       <div className="container mx-auto px-4 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3 self-start md:self-auto">
           <Link href="/">
@@ -82,7 +80,6 @@ export function CollectionHeader() {
         </div>
       </div>
 
-      {/* Tabs (Produtos / Procedimentos) */}
       <div className="container mx-auto px-4">
         <div className="w-full bg-[#3a6b4d]/5 backdrop-blur-md p-1 rounded-2xl flex shadow-sm border border-[#3a6b4d]/10 relative z-20">
           <button
@@ -117,7 +114,6 @@ export function CollectionHeader() {
         </div>
       </div>
 
-      {/* Modal de Categorias */}
       {isCategoryMenuOpen && isProducts && (
         <div className="fixed inset-0 z-[100] flex justify-end md:justify-center items-end md:items-center">
           <div
@@ -159,5 +155,13 @@ export function CollectionHeader() {
         </div>
       )}
     </div>
+  )
+}
+
+export function CollectionHeader() {
+  return (
+    <Suspense fallback={<div className="h-[120px] w-full" />}>
+      <CollectionHeaderContent />
+    </Suspense>
   )
 }
