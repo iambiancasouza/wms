@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { useAuth } from '@/providers/UserAuthProvider'
 import { Button } from '@/components/ui/button'
 import { Package, Plus, ArrowUp } from 'lucide-react'
 import { showToast } from '@/providers/ToasterProvider'
@@ -13,9 +13,9 @@ import { EditProductModal } from '@/components/modals/EditProductModal'
 import { DeleteConfirmModal } from '@/components/modals/DeleteConfirmModal'
 import { ProductCard } from '@/components/collection/ProductCard'
 
-export default function ProductsPage() {
-  const [supabase] = useState(() => createClient()) 
-  
+// 1. Mudamos o nome da função principal e removemos o "export default" dela
+function ProductsContent() {
+  const { supabase } = useAuth()
   const searchParams = useSearchParams()
 
   const query = searchParams.get('q') || ''
@@ -71,12 +71,10 @@ export default function ProductsPage() {
       const {
         data: { user }
       } = await supabase.auth.getUser()
-
       let durationMsg = ''
 
       if (user) {
         let diffDays = 0
-
         if (product.opened_at) {
           const start = new Date(product.opened_at)
           const diffTime = Math.abs(Date.now() - start.getTime())
@@ -101,7 +99,6 @@ export default function ProductsPage() {
 
       if (currentQty > 1) {
         const newQty = currentQty - 1
-
         const { error } = await supabase
           .from('products')
           .update({
@@ -127,7 +124,6 @@ export default function ProductsPage() {
               : p
           )
         )
-
         showToast.success(
           `1 unidade finalizada. ${durationMsg || 'Estoque atualizado.'}`
         )
@@ -136,7 +132,6 @@ export default function ProductsPage() {
           .from('products')
           .delete()
           .eq('id', product.id)
-
         if (error) throw error
 
         setProducts(current => current.filter(p => p.id !== product.id))
@@ -152,7 +147,6 @@ export default function ProductsPage() {
 
   const toggleFavorite = async (product: Product) => {
     const newStatus = !product.is_favorite
-
     setProducts(current =>
       current.map(p =>
         p.id === product.id ? { ...p, is_favorite: newStatus } : p
@@ -164,12 +158,13 @@ export default function ProductsPage() {
         .from('products')
         .update({ is_favorite: newStatus })
         .eq('id', product.id)
-
       if (error) throw error
 
-      newStatus
-        ? showToast.success('Adicionado aos favoritos 💚')
-        : showToast.default('Removido dos favoritos')
+      if (newStatus) {
+        showToast.success('Adicionado aos favoritos 💚')
+      } else {
+        showToast.default('Removido dos favoritos')
+      }
     } catch {
       setProducts(current =>
         current.map(p =>
@@ -184,10 +179,8 @@ export default function ProductsPage() {
     const matchesQuery =
       product.name.toLowerCase().includes(query.toLowerCase()) ||
       (product.brand ?? '').toLowerCase().includes(query.toLowerCase())
-
     const matchesCategory =
       selectedCategory === 'all' || product.category === selectedCategory
-
     return matchesQuery && matchesCategory
   })
 
@@ -223,17 +216,14 @@ export default function ProductsPage() {
           <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm">
             <Package className="w-8 h-8 text-gray-300" />
           </div>
-
           <h3 className="text-lg font-bold text-gray-600">
             Nenhum produto encontrado
           </h3>
-
           <p className="text-sm text-gray-400 mb-6">
             {selectedCategory === 'all'
               ? 'Comece adicionando itens à sua coleção.'
               : 'Não há itens nesta categoria.'}
           </p>
-
           <Link href="/collection/newProduct">
             <Button className="bg-[#3a6b4d] hover:bg-[#2a4f3a] text-white rounded-full px-8">
               Adicionar Novo
@@ -257,7 +247,6 @@ export default function ProductsPage() {
               <div className="h-12 w-12 rounded-full bg-gray-200 group-hover:bg-[#3a6b4d]/10 flex items-center justify-center transition-colors">
                 <Plus className="h-6 w-6 text-gray-400 group-hover:text-[#3a6b4d]" />
               </div>
-
               <span className="text-xs font-bold text-gray-400 group-hover:text-[#3a6b4d] uppercase tracking-wide">
                 Adicionar
               </span>
@@ -268,15 +257,29 @@ export default function ProductsPage() {
 
       <button
         onClick={scrollToTop}
-        className={`fixed bottom-[68] right-8 z-20 p-3 rounded-full shadow-xl bg-[#8ec5a0] text-white hover:bg-[#5a9e74]/10 hover:scale-110 transition-all duration-300 border border-white/20 ${
-          showScrollTop
-            ? 'opacity-100 translate-y-0'
-            : 'opacity-0 translate-y-10 pointer-events-none'
-        }`}
+        className={`fixed bottom-[68px] right-8 z-20 p-3 rounded-full shadow-xl bg-[#8ec5a0] text-white hover:bg-[#5a9e74]/10 hover:scale-110 transition-all duration-300 border border-white/20 ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
         title="Voltar ao topo"
       >
         <ArrowUp className="w-6 h-6" />
       </button>
     </div>
+  )
+}
+
+// 🚀 2. ESTA É A NOVA EXPORTAÇÃO PADRÃO: Ela protege a página com Suspense LOCALMENTE!
+export default function ProductsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex flex-col items-center justify-center min-h-[50vh]">
+          <div className="w-10 h-10 border-4 border-[#8ec5a0] border-t-[#3a6b4d] rounded-full animate-spin mb-4" />
+          <p className="text-[#3a6b4d] font-bold animate-pulse">
+            Carregando coleção...
+          </p>
+        </div>
+      }
+    >
+      <ProductsContent />
+    </Suspense>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, Suspense } from 'react'
+import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { StaticLeaves } from '@/components/layout/staticLeaves'
 import { Navbar } from '@/components/layout/navbar'
@@ -31,7 +31,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   }, [profile, isLoading, isLoggedIn, openOnboarding])
 
   return (
-    <div className="relative min-h-[100dvh] w-full pb-24 md:pb-6 overflow-x-hidden flex flex-col">
+    <div className="relative min-h-[100dvh] w-full pb-28 md:pb-6 overflow-x-hidden flex flex-col">
       <Navbar />
 
       <main className="relative flex-1 w-full">
@@ -46,18 +46,13 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   )
 }
 
-export default function ClientLayout({
-  children
-}: {
-  children: React.ReactNode
-}) {
+export default function ClientLayout({ children }: { children: React.ReactNode }) {
   return (
-    <Suspense fallback={null}>
-      <GlobalProviders>
-        <AuthProvider>
-          <LayoutContent>{children}</LayoutContent>
-        </AuthProvider>
-      </GlobalProviders>
-    </Suspense>
+   
+    <GlobalProviders>
+      <AuthProvider>
+        <LayoutContent>{children}</LayoutContent>
+      </AuthProvider>
+    </GlobalProviders>
   )
 }

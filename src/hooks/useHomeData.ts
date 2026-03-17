@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { useAuth } from '@/providers/UserAuthProvider'
 import { Product, Routine } from '@/types/db'
 import { getUserRoutines, getActiveProducts } from '@/services/home.service'
 
 export function useHomeData() {
-  const [supabase] = useState(() => createClient())
-
+  const { supabase } = useAuth()
 
   const [routines, setRoutines] = useState<Routine[]>([])
   const [completedDates, setCompletedDates] = useState<Date[]>([])
@@ -24,10 +23,10 @@ export function useHomeData() {
 
       if (routinesData) {
         setRoutines(routinesData as Routine[])
-        
+
         const dates = routinesData
-          .filter((r) => r.routine_date !== null)
-          .map((r) => {
+          .filter(r => r.routine_date !== null)
+          .map(r => {
             const [year, month, day] = r.routine_date!.split('-').map(Number)
             return new Date(year, month - 1, day)
           })

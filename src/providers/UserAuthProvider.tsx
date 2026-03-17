@@ -1,18 +1,12 @@
 'use client'
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-  ReactNode
-} from 'react'
+import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react'
 import { User } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/client'
 import type { Database } from '@/types/database.types'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
+type SupabaseClientType = ReturnType<typeof createClient>
 
 interface AuthContextData {
   user: User | null
@@ -21,6 +15,7 @@ interface AuthContextData {
   isLoading: boolean
   userName: string
   refreshProfile: () => Promise<void>
+  supabase: SupabaseClientType 
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData)
@@ -32,55 +27,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const [supabase] = useState(() => createClient())
 
-  const fetchProfile = useCallback(
-    async (userId: string) => {
-      try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', userId)
-          .single()
+  const fetchProfile = useCallback(async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
 
-        if (!error && data) {
-          setProfile(data as Profile)
-        }
-      } catch (error) {
-        console.error('Erro ao buscar perfil:', error)
+      if (!error && data) {
+        setProfile(data as Profile)
       }
-    },
-    [supabase]
-  )
+    } catch (error) {
+      console.error("Erro ao buscar perfil:", error)
+    }
+  }, [supabase])
 
-  const handleAuthStateChange = useCallback(
-    async (sessionUser: User | null) => {
-      if (sessionUser) {
-        setUser(sessionUser)
-
-        setIsLoading(false)
-
-        await fetchProfile(sessionUser.id)
-      } else {
-        setUser(null)
-        setProfile(null)
-        setIsLoading(false)
-      }
-    },
-    [fetchProfile]
-  )
+  const handleAuthStateChange = useCallback(async (sessionUser: User | null) => {
+    if (sessionUser) {
+      setUser(sessionUser)
+      setIsLoading(false) 
+      await fetchProfile(sessionUser.id) 
+    } else {
+      setUser(null)
+      setProfile(null)
+      setIsLoading(false)
+    }
+  }, [fetchProfile])
 
   useEffect(() => {
     let mounted = true
 
     const initializeAuth = async () => {
       try {
-        const {
-          data: { session },
-          error
-        } = await supabase.auth.getSession()
+        const { data: { session }, error } = await supabase.auth.getSession()
         if (mounted && !error) {
           await handleAuthStateChange(session?.user ?? null)
         } else if (error) {
-          setIsLoading(false)
+           setIsLoading(false)
         }
       } catch {
         if (mounted) setIsLoading(false)
@@ -89,9 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     initializeAuth()
 
-    const {
-      data: { subscription }
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (mounted) {
         await handleAuthStateChange(session?.user ?? null)
       }
@@ -103,20 +85,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [handleAuthStateChange, supabase])
 
-  const userName =
-    user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Visitante'
+  const userName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Visitante'
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        profile,
-        isLoggedIn: !!user,
-        isLoading,
-        userName,
-        refreshProfile: () => (user ? fetchProfile(user.id) : Promise.resolve())
-      }}
-    >
+    <AuthContext.Provider value={{
+      user,
+      profile,
+      isLoggedIn: !!user,
+      isLoading,
+      userName,
+      refreshProfile: () => user ? fetchProfile(user.id) : Promise.resolve(),
+      supabase 
+    }}>
       {children}
     </AuthContext.Provider>
   )

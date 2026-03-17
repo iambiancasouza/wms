@@ -14,7 +14,7 @@ const navItems = [
   {
     icon: LayoutGrid,
     label: 'Coleção',
-    path: '/collection',
+    path: '/collection/products',
     isProtected: true
   },
   { icon: User, label: 'Meu perfil', path: '/profile', isProtected: true }
