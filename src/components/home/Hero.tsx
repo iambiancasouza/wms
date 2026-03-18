@@ -7,7 +7,7 @@ import { useAuth } from '@/providers/UserAuthProvider'
 
 export function Hero() {
   const router = useRouter()
-  const { isLoading, isLoggedIn } = useAuth()
+  const { isLoggedIn } = useAuth()
 
   const handleMainAction = () => {
     if (isLoggedIn) {
@@ -44,12 +44,9 @@ export function Hero() {
             <div className="flex flex-col sm:flex-row gap-3 pt-2 w-full sm:w-auto justify-center lg:justify-start">
               <button
                 onClick={handleMainAction}
-                disabled={isLoading}
                 className="w-full sm:w-auto bg-gradient-to-r from-[#8ec5a0] to-[#3a6b4d] text-white px-8 py-3 rounded-xl font-bold transition-all shadow-lg active:scale-95 disabled:opacity-70 cursor-pointer"
               >
-                {isLoading
-                  ? 'Carregando...'
-                  : isLoggedIn
+                {isLoggedIn
                     ? 'Cadastrar Produto'
                     : 'Começar Agora'}
               </button>
