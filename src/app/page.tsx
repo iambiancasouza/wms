@@ -12,8 +12,7 @@ import { Product } from '@/types/db'
 import { format } from 'date-fns'
 
 export default function Home() {
-  const { routines, completedDates, allProducts, loading, refresh } =
-    useHomeData()
+  const { routines, completedDates, allProducts, refresh } = useHomeData()
 
   const today = new Date()
   const todayStr = format(today, 'yyyy-MM-dd')
@@ -85,21 +84,14 @@ export default function Home() {
   return (
     <main className="bg-[#f0f5ed] min-h-[100dvh]">
       <MobileHeader />
-
       <Hero />
-
-      <div className="relative w-full min-h-[50vh]">
-        <div className="relative z-10">
-          {!loading && (
-            <RoutineDashboard
-              completedDates={completedDates}
-              todayRoutines={todayRoutines}
-              onOpenJournalingAction={handleOpenJournalingAction}
-              onOpenDayDetailsAction={date => setSelectedHistoryDate(date)}
-            />
-          )}
-        </div>
-      </div>
+      <RoutineDashboard
+        completedDates={completedDates}
+        todayRoutines={todayRoutines}
+        onOpenJournalingAction={handleOpenJournalingAction}
+        onOpenDayDetailsAction={date => setSelectedHistoryDate(date)}
+        // isLoading={loading} / loading como prop para o componente no futuro/
+      />
 
       {journalingConfig.period && (
         <JournalingModal
