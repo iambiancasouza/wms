@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react' // 1. Importe o Suspense
+import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { StaticLeaves } from '@/components/layout/staticLeaves'
 import { Navbar } from '@/components/layout/navbar'
@@ -15,18 +15,17 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const isHome = pathname === '/'
   const { isOpen, openOnboarding, closeOnboarding } = useOnboarding()
-
   const { profile, isLoggedIn, isLoading } = useAuth()
+  const hasShownOnboarding = useRef(false)
 
   useEffect(() => {
-    if (!isLoading && isLoggedIn) {
-      if (profile && profile.onboarding_completed !== true) {
-        const onboardingTimeout = setTimeout(() => {
-          openOnboarding()
-        }, 10000)
+    if (!isLoading && isLoggedIn && profile && profile.onboarding_completed !== true && !hasShownOnboarding.current) {
+      const onboardingTimeout = setTimeout(() => {
+        openOnboarding()
+        hasShownOnboarding.current = true
+      }, 10000) 
 
-        return () => clearTimeout(onboardingTimeout)
-      }
+      return () => clearTimeout(onboardingTimeout)
     }
   }, [profile, isLoading, isLoggedIn, openOnboarding])
 

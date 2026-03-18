@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState, useCallback, ReactNode, useMemo } from 'react'
 import { User } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/client'
 import type { Database } from '@/types/database.types'
@@ -46,8 +46,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const handleAuthStateChange = useCallback(async (sessionUser: User | null) => {
     if (sessionUser) {
       setUser(sessionUser)
-      setIsLoading(false) 
-      await fetchProfile(sessionUser.id) 
+      await fetchProfile(sessionUser.id)
+      setIsLoading(false)
     } else {
       setUser(null)
       setProfile(null)
@@ -57,21 +57,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let mounted = true
-
-    const initializeAuth = async () => {
+    const timeoutId = setTimeout(async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession()
-        if (mounted && !error) {
-          await handleAuthStateChange(session?.user ?? null)
-        } else if (error) {
-           setIsLoading(false)
+        
+        if (mounted) {
+          if (!error && session?.user) {
+            await handleAuthStateChange(session.user)
+          } else {
+            setIsLoading(false)
+          }
         }
       } catch {
         if (mounted) setIsLoading(false)
       }
-    }
-
-    initializeAuth()
+    }, 100)
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (mounted) {
@@ -81,25 +81,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return () => {
       mounted = false
+      clearTimeout(timeoutId)
       subscription.unsubscribe()
     }
   }, [handleAuthStateChange, supabase])
 
-  const userName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Visitante'
+  const userName = useMemo(() => {
+    return user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Visitante'
+  }, [user])
+
+  const value = useMemo(() => ({
+    user,
+    profile,
+    isLoggedIn: !!user,
+    isLoading,
+    userName,
+    refreshProfile: () => user ? fetchProfile(user.id) : Promise.resolve(),
+    supabase
+  }), [user, profile, isLoading, userName, fetchProfile, supabase])
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      profile,
-      isLoggedIn: !!user,
-      isLoading,
-      userName,
-      refreshProfile: () => user ? fetchProfile(user.id) : Promise.resolve(),
-      supabase 
-    }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   )
 }
 
-export const useAuth = () => useContext(AuthContext)
+export const useAuth = () => {
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider')
+  }
+  return context
+}

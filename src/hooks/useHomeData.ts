@@ -1,30 +1,41 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useAuth } from '@/providers/UserAuthProvider'
 import { Product, Routine } from '@/types/db'
 import { getUserRoutines, getActiveProducts } from '@/services/home.service'
 
 export function useHomeData() {
-  const { supabase } = useAuth()
+  const { user, isLoading: authLoading } = useAuth()
+  const isMounted = useRef(true)
 
   const [routines, setRoutines] = useState<Routine[]>([])
   const [completedDates, setCompletedDates] = useState<Date[]>([])
   const [allProducts, setAllProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
 
   const fetchData = useCallback(async () => {
+    // Não tenta buscar dados se não estiver logado ou se estiver carregando auth
+    if (!user || authLoading) {
+      return
+    }
+
     try {
-      const {
-        data: { user }
-      } = await supabase.auth.getUser()
+      setError(null)
+      setLoading(true)
 
-      if (!user) return
+      // Busca dados em paralelo para otimizar performance
+      const [routinesData, productsData] = await Promise.allSettled([
+        getUserRoutines(user.id),
+        getActiveProducts()
+      ])
 
-      const routinesData = await getUserRoutines(user.id)
+      if (!isMounted.current) return
 
-      if (routinesData) {
-        setRoutines(routinesData as Routine[])
+      if (routinesData.status === 'fulfilled' && routinesData.value) {
+        const routinesArray = routinesData.value as Routine[]
+        setRoutines(routinesArray)
 
-        const dates = routinesData
+        const dates = routinesArray
           .filter(r => r.routine_date !== null)
           .map(r => {
             const [year, month, day] = r.routine_date!.split('-').map(Number)
@@ -32,28 +43,49 @@ export function useHomeData() {
           })
 
         setCompletedDates(dates)
+      } else if (routinesData.status === 'rejected') {
+        console.error('Erro ao buscar rotinas:', routinesData.reason)
       }
 
-      const products = await getActiveProducts()
-
-      if (products) {
-        setAllProducts(products)
+      if (productsData.status === 'fulfilled' && productsData.value) {
+        setAllProducts(productsData.value)
+      } else if (productsData.status === 'rejected') {
+        console.error('Erro ao buscar produtos:', productsData.reason)
       }
-    } catch {
+
+    } catch (err) {
+      if (!isMounted.current) return
+      setError(err instanceof Error ? err : new Error('Erro desconhecido'))
+      console.error('Erro ao buscar dados:', err)
     } finally {
-      setLoading(false)
+      if (isMounted.current) {
+        setLoading(false)
+      }
     }
-  }, [supabase])
+  }, [user, authLoading])
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    isMounted.current = true
+    
+    // Só busca dados se tiver usuário e não estiver carregando auth
+    if (user && !authLoading) {
+      fetchData()
+    } else if (!user && !authLoading) {
+      // Se não tiver usuário e auth terminou de carregar, não está mais loading
+      setLoading(false)
+    }
+
+    return () => {
+      isMounted.current = false
+    }
+  }, [user, authLoading, fetchData])
 
   return {
     routines,
     completedDates,
     allProducts,
     loading,
+    error,
     refresh: fetchData
   }
 }
