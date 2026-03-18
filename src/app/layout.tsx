@@ -16,7 +16,6 @@ export const metadata: Metadata = {
   description: 'Sua rotina de skincare merece esse cuidado a mais.',
   manifest: '/manifest.json',
   icons: {
-    // icon: '/icons/wms_logo.png',
     apple: '/icons/apple-touch-icon.png'
   },
   appleWebApp: {
@@ -43,7 +42,8 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body
-        className={`${inter.className} ${poppins.variable} antialiased w-full bg-[#f0f5ed]  padding-top: env(safe-area-inset-top)`}
+        className={`${inter.className} ${poppins.variable} antialiased w-full bg-[#f0f5ed]`}
+        style={{ paddingTop: 'env(safe-area-inset-top)' }}
       >
         <ClientLayout>
           <div className="w-full flex flex-col">{children}</div>

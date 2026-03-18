@@ -6,7 +6,6 @@ import { StaticLeaves } from '@/components/layout/staticLeaves'
 import { Navbar } from '@/components/layout/navbar'
 import { BottomNavbar } from '@/components/layout/BottomNavbar'
 import { GlobalProviders } from '@/providers'
-import { AuthProvider } from '@/providers/UserAuthProvider'
 import { useOnboarding } from '@/providers/OnboardingProvider'
 import { useAuth } from '@/providers/UserAuthProvider'
 import OnboardingModal from '@/components/modals/OnboardingModal'
@@ -19,11 +18,17 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const hasShownOnboarding = useRef(false)
 
   useEffect(() => {
-    if (!isLoading && isLoggedIn && profile && profile.onboarding_completed !== true && !hasShownOnboarding.current) {
+    if (
+      !isLoading &&
+      isLoggedIn &&
+      profile &&
+      profile.onboarding_completed !== true &&
+      !hasShownOnboarding.current
+    ) {
       const onboardingTimeout = setTimeout(() => {
         openOnboarding()
         hasShownOnboarding.current = true
-      }, 10000) 
+      }, 10000)
 
       return () => clearTimeout(onboardingTimeout)
     }
@@ -35,7 +40,6 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
       <main className="relative flex-1 w-full">
         {!isHome && <StaticLeaves />}
-
         {children}
       </main>
 
@@ -52,9 +56,7 @@ export default function ClientLayout({
 }) {
   return (
     <GlobalProviders>
-      <AuthProvider>
-        <LayoutContent>{children}</LayoutContent>
-      </AuthProvider>
+      <LayoutContent>{children}</LayoutContent>
     </GlobalProviders>
   )
 }
