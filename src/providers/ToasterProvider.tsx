@@ -99,7 +99,7 @@ export function ToasterProvider() {
   return (
     <Toaster
       position="top-center"
-      offset="calc(env(safe-area-inset-top) + 1.5rem)"
+      offset="calc(env(safe-area-inset-top) + 4rem)"
       expand={false}
       gap={12}
       visibleToasts={3}
