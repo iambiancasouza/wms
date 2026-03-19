@@ -1,11 +1,25 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+'use client'
+
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode, useRef } from 'react'
 import { useAuth } from '@/providers/UserAuthProvider'
 import { Product, Routine } from '@/types/db'
 import { getUserRoutines, getActiveProducts } from '@/services/home.service'
 
-export function useHomeData() {
+interface HomeDataContextData {
+  routines: Routine[]
+  completedDates: Date[]
+  allProducts: Product[]
+  loading: boolean
+  error: Error | null
+  refresh: () => Promise<void>
+}
+
+const HomeDataContext = createContext<HomeDataContextData>({} as HomeDataContextData)
+
+export function HomeDataProvider({ children }: { children: ReactNode }) {
   const { user, isLoading: authLoading } = useAuth()
   const isMounted = useRef(true)
+  const hasFetchedOnce = useRef(false)
 
   const [routines, setRoutines] = useState<Routine[]>([])
   const [completedDates, setCompletedDates] = useState<Date[]>([])
@@ -25,7 +39,10 @@ export function useHomeData() {
 
     try {
       setError(null)
-      setLoading(true)
+      
+      if (!hasFetchedOnce.current) {
+        setLoading(true)
+      }
 
       const [routinesData, productsData] = await Promise.allSettled([
         getUserRoutines(user.id),
@@ -46,19 +63,17 @@ export function useHomeData() {
           })
 
         setCompletedDates(dates)
-      } else if (routinesData.status === 'rejected') {
-        console.error('Erro ao buscar rotinas:', routinesData.reason)
       }
 
       if (productsData.status === 'fulfilled' && productsData.value) {
         setAllProducts(productsData.value)
-      } else if (productsData.status === 'rejected') {
-        console.error('Erro ao buscar produtos:', productsData.reason)
       }
+
+      hasFetchedOnce.current = true
+
     } catch (err) {
       if (!isMounted.current) return
       setError(err instanceof Error ? err : new Error('Erro desconhecido'))
-      console.error('Erro ao buscar dados:', err)
     } finally {
       if (isMounted.current) {
         setLoading(false)
@@ -72,16 +87,19 @@ export function useHomeData() {
         fetchData()
       } else {
         setLoading(false)
+        setRoutines([])
+        setAllProducts([])
+        setCompletedDates([])
+        hasFetchedOnce.current = false
       }
     }
   }, [user, authLoading, fetchData])
 
-  return {
-    routines,
-    completedDates,
-    allProducts,
-    loading,
-    error,
-    refresh: fetchData
-  }
+  return (
+    <HomeDataContext.Provider value={{ routines, completedDates, allProducts, loading, error, refresh: fetchData }}>
+      {children}
+    </HomeDataContext.Provider>
+  )
 }
+
+export const useHomeData = () => useContext(HomeDataContext)

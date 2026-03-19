@@ -7,7 +7,7 @@ import { Hero } from '@/components/home/Hero'
 import { RoutineDashboard } from '@/components/home/RoutineDashboard'
 import { JournalingModal } from '@/components/modals/JournalingModal'
 import { RoutineHistoryModal } from '@/components/modals/RoutineHistoryModal'
-import { useHomeData } from '@/hooks/useHomeData'
+import { useHomeData } from '@/providers/HomeDataProvider'
 import { Product } from '@/types/db'
 import { format } from 'date-fns'
 
