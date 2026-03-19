@@ -107,6 +107,7 @@ export function ToasterProvider() {
         className: 'bg-transparent border-none shadow-none !p-0 !m-0 overflow-visible transition-none',
         style: {
           transition: 'none',
+          marginTop: 'env(safe-area-inset-top)'
         }
       }}
     />

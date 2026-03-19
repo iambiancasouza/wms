@@ -73,8 +73,8 @@ export function JournalingModal(props: JournalingModalProps) {
         <StaticLeaves />
       </div>
 
-      <div className="relative z-10 w-full min-h-full p-4 md:p-6 py-6 md:py-10">
-        <div className="w-full max-w-2xl mx-auto bg-white/60 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[40px] p-6 md:p-8 flex flex-col h-auto min-h-[85vh] overflow-hidden relative">
+      <div className="relative z-10 w-full min-h-full p-4 md:p-6 pb-6 md:pb-10 pt-[calc(env(safe-area-inset-top)+1.5rem)] md:pt-[calc(env(safe-area-inset-top)+2.5rem)]">
+        <div className="w-full max-w-2xl mx-auto bg-white/60 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[40px] p-6 md:p-8 flex flex-col h-auto min-h-[85vh] relative overflow-hidden">
           <button
             onClick={props.onCloseAction}
             className="absolute top-6 right-6 md:top-8 md:right-8 z-20 p-3 bg-white/70 backdrop-blur-sm rounded-full text-gray-400 border border-white hover:bg-white active:scale-95 transition-all shadow-sm"
@@ -258,7 +258,6 @@ function JournalingModalContent({
       </div>
 
       <div className="space-y-4 flex-1">
-
         <div className="bg-[#f0f5ed]/30 border-2 border-dashed border-[#8ec5a0] rounded-[32px] p-5 min-h-[160px] flex flex-col shadow-inner w-full">
           <div className="flex flex-wrap justify-center gap-4 w-full">
             {routineItems.length === 0 ? (
