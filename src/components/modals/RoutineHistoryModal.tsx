@@ -38,8 +38,8 @@ export function RoutineHistoryModal({
         <StaticLeaves />
       </div>
 
-      <div className="relative z-10 w-full min-h-full p-4 md:p-6 py-6 md:py-10">
-        <div className="w-full max-w-2xl mx-auto bg-white/60 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[40px] p-6 md:p-8 space-y-8 flex flex-col h-auto min-h-[80vh]">
+      <div className="relative z-10 w-full min-h-full p-4 md:p-6 pb-6 md:pb-10 pt-[calc(env(safe-area-inset-top)+1.5rem)] md:pt-[calc(env(safe-area-inset-top)+2.5rem)]">
+        <div className="w-full max-w-2xl mx-auto bg-white/60 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-[40px] p-6 md:p-8 flex flex-col h-auto min-h-[85vh] relative overflow-hidden">
           
           <div className="flex justify-between items-start">
             <div className="space-y-2">
