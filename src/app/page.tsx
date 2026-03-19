@@ -85,13 +85,17 @@ export default function Home() {
     <main className="bg-[#f0f5ed] min-h-[100dvh]">
       <MobileHeader />
       <Hero />
-      <RoutineDashboard
-        completedDates={completedDates}
-        todayRoutines={todayRoutines}
-        onOpenJournalingAction={handleOpenJournalingAction}
-        onOpenDayDetailsAction={date => setSelectedHistoryDate(date)}
-        // isLoading={loading} / loading como prop para o componente no futuro/
-      />
+      <div className="relative w-full min-h-[50vh]">
+        <div className="relative z-10">
+          <RoutineDashboard
+            completedDates={completedDates}
+            todayRoutines={todayRoutines}
+            onOpenJournalingAction={handleOpenJournalingAction}
+            onOpenDayDetailsAction={date => setSelectedHistoryDate(date)}
+            // isLoading={loading} / prop para o componente no futuro/
+          />
+        </div>
+      </div>
 
       {journalingConfig.period && (
         <JournalingModal

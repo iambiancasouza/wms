@@ -13,17 +13,20 @@ export function useHomeData() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
 
-  const fetchData = useCallback(async () => {
-    // Não tenta buscar dados se não estiver logado ou se estiver carregando auth
-    if (!user || authLoading) {
-      return
+  useEffect(() => {
+    isMounted.current = true
+    return () => {
+      isMounted.current = false
     }
+  }, [])
+
+  const fetchData = useCallback(async () => {
+    if (!user || authLoading) return
 
     try {
       setError(null)
       setLoading(true)
 
-      // Busca dados em paralelo para otimizar performance
       const [routinesData, productsData] = await Promise.allSettled([
         getUserRoutines(user.id),
         getActiveProducts()
@@ -52,7 +55,6 @@ export function useHomeData() {
       } else if (productsData.status === 'rejected') {
         console.error('Erro ao buscar produtos:', productsData.reason)
       }
-
     } catch (err) {
       if (!isMounted.current) return
       setError(err instanceof Error ? err : new Error('Erro desconhecido'))
@@ -65,18 +67,12 @@ export function useHomeData() {
   }, [user, authLoading])
 
   useEffect(() => {
-    isMounted.current = true
-    
-    // Só busca dados se tiver usuário e não estiver carregando auth
-    if (user && !authLoading) {
-      fetchData()
-    } else if (!user && !authLoading) {
-      // Se não tiver usuário e auth terminou de carregar, não está mais loading
-      setLoading(false)
-    }
-
-    return () => {
-      isMounted.current = false
+    if (!authLoading) {
+      if (user) {
+        fetchData()
+      } else {
+        setLoading(false)
+      }
     }
   }, [user, authLoading, fetchData])
 

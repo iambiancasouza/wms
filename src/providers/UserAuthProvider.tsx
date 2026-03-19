@@ -1,6 +1,14 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState, useCallback, ReactNode, useMemo } from 'react'
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  ReactNode,
+  useMemo
+} from 'react'
 import { User } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/client'
 import type { Database } from '@/types/database.types'
@@ -15,7 +23,7 @@ interface AuthContextData {
   isLoading: boolean
   userName: string
   refreshProfile: () => Promise<void>
-  supabase: SupabaseClientType 
+  supabase: SupabaseClientType
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData)
@@ -27,53 +35,64 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const [supabase] = useState(() => createClient())
 
-  const fetchProfile = useCallback(async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single()
+  const fetchProfile = useCallback(
+    async (userId: string) => {
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', userId)
+          .single()
 
-      if (!error && data) {
-        setProfile(data as Profile)
+        if (!error && data) {
+          setProfile(data as Profile)
+        }
+      } catch (error) {
+        console.error('Erro ao buscar perfil:', error)
       }
-    } catch (error) {
-      console.error("Erro ao buscar perfil:", error)
-    }
-  }, [supabase])
+    },
+    [supabase]
+  )
 
-  const handleAuthStateChange = useCallback(async (sessionUser: User | null) => {
-    if (sessionUser) {
-      setUser(sessionUser)
-      await fetchProfile(sessionUser.id)
+  const handleAuthStateChange = useCallback(
+    async (sessionUser: User | null) => {
+      if (sessionUser) {
+        setUser(sessionUser)
+        await fetchProfile(sessionUser.id)
+      } else {
+        setUser(null)
+        setProfile(null)
+      }
       setIsLoading(false)
-    } else {
-      setUser(null)
-      setProfile(null)
-      setIsLoading(false)
-    }
-  }, [fetchProfile])
+    },
+    [fetchProfile]
+  )
 
   useEffect(() => {
     let mounted = true
-    const timeoutId = setTimeout(async () => {
+
+    const initializeSession = async () => {
       try {
-        const { data: { session }, error } = await supabase.auth.getSession()
-        
-        if (mounted) {
-          if (!error && session?.user) {
-            await handleAuthStateChange(session.user)
-          } else {
-            setIsLoading(false)
-          }
+        const {
+          data: { session },
+          error
+        } = await supabase.auth.getSession()
+        if (mounted && session?.user && !error) {
+          await handleAuthStateChange(session.user)
+        } else if (mounted) {
+          setIsLoading(false)
         }
-      } catch {
+      } catch (error) {
+        console.error('Erro na sessão inicial:', error)
         if (mounted) setIsLoading(false)
       }
-    }, 100)
+    }
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    initializeSession()
+
+    const {
+      data: { subscription }
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (mounted) {
         await handleAuthStateChange(session?.user ?? null)
       }
@@ -81,30 +100,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return () => {
       mounted = false
-      clearTimeout(timeoutId)
       subscription.unsubscribe()
     }
   }, [handleAuthStateChange, supabase])
 
   const userName = useMemo(() => {
-    return user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Visitante'
+    return (
+      user?.user_metadata?.full_name ||
+      user?.email?.split('@')[0] ||
+      'Visitante'
+    )
   }, [user])
 
-  const value = useMemo(() => ({
-    user,
-    profile,
-    isLoggedIn: !!user,
-    isLoading,
-    userName,
-    refreshProfile: () => user ? fetchProfile(user.id) : Promise.resolve(),
-    supabase
-  }), [user, profile, isLoading, userName, fetchProfile, supabase])
-
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      user,
+      profile,
+      isLoggedIn: !!user,
+      isLoading,
+      userName,
+      refreshProfile: () => (user ? fetchProfile(user.id) : Promise.resolve()),
+      supabase
+    }),
+    [user, profile, isLoading, userName, fetchProfile, supabase]
   )
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
 export const useAuth = () => {
