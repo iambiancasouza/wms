@@ -102,12 +102,14 @@ export function ToasterProvider() {
       expand={false}
       gap={12}
       visibleToasts={3}
+      style={{
+        top: 'calc(env(safe-area-inset-top) + 5rem)' 
+      }}
       toastOptions={{
         duration: 3500,
-        className: 'bg-transparent border-none shadow-none !p-0 !m-0 overflow-visible transition-none',
+        className: 'bg-transparent border-none shadow-none !p-0 overflow-visible transition-none',
         style: {
           transition: 'none',
-          marginTop: 'calc(env(safe-area-inset-top) + 4rem)'
         }
       }}
     />
