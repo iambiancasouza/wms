@@ -99,6 +99,7 @@ export function ToasterProvider() {
   return (
     <Toaster
       position="top-center"
+      offset="calc(env(safe-area-inset-top) + 1.5rem)"
       expand={false}
       gap={12}
       visibleToasts={3}
@@ -107,7 +108,6 @@ export function ToasterProvider() {
         className: 'bg-transparent border-none shadow-none !p-0 !m-0 overflow-visible transition-none',
         style: {
           transition: 'none',
-          
         }
       }}
     />
