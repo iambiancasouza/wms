@@ -17,18 +17,22 @@ import {
 import { showToast } from '@/providers/ToasterProvider'
 import { Product } from '@/types/db'
 
-const Category = [
-  { id: 'all', label: 'Todos', icon: '✨' },
-  { id: 'limpeza', label: 'Limpeza', icon: '🧼' },
-  { id: 'tonico', label: 'Tônico/Essence', icon: '💧' },
-  { id: 'hidratacao', label: 'Hidratação', icon: '🧴' },
-  { id: 'antioxidante', label: 'Antioxidante', icon: '🍊' },
-  { id: 'tratamento', label: 'Tratamento/Slow-aging', icon: '🧪' },
-  { id: 'barreira', label: 'Barreira/Reparador', icon: '🛡️' },
-  { id: 'protecao', label: 'Protetor', icon: '☀️' },
-  { id: 'olhos', label: 'Área dos Olhos', icon: '👁️' },
-  { id: 'beauty_tech', label: 'Dispositivo', icon: '⚡' },
-  { id: 'outros', label: 'Outros', icon: '' }
+export const Category = [
+  {id: "all", label: "Todos"},
+  { id: "limpeza", label: "Limpeza" },
+  { id: "tônico", label: "Tônico/Essence" },
+  { id: "antioxidante", label: "Antioxidante" },
+  { id: "tratamento", label: "Tratamento/Slow-aging" },
+  { id: "tretinoina", label: "Tretinoína" },
+  { id: "acido_azelaico", label: "Ácido azeláico" },
+  { id: "hidratacao", label: "Hidratante" },
+  { id: "barreira", label: "Barreira/Reparador" },
+  { id: "olhos", label: "Área dos olhos" },
+  { id: "labios", label: "Labial" },
+  { id: "protecao", label: "Protetor" },
+  { id: "mascara", label: "Máscara" },
+  { id: "corporal", label: "Corporal" },
+  { id: "beauty_tech", label: "Dispositivo" },
 ]
 
 export function EditProductModal({

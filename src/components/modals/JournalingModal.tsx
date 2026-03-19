@@ -18,16 +18,20 @@ import { Product } from '@/types/db'
 import { StaticLeaves } from '@/components/layout/staticLeaves'
 
 const Categories = [
-  { id: 'limpeza', label: 'Limpeza' },
-  { id: 'tonico', label: 'Toner/Essence' },
-  { id: 'antioxidante', label: 'Antioxidante' },
-  { id: 'barreira', label: 'Barreira/Reparador' },
-  { id: 'hidratacao', label: 'Hidratação' },
-  { id: 'protecao', label: 'Proteção' },
-  { id: 'olhos', label: 'Área dos Olhos' },
-  { id: 'tratamento', label: 'Tratamento' },
-  { id: 'beauty_tech', label: 'Dispositivo' },
-  { id: 'outros', label: 'Outros' }
+  { id: "limpeza", label: "Limpeza" },
+  { id: "tônico", label: "Tônico/Essence" },
+  { id: "antioxidante", label: "Antioxidante" },
+  { id: "tratamento", label: "Tratamento/Slow-aging" },
+  { id: "tretinoina", label: "Tretinoína" },
+  { id: "acido_azelaico", label: "Ácido azeláico" },
+  { id: "hidratacao", label: "Hidratante" },
+  { id: "barreira", label: "Barreira/Reparador" },
+  { id: "olhos", label: "Área dos olhos" },
+  { id: "labios", label: "Labial" },
+  { id: "protecao", label: "Protetor" },
+  { id: "mascara", label: "Máscara" },
+  { id: "corporal", label: "Corporal" },
+  { id: "beauty_tech", label: "Dispositivo" },
 ]
 
 const formatDayOfWeek = (date: Date) => {

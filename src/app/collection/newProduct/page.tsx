@@ -228,17 +228,18 @@ export default function NewProductPage() {
                 >
                   <option value="limpeza">Limpeza</option>
                   <option value="tônico">Tônico/Essence</option>
-                  <option value="hidratação">Hidratante</option>
                   <option value="antioxidante">Antioxidante</option>
                   <option value="tratamento">Tratamento/Slow-aging</option>
                   <option value="tratamento">Tretinoína</option>
                   <option value="tratamento">Ácido azeláico</option>
+                  <option value="hidratação">Hidratante</option>
                   <option value="barreira">Barreira/Reparador</option>
                   <option value="olhos">Área dos olhos</option>
+                  <option value="labios">Labial</option>
                   <option value="protecao">Protetor</option>
                   <option value="mascara">Máscara</option>
+                  <option value="corporal">Corporal</option>
                   <option value="beauty_tech">Dispositivo</option>
-                  <option value="outros">Outros</option>
                 </select>
               </div>
             </div>
