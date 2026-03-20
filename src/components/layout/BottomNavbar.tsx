@@ -10,7 +10,7 @@ import { AuthDrawer } from '@/components/auth/AuthDrawer'
 const navItems = [
   { icon: Leaf, label: 'Home', path: '/', isProtected: false },
   { icon: Heart, label: 'Favoritos', path: '/favorites', isProtected: true },
-  { icon: Calendar, label: 'Rotina', path: '/journal', isProtected: true },
+  { icon: Calendar, label: 'Rotina', path: '/routines', isProtected: true },
   {
     icon: LayoutGrid,
     label: 'Coleção',

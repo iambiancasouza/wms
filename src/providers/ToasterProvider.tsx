@@ -103,7 +103,7 @@ export function ToasterProvider() {
       gap={12}
       visibleToasts={3}
       style={{
-        top: 'calc(env(safe-area-inset-top) + 2rem)' 
+        top: 'calc(env(safe-area-inset-top) + 1rem)' 
       }}
       toastOptions={{
         duration: 3500,

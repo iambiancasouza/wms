@@ -38,7 +38,6 @@ export function ProductCard({
   return (
     <div className="group relative w-full aspect-[3/4] rounded-2xl overflow-hidden shadow-lg transition-all duration-300 bg-gray-900">
 
-      {/* Imagem */}
 
       {imageUrl ? (
         <Image
