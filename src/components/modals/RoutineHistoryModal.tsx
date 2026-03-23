@@ -12,15 +12,17 @@ import { StaticLeaves } from '@/components/layout/staticLeaves'
 interface RoutineHistoryModalProps {
   date: Date
   onCloseAction: () => void
-  onEditAction: (period: 'diurna' | 'noturna', products: Product[], routineId?: string, editDate?: Date) => void
+  onEditAction?: (period: 'diurna' | 'noturna', products: Product[], routineId?: string, editDate?: Date) => void
   allProducts: Product[]
+  readOnly?: boolean
 }
 
 export function RoutineHistoryModal({
   date,
   onCloseAction,
   onEditAction,
-  allProducts
+  allProducts,
+  readOnly = false,
 }: RoutineHistoryModalProps) {
   const [currentDate, setCurrentDate] = useState(date)
 
@@ -46,7 +48,7 @@ export function RoutineHistoryModal({
               <h2 className="text-xl font-black text-[#1e3c2c] uppercase tracking-widest">
                 Rotina de:
               </h2>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 pb-4">
                 <button 
                   onClick={() => setCurrentDate(subDays(currentDate, 1))}
                   className="p-1 rounded-full hover:bg-white/60 text-[#5f8c73] transition-colors"
@@ -54,7 +56,6 @@ export function RoutineHistoryModal({
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <p className="text-[#5f8c73] text-[10px] font-bold uppercase tracking-[0.1em] flex items-center">
-
                   {format(currentDate, "dd 'de' MMMM, yyyy", { locale: ptBR })}
                 </p>
                 <button 
@@ -77,7 +78,7 @@ export function RoutineHistoryModal({
             <div className="flex flex-col items-center justify-center py-20 space-y-4">
               <Loader2 className="w-8 h-8 text-[#5f8c73] animate-spin" />
               <p className="text-sm font-bold text-[#5f8c73]/60 tracking-widest uppercase">
-                Buscando registros...
+                Buscando registos...
               </p>
             </div>
           ) : (
@@ -93,13 +94,16 @@ export function RoutineHistoryModal({
                       Rotina da Manhã
                     </h3>
                   </div>
-                  <button 
-                    onClick={() => onEditAction('diurna', diurnaProducts, rotinaDiurna?.id, currentDate)}
-                    className="p-2 text-gray-400 hover:text-[#c78255] transition-colors rounded-full hover:bg-orange-50 active:scale-95"
-                    title={diurnaProducts.length > 0 ? "Editar Rotina da Manhã" : "Adicionar Rotina da Manhã"}
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </button>
+                  
+                  {!readOnly && (
+                    <button 
+                      onClick={() => onEditAction?.('diurna', diurnaProducts, rotinaDiurna?.id, currentDate)}
+                      className="p-2 text-gray-400 hover:text-[#c78255] transition-colors rounded-full hover:bg-orange-50 active:scale-95"
+                      title={diurnaProducts.length > 0 ? "Editar Rotina da Manhã" : "Adicionar Rotina da Manhã"}
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-4 w-full">
@@ -135,8 +139,10 @@ export function RoutineHistoryModal({
                     })
                   ) : (
                     <div className="flex flex-col items-center justify-center py-4 text-gray-400 w-full text-center">
-                      <p className="text-sm font-medium">Nenhum produto registrado.</p>
-                      <p className="text-[10px] mt-1 tracking-wide uppercase text-gray-300">Clique no lápis para adicionar</p>
+                      <p className="text-sm font-medium">Nenhum produto registado.</p>
+                      {!readOnly && (
+                        <p className="text-[10px] mt-1 tracking-wide uppercase text-gray-300">Clique no lápis para adicionar</p>
+                      )}
                     </div>
                   )}
                 </div>
@@ -152,13 +158,16 @@ export function RoutineHistoryModal({
                       Rotina da Noite
                     </h3>
                   </div>
-                  <button 
-                    onClick={() => onEditAction('noturna', noturnaProducts, rotinaNoturna?.id, currentDate)}
-                    className="p-2 text-gray-400 hover:text-[#8695c5] transition-colors rounded-full hover:bg-indigo-50 active:scale-95"
-                    title={noturnaProducts.length > 0 ? "Editar Rotina da Noite" : "Adicionar Rotina da Noite"}
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </button>
+
+                  {!readOnly && (
+                    <button 
+                      onClick={() => onEditAction?.('noturna', noturnaProducts, rotinaNoturna?.id, currentDate)}
+                      className="p-2 text-gray-400 hover:text-[#8695c5] transition-colors rounded-full hover:bg-indigo-50 active:scale-95"
+                      title={noturnaProducts.length > 0 ? "Editar Rotina da Noite" : "Adicionar Rotina da Noite"}
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-4 w-full">
@@ -194,8 +203,10 @@ export function RoutineHistoryModal({
                     })
                   ) : (
                     <div className="flex flex-col items-center justify-center py-4 text-gray-400 w-full text-center">
-                      <p className="text-sm font-medium">Nenhum produto registrado.</p>
-                      <p className="text-[10px] mt-1 tracking-wide uppercase text-gray-300">Clique no lápis para adicionar</p>
+                      <p className="text-sm font-medium">Nenhum produto registado.</p>
+                      {!readOnly && (
+                        <p className="text-[10px] mt-1 tracking-wide uppercase text-gray-300">Clique no lápis para adicionar</p>
+                      )}
                     </div>
                   )}
                 </div>

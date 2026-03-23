@@ -5,7 +5,7 @@ export function useStreak(routines: Routine[]) {
   return useMemo(() => {
     // 1. Caso base: sem rotinas
     if (!routines || routines.length === 0) {
-      return { streak: 0, nextGoal: 7, progressPercent: 0 }
+      return { streak: 0, nextGoal: 7, progressPercent: 0, hasRoutineToday: false }
     }
 
     // 2. Extrai e limpa as datas únicas
@@ -24,7 +24,7 @@ export function useStreak(routines: Routine[]) {
     }).sort((a, b) => b - a) // Mais recente primeiro
 
     if (dateTimes.length === 0) {
-      return { streak: 0, nextGoal: 7, progressPercent: 0 }
+      return { streak: 0, nextGoal: 7, progressPercent: 0, hasRoutineToday: false }
     }
 
     // 4. Lógica de "Hoje" e "Ontem"
@@ -32,12 +32,15 @@ export function useStreak(routines: Routine[]) {
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
     const yesterday = today - 86400000 // 24h em ms
 
+    // Verifica se a rotina mais recente é a de hoje
+    const hasRoutineToday = dateTimes[0] === today
+
     let currentStreak = 0
     let checkTime = today
 
     // Se não fez hoje nem ontem, perdeu a ofensiva
     if (dateTimes[0] !== today && dateTimes[0] !== yesterday) {
-      return { streak: 0, nextGoal: 7, progressPercent: 0 }
+      return { streak: 0, nextGoal: 7, progressPercent: 0, hasRoutineToday: false }
     }
 
     // Começa a checar a partir de ontem se não fez hoje
@@ -60,6 +63,11 @@ export function useStreak(routines: Routine[]) {
     const nextGoal = goals.find(g => g > currentStreak) || currentStreak + 30
     const progressPercent = Math.min((currentStreak / nextGoal) * 100, 100)
 
-    return { streak: currentStreak, nextGoal, progressPercent }
+    return { 
+      streak: currentStreak, 
+      nextGoal, 
+      progressPercent,
+      hasRoutineToday 
+    }
   }, [routines])
 }

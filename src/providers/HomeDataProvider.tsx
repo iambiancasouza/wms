@@ -9,6 +9,7 @@ interface HomeDataContextData {
   routines: Routine[]
   completedDates: Date[]
   allProducts: Product[]
+  products: Product[] 
   loading: boolean
   error: Error | null
   refresh: () => Promise<void>
@@ -96,7 +97,15 @@ export function HomeDataProvider({ children }: { children: ReactNode }) {
   }, [user, authLoading, fetchData])
 
   return (
-    <HomeDataContext.Provider value={{ routines, completedDates, allProducts, loading, error, refresh: fetchData }}>
+    <HomeDataContext.Provider value={{ 
+      routines, 
+      completedDates, 
+      allProducts, 
+      products: allProducts, 
+      loading, 
+      error, 
+      refresh: fetchData 
+    }}>
       {children}
     </HomeDataContext.Provider>
   )

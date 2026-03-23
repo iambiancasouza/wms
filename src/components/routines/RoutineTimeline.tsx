@@ -28,25 +28,25 @@ export function RoutineTimeline({ routines }: RoutineTimelineProps) {
 
       <div className="flex flex-col gap-8">
         {groupedRoutines.map((group, groupIndex) => (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: groupIndex * 0.1 }}
-            key={group.originalDate} 
+            key={group.originalDate}
             className="relative w-full"
           >
             {/* Bolinha da Data e Texto (Hoje, Ontem, etc) */}
             <div className="flex items-center gap-4 mb-4">
-              {/* Bolinha Verde com borda para parecer "vazada" */}
+              {/* Bolinha Verde */}
               <div className="w-4 h-4 rounded-full bg-[#3a6b4d]/75 border-2 backdrop-blur-md border-gray-100 -ml-[1.5px]" />
-              
+
               <span className="text-sm font-bold text-[#2f5e42] bg-white/60 px-4 py-1.5 rounded-full backdrop-blur-md border border-[#8ec5a0]/30 shadow-sm">
                 {group.label}
               </span>
             </div>
 
             <div className="flex flex-col gap-4 pl-8">
-              {group.routines.map((routine) => (
+              {group.routines.map(routine => (
                 <RoutineCard key={routine.id} routine={routine} />
               ))}
             </div>
