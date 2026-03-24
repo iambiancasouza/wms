@@ -9,7 +9,7 @@ interface HomeDataContextData {
   routines: Routine[]
   completedDates: Date[]
   allProducts: Product[]
-  products: Product[] 
+  products: Product[]
   loading: boolean
   error: Error | null
   refresh: () => Promise<void>

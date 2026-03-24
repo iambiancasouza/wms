@@ -7,9 +7,13 @@ import { RoutineCard } from './RoutineCard'
 
 interface RoutineTimelineProps {
   routines: Routine[]
+  onRepeatAction?: (routine: Routine) => void
 }
 
-export function RoutineTimeline({ routines }: RoutineTimelineProps) {
+export function RoutineTimeline({
+  routines,
+  onRepeatAction
+}: RoutineTimelineProps) {
   const groupedRoutines = useGroupedRoutines(routines)
 
   if (groupedRoutines.length === 0) {
@@ -47,7 +51,11 @@ export function RoutineTimeline({ routines }: RoutineTimelineProps) {
 
             <div className="flex flex-col gap-4 pl-8">
               {group.routines.map(routine => (
-                <RoutineCard key={routine.id} routine={routine} />
+                <RoutineCard
+                  key={routine.id}
+                  routine={routine}
+                  onRepeatAction={onRepeatAction}
+                />
               ))}
             </div>
           </motion.div>

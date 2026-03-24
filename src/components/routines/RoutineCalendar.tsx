@@ -16,12 +16,12 @@ import { ptBR } from 'date-fns/locale'
 
 interface RoutineCalendarProps {
   completedDates: Date[]
-  // onOpenDayDetailsAction: (date: Date) => void
+  onOpenDayDetailsAction: (date: Date) => void
 }
 
 export function RoutineCalendar({
   completedDates,
-  // onOpenDayDetailsAction
+  onOpenDayDetailsAction
 }: RoutineCalendarProps) {
   const today = new Date()
   const [currentMonth, setCurrentMonth] = useState(startOfMonth(today))
@@ -85,7 +85,7 @@ export function RoutineCalendar({
               className="relative flex flex-col items-center justify-center h-10"
             >
               <button
-                // onClick={() => hasRoutine && onOpenDayDetailsAction(day)}
+                onClick={() => hasRoutine && onOpenDayDetailsAction(day)}
                 disabled={!hasRoutine && !isToday}
                 className={`w-9 h-9 flex items-center justify-center rounded-full text-sm font-bold transition-all
                   ${

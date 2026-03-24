@@ -6,11 +6,10 @@ import { Routine, RoutineProduct } from '@/types/db'
 
 interface RoutineCardProps {
   routine: Routine
-  // onRepeatRoutine: (routine: Routine) => void 
+  onRepeatAction?: (routine: Routine) => void
 }
 
-// onRepeatRoutine
-export function RoutineCard({ routine,  }: RoutineCardProps) {
+export function RoutineCard({ routine, onRepeatAction }: RoutineCardProps) {
   const isMorning = routine.period === 'diurna'
   
   const productsList: RoutineProduct[] = Array.isArray(routine.products) 
@@ -18,10 +17,6 @@ export function RoutineCard({ routine,  }: RoutineCardProps) {
     : typeof routine.products === 'string' 
       ? JSON.parse(routine.products as string) 
       : []
-
-  // const handleRepeatRoutine = () => {
-    // onRepeatRoutine(routine)
-  // }
 
   return (
     <div className="w-full bg-white/60 backdrop-blur-xl border border-[#8ec5a0]/40 rounded-2xl p-4 shadow-[0_4px_20px_rgb(0,0,0,0.03)] transition-all hover:shadow-[0_4px_20px_rgb(0,0,0,0.06)]">
@@ -41,19 +36,17 @@ export function RoutineCard({ routine,  }: RoutineCardProps) {
 
       <div className="mb-5">
         {productsList.length > 0 ? (
-          // Container com scroll horizontal
           <div className="flex gap-0.5 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-[#3a6b4d]/20 scrollbar-track-transparent snap-x">
             {productsList.map((prod, index) => (
               <div 
                 key={prod.id || index}
-                // flex-shrink-0 impede que a foto seja esmagada e snap-start ajuda na rolagem fluida no mobile
                 className="relative flex-shrink-0 snap-start w-12 h-12 rounded-full bg-[#8ec5a0] border-2 border-white flex items-center justify-center shadow-sm overflow-hidden"
                 title={prod.name}
               >
                 {prod.image_url ? (
                   <Image 
                     src={prod.image_url} 
-                    alt={prod.name || 'Produto da rotina'} 
+                    alt={prod.name || 'Produto'} 
                     fill
                     sizes="48px"
                     className="object-cover" 
@@ -72,13 +65,12 @@ export function RoutineCard({ routine,  }: RoutineCardProps) {
       </div>
 
       <button 
-        // onClick={handleRepeatRoutine}
+        onClick={() => onRepeatAction?.(routine)}
         className="w-full py-2.5 bg-[#3a6b4d]/5 hover:bg-[#3a6b4d]/10 text-[#3a6b4d] font-medium text-sm rounded-xl flex items-center justify-center gap-2 transition-colors border border-[#3a6b4d]/10 active:scale-[0.98]"
       >
         <RefreshCcw className="w-4 h-4" />
         Repetir esta rotina hoje
       </button>
-
     </div>
   )
 }

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { X,  Sun, Moon, Loader2, Pencil, ChevronLeft, ChevronRight } from 'lucide-react'
+import { X, Sun, Moon, Loader2, Pencil, ChevronLeft, ChevronRight, RefreshCcw } from 'lucide-react'
 import { format, addDays, subDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { useRoutineHistory } from '@/hooks/useRoutineHistory'
@@ -13,6 +13,7 @@ interface RoutineHistoryModalProps {
   date: Date
   onCloseAction: () => void
   onEditAction?: (period: 'diurna' | 'noturna', products: Product[], routineId?: string, editDate?: Date) => void
+  onRepeatAction?: (routine: Routine) => void
   allProducts: Product[]
   readOnly?: boolean
 }
@@ -21,6 +22,7 @@ export function RoutineHistoryModal({
   date,
   onCloseAction,
   onEditAction,
+  onRepeatAction,
   allProducts,
   readOnly = false,
 }: RoutineHistoryModalProps) {
@@ -95,15 +97,26 @@ export function RoutineHistoryModal({
                     </h3>
                   </div>
                   
-                  {!readOnly && (
-                    <button 
-                      onClick={() => onEditAction?.('diurna', diurnaProducts, rotinaDiurna?.id, currentDate)}
-                      className="p-2 text-gray-400 hover:text-[#c78255] transition-colors rounded-full hover:bg-orange-50 active:scale-95"
-                      title={diurnaProducts.length > 0 ? "Editar Rotina da Manhã" : "Adicionar Rotina da Manhã"}
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </button>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {rotinaDiurna && diurnaProducts.length > 0 && (
+                      <button 
+                        onClick={() => onRepeatAction?.(rotinaDiurna)}
+                        className="p-2 text-gray-400 hover:text-[#3a6b4d] transition-colors rounded-full hover:bg-green-50 active:scale-95"
+                        title="Repetir Rotina da Manhã hoje"
+                      >
+                        <RefreshCcw className="w-4 h-4" />
+                      </button>
+                    )}
+                    {!readOnly && (
+                      <button 
+                        onClick={() => onEditAction?.('diurna', diurnaProducts, rotinaDiurna?.id, currentDate)}
+                        className="p-2 text-gray-400 hover:text-[#c78255] transition-colors rounded-full hover:bg-orange-50 active:scale-95"
+                        title={diurnaProducts.length > 0 ? "Editar Rotina da Manhã" : "Adicionar Rotina da Manhã"}
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-4 w-full">
@@ -159,15 +172,26 @@ export function RoutineHistoryModal({
                     </h3>
                   </div>
 
-                  {!readOnly && (
-                    <button 
-                      onClick={() => onEditAction?.('noturna', noturnaProducts, rotinaNoturna?.id, currentDate)}
-                      className="p-2 text-gray-400 hover:text-[#8695c5] transition-colors rounded-full hover:bg-indigo-50 active:scale-95"
-                      title={noturnaProducts.length > 0 ? "Editar Rotina da Noite" : "Adicionar Rotina da Noite"}
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </button>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {rotinaNoturna && noturnaProducts.length > 0 && (
+                      <button 
+                        onClick={() => onRepeatAction?.(rotinaNoturna)}
+                        className="p-2 text-gray-400 hover:text-[#3a6b4d] transition-colors rounded-full hover:bg-green-50 active:scale-95"
+                        title="Repetir Rotina da Noite hoje"
+                      >
+                        <RefreshCcw className="w-4 h-4" />
+                      </button>
+                    )}
+                    {!readOnly && (
+                      <button 
+                        onClick={() => onEditAction?.('noturna', noturnaProducts, rotinaNoturna?.id, currentDate)}
+                        className="p-2 text-gray-400 hover:text-[#8695c5] transition-colors rounded-full hover:bg-indigo-50 active:scale-95"
+                        title={noturnaProducts.length > 0 ? "Editar Rotina da Noite" : "Adicionar Rotina da Noite"}
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-4 w-full">
