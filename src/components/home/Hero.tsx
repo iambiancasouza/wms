@@ -11,7 +11,7 @@ export function Hero() {
 
   const handleMainAction = () => {
     if (isLoggedIn) {
-      router.push('/')
+      router.push('/collection/newProduct')
     } else {
       router.push('/auth/sign-up')
     }

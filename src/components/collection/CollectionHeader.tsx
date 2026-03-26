@@ -3,7 +3,7 @@
 import { useState, Suspense, useCallback, memo } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { Search, ChevronDown, X, ArrowLeft, Plus } from 'lucide-react'
+import { Search, ChevronDown, X, Plus } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
@@ -127,9 +127,6 @@ function CollectionHeaderContent() {
       <div className="pt-6 pb-6 w-full z-10">
         <div className="container mx-auto px-4 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3 self-start md:self-auto">
-            <Link href="/" aria-label="Voltar para home">
-              <ArrowLeft className="w-5 h-5 text-[#3a6b4d]" />
-            </Link>
             <h1 className="text-xl md:text-2xl font-bold text-[#3a6b4d] font-poppins tracking-tight">
               Minha Coleção
             </h1>

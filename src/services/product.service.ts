@@ -76,7 +76,6 @@ export async function deleteProduct(product: Product) {
   }
 }
 
-// Aquela função vital que usamos lá no routine.service.ts
 export async function openProductsIfClosed(
   supabase: ReturnType<typeof createClient>,
   products: Product[],
@@ -115,4 +114,16 @@ export async function openProductsIfClosed(
       )
     })
   )
+}
+
+export async function getFavoriteProducts() {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('is_favorite', true)
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+  return data as Product[]
 }

@@ -56,10 +56,10 @@ export default function RotinasPage() {
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full min-h-screen px-5 pt-6 pb-24 flex flex-col gap-6"
+        className="w-full min-h-screen px-5 pt-8 pb-20 flex flex-col gap-6"
       >
         <header className="z-10">
-          <h1 className="text-2xl font-bold text-[#2f5e42] font-poppins">Histórico</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-[#3a6b4d] font-poppins tracking-tight">Histórico</h1>
           <p className="text-[#3a6b4d]/70 text-sm mt-1">Sua jornada de autocuidado.</p>
         </header>
 

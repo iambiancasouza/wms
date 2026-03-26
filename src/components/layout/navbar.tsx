@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -77,9 +78,15 @@ export function Navbar() {
       <header className=" hidden md:block h-14 w-full border border-[#e0e8dd] bg-white/60 backdrop-blur-sm rounded-full shadow-md">
         <div className="h-full flex items-center justify-between px-4 sm:px-6">
           <Link href="/" className="flex items-center">
-            <span className="text-lg sm:text-xl font-bold font-poppins bg-gradient-to-r from-[#8ec5a0] via-[#5a9e74] to-[#3a6b4d] text-transparent bg-clip-text">
-              WMS
-            </span>
+           <div className="relative w-[90px] h-[45px]">
+             <Image
+               src="/wms_logo.png"
+               alt="WMS logo"
+               fill
+               priority
+               className="object-contain scale-[3.8] origin-center"
+             />
+           </div>
           </Link>
 
           {/* Central Nav Links - Authenticated Only, hidden on mobile */}

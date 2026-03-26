@@ -32,7 +32,7 @@ function ProductsContent() {
   } = useProducts(query, selectedCategory)
 
   return (
-    <div className="container mx-auto px-4 pb-20 mt-4">
+    <div className="container mx-auto px-5 pb-20 mt-4">
       {editingProduct && (
         <EditProductModal
           product={editingProduct}
