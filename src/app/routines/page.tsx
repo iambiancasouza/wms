@@ -87,16 +87,8 @@ export default function RotinasPage() {
           date={selectedHistoryDate}
           allProducts={allProducts || products || []}
           onCloseAction={() => setSelectedHistoryDate(null)}
-          onRepeatAction={handleRepeatRoutine} 
-          onEditAction={(period, productsToEdit, id, editDate) => {
-            setJournalingConfig({
-              period,
-              targetDate: editDate || selectedHistoryDate,
-              initialProducts: productsToEdit,
-              routineId: id
-            })
-          }}
-        />
+          readOnly={true}
+          />
       )}
 
       {journalingConfig && (

@@ -1,197 +1,35 @@
 'use client'
 
-import { useState, useEffect, useCallback, Suspense } from 'react'
+import { Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { useAuth } from '@/providers/UserAuthProvider'
 import { Button } from '@/components/ui/button'
 import { Package, Plus, ArrowUp, Loader2 } from 'lucide-react'
-import { showToast } from '@/providers/ToasterProvider'
-import { Product } from '@/types/db'
 
 import { EditProductModal } from '@/components/modals/EditProductModal'
 import { DeleteConfirmModal } from '@/components/modals/DeleteConfirmModal'
 import { ProductCard } from '@/components/collection/ProductCard'
 
+import { useProducts } from '@/hooks/useProducts'
+
 function ProductsContent() {
-  const { supabase } = useAuth()
-
   const searchParams = useSearchParams()
-
   const query = searchParams.get('q') || ''
   const selectedCategory = searchParams.get('category') || 'all'
 
-  const [products, setProducts] = useState<Product[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null)
-  const [deletingProduct, setDeletingProduct] = useState<Product | null>(null)
-
-  const [showScrollTop, setShowScrollTop] = useState(false)
-
-  useEffect(() => {
-    const handleScroll = () => setShowScrollTop(window.scrollY > 300)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  const fetchProducts = useCallback(async () => {
-    try {
-      setIsLoading(true)
-
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false })
-
-      if (error) throw error
-
-      setProducts(data ?? [])
-    } catch (error) {
-      console.error(error)
-      showToast.error('Erro ao carregar coleção')
-    } finally {
-      setIsLoading(false)
-    }
-  }, [supabase])
-
-  useEffect(() => {
-    fetchProducts()
-  }, [fetchProducts])
-
-  const confirmDelete = async () => {
-    const product = deletingProduct
-    if (!product) return
-
-    try {
-      const {
-        data: { user }
-      } = await supabase.auth.getUser()
-
-      let durationMsg = ''
-
-      if (user) {
-        let diffDays = 0
-
-        if (product.opened_at) {
-          const start = new Date(product.opened_at)
-          const diffTime = Math.abs(Date.now() - start.getTime())
-          diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-          durationMsg = `Duração: ${diffDays} dias.`
-        }
-
-        await supabase.from('finished_products').insert({
-          user_id: user.id,
-          name: product.name,
-          brand: product.brand,
-          image_url: product.image_url,
-          category: product.category,
-          started_at: product.opened_at,
-          finished_at: new Date().toISOString(),
-          duration_days: diffDays || null,
-          review: product.review
-        })
-      }
-
-      const currentQty = product.quantity ?? 1
-
-      if (currentQty > 1) {
-        const newQty = currentQty - 1
-
-        const { error } = await supabase
-          .from('products')
-          .update({
-            quantity: newQty,
-            status: 'closed',
-            opened_at: null,
-            expiry_date: null
-          })
-          .eq('id', product.id)
-
-        if (error) throw error
-
-        setProducts(current =>
-          current.map(p =>
-            p.id === product.id
-              ? {
-                  ...p,
-                  quantity: newQty,
-                  status: 'closed',
-                  opened_at: null,
-                  expiry_date: null
-                }
-              : p
-          )
-        )
-
-        showToast.success(
-          `1 unidade finalizada. ${durationMsg || 'Estoque atualizado.'}`
-        )
-      } else {
-        const { error } = await supabase
-          .from('products')
-          .delete()
-          .eq('id', product.id)
-
-        if (error) throw error
-
-        setProducts(current => current.filter(p => p.id !== product.id))
-        showToast.success(`Produto finalizado! ${durationMsg}`)
-      }
-    } catch (error) {
-      console.error(error)
-      showToast.error('Erro ao processar')
-    } finally {
-      setDeletingProduct(null)
-    }
-  }
-
-  const toggleFavorite = async (product: Product) => {
-    const newStatus = !product.is_favorite
-
-    setProducts(current =>
-      current.map(p =>
-        p.id === product.id ? { ...p, is_favorite: newStatus } : p
-      )
-    )
-
-    try {
-      const { error } = await supabase
-        .from('products')
-        .update({ is_favorite: newStatus })
-        .eq('id', product.id)
-
-      if (error) throw error
-
-      if (newStatus) {
-        showToast.success('Adicionado aos favoritos 💚')
-      } else {
-        showToast.default('Removido dos favoritos')
-      }
-    } catch {
-      setProducts(current =>
-        current.map(p =>
-          p.id === product.id ? { ...p, is_favorite: !newStatus } : p
-        )
-      )
-      showToast.error('Erro ao atualizar favorito')
-    }
-  }
-
-  const filteredProducts = products.filter(product => {
-    const matchesQuery =
-      product.name.toLowerCase().includes(query.toLowerCase()) ||
-      (product.brand ?? '').toLowerCase().includes(query.toLowerCase())
-
-    const matchesCategory =
-      selectedCategory === 'all' || product.category === selectedCategory
-
-    return matchesQuery && matchesCategory
-  })
+  const {
+    filteredProducts,
+    isLoading,
+    editingProduct,
+    setEditingProduct,
+    deletingProduct,
+    setDeletingProduct,
+    showScrollTop,
+    scrollToTop,
+    fetchProducts,
+    confirmDelete,
+    toggleFavorite
+  } = useProducts(query, selectedCategory)
 
   return (
     <div className="container mx-auto px-4 pb-20 mt-4">
@@ -270,7 +108,7 @@ function ProductsContent() {
 
       <button
         onClick={scrollToTop}
-        className={`fixed bottom-[68] right-8 z-20 p-3 rounded-full shadow-xl bg-[#8ec5a0] text-white hover:bg-[#5a9e74]/10 hover:scale-110 transition-all duration-300 border border-white/20 ${
+        className={`fixed bottom-[68px] right-8 z-20 p-3 rounded-full shadow-xl bg-[#8ec5a0] text-white hover:bg-[#5a9e74]/10 hover:scale-110 transition-all duration-300 border border-white/20 ${
           showScrollTop
             ? 'opacity-100 translate-y-0'
             : 'opacity-0 translate-y-10 pointer-events-none'

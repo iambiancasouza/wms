@@ -24,7 +24,7 @@ export async function createRoutine(
 
   if (error) throw error
 
-  await openProductsIfClosed(products, routineDate)
+  await openProductsIfClosed(supabase, products, routineDate)
 }
 
 export async function updateRoutine(
@@ -45,7 +45,7 @@ export async function updateRoutine(
 
   if (error) throw error
 
-  await openProductsIfClosed(products, routineDate)
+  await openProductsIfClosed(supabase, products, routineDate)
 }
 
 export async function deleteRoutine(routineId: string) {

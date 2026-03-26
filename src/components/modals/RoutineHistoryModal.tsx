@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { X, Sun, Moon, Loader2, Pencil, ChevronLeft, ChevronRight, RefreshCcw } from 'lucide-react'
+import { X, Sun, Moon, Loader2, Pencil, ChevronLeft, ChevronRight } from 'lucide-react'
 import { format, addDays, subDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { useRoutineHistory } from '@/hooks/useRoutineHistory'
@@ -13,7 +13,6 @@ interface RoutineHistoryModalProps {
   date: Date
   onCloseAction: () => void
   onEditAction?: (period: 'diurna' | 'noturna', products: Product[], routineId?: string, editDate?: Date) => void
-  onRepeatAction?: (routine: Routine) => void
   allProducts: Product[]
   readOnly?: boolean
 }
@@ -22,7 +21,6 @@ export function RoutineHistoryModal({
   date,
   onCloseAction,
   onEditAction,
-  onRepeatAction,
   allProducts,
   readOnly = false,
 }: RoutineHistoryModalProps) {
@@ -30,11 +28,11 @@ export function RoutineHistoryModal({
 
   const { routines, loading } = useRoutineHistory(currentDate)
 
-  const rotinaDiurna = routines.find((r: Routine) => r.period === 'diurna')
-  const rotinaNoturna = routines.find((r: Routine) => r.period === 'noturna')
+  const morningRoutine = routines.find((r: Routine) => r.period === 'diurna')
+  const eveningRoutine = routines.find((r: Routine) => r.period === 'noturna')
 
-  const diurnaProducts = (rotinaDiurna?.products as unknown as Product[]) || []
-  const noturnaProducts = (rotinaNoturna?.products as unknown as Product[]) || []
+  const morningProducts = (morningRoutine?.products as unknown as Product[]) || []
+  const eveningProducts = (eveningRoutine?.products as unknown as Product[]) || []
 
   return (
     <div className="fixed inset-0 z-[120] bg-[#f0f5ed] animate-in slide-in-from-bottom duration-500 overflow-y-auto no-scrollbar">
@@ -86,6 +84,7 @@ export function RoutineHistoryModal({
           ) : (
             <div className="space-y-6">
               
+              {/* --- ROTINA DA MANHÃ --- */}
               <div className="bg-white/80 backdrop-blur-xl border border-white rounded-[32px] p-6 shadow-sm space-y-5">
                 <div className="flex items-center justify-between border-b border-gray-100 pb-4">
                   <div className="flex items-center gap-3">
@@ -98,20 +97,11 @@ export function RoutineHistoryModal({
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    {rotinaDiurna && diurnaProducts.length > 0 && (
+                    {!readOnly && onEditAction && (
                       <button 
-                        onClick={() => onRepeatAction?.(rotinaDiurna)}
-                        className="p-2 text-gray-400 hover:text-[#3a6b4d] transition-colors rounded-full hover:bg-green-50 active:scale-95"
-                        title="Repetir Rotina da Manhã hoje"
-                      >
-                        <RefreshCcw className="w-4 h-4" />
-                      </button>
-                    )}
-                    {!readOnly && (
-                      <button 
-                        onClick={() => onEditAction?.('diurna', diurnaProducts, rotinaDiurna?.id, currentDate)}
+                        onClick={() => onEditAction('diurna', morningProducts, morningRoutine?.id, currentDate)}
                         className="p-2 text-gray-400 hover:text-[#c78255] transition-colors rounded-full hover:bg-orange-50 active:scale-95"
-                        title={diurnaProducts.length > 0 ? "Editar Rotina da Manhã" : "Adicionar Rotina da Manhã"}
+                        title={morningProducts.length > 0 ? "Editar Rotina da Manhã" : "Adicionar Rotina da Manhã"}
                       >
                         <Pencil className="w-4 h-4" />
                       </button>
@@ -120,8 +110,8 @@ export function RoutineHistoryModal({
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-4 w-full">
-                  {diurnaProducts.length > 0 ? (
-                    diurnaProducts.map((item: Product) => {
+                  {morningProducts.length > 0 ? (
+                    morningProducts.map((item: Product) => {
                       const freshProduct = (allProducts || []).find(p => p.id === item.id) || item;
 
                       return (
@@ -153,7 +143,7 @@ export function RoutineHistoryModal({
                   ) : (
                     <div className="flex flex-col items-center justify-center py-4 text-gray-400 w-full text-center">
                       <p className="text-sm font-medium">Nenhum produto registado.</p>
-                      {!readOnly && (
+                      {!readOnly && onEditAction && (
                         <p className="text-[10px] mt-1 tracking-wide uppercase text-gray-300">Clique no lápis para adicionar</p>
                       )}
                     </div>
@@ -161,6 +151,7 @@ export function RoutineHistoryModal({
                 </div>
               </div>
 
+              {/* --- ROTINA DA NOITE --- */}
               <div className="bg-white/80 backdrop-blur-xl border border-white rounded-[32px] p-6 shadow-sm space-y-5">
                 <div className="flex items-center justify-between border-b border-gray-100 pb-4">
                   <div className="flex items-center gap-3">
@@ -173,20 +164,11 @@ export function RoutineHistoryModal({
                   </div>
 
                   <div className="flex items-center gap-2">
-                    {rotinaNoturna && noturnaProducts.length > 0 && (
+                    {!readOnly && onEditAction && (
                       <button 
-                        onClick={() => onRepeatAction?.(rotinaNoturna)}
-                        className="p-2 text-gray-400 hover:text-[#3a6b4d] transition-colors rounded-full hover:bg-green-50 active:scale-95"
-                        title="Repetir Rotina da Noite hoje"
-                      >
-                        <RefreshCcw className="w-4 h-4" />
-                      </button>
-                    )}
-                    {!readOnly && (
-                      <button 
-                        onClick={() => onEditAction?.('noturna', noturnaProducts, rotinaNoturna?.id, currentDate)}
+                        onClick={() => onEditAction('noturna', eveningProducts, eveningRoutine?.id, currentDate)}
                         className="p-2 text-gray-400 hover:text-[#8695c5] transition-colors rounded-full hover:bg-indigo-50 active:scale-95"
-                        title={noturnaProducts.length > 0 ? "Editar Rotina da Noite" : "Adicionar Rotina da Noite"}
+                        title={eveningProducts.length > 0 ? "Editar Rotina da Noite" : "Adicionar Rotina da Noite"}
                       >
                         <Pencil className="w-4 h-4" />
                       </button>
@@ -195,8 +177,8 @@ export function RoutineHistoryModal({
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-4 w-full">
-                  {noturnaProducts.length > 0 ? (
-                    noturnaProducts.map((item: Product) => {
+                  {eveningProducts.length > 0 ? (
+                    eveningProducts.map((item: Product) => {
                       const freshProduct = (allProducts || []).find(p => p.id === item.id) || item;
 
                       return (
@@ -228,7 +210,7 @@ export function RoutineHistoryModal({
                   ) : (
                     <div className="flex flex-col items-center justify-center py-4 text-gray-400 w-full text-center">
                       <p className="text-sm font-medium">Nenhum produto registado.</p>
-                      {!readOnly && (
+                      {!readOnly && onEditAction && (
                         <p className="text-[10px] mt-1 tracking-wide uppercase text-gray-300">Clique no lápis para adicionar</p>
                       )}
                     </div>
