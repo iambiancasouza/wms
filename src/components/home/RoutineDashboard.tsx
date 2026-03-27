@@ -41,7 +41,6 @@ export function RoutineDashboard({
 
   const startDayIndex = getDay(monthStart)
   const emptyDays = Array.from({ length: startDayIndex }, (_, i) => i)
-  const firstRowDays = daysInMonth.slice(0, 30 - startDayIndex)
 
   const hasDiurna = todayRoutines.some(r => r.period === 'diurna')
   const hasNoturna = todayRoutines.some(r => r.period === 'noturna')
@@ -85,21 +84,21 @@ export function RoutineDashboard({
                   </button>
                 </div>
 
-                <div className="grid grid-cols-7 gap-y-2 gap-x-1 text-center">
+                <div className="grid grid-cols-7 gap-y-2 gap-x-1 text-center transition-[height] duration-200 ease-out">
                   {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((d, i) => (
                     <span
                       key={`header-${i}`}
-                      className="text-[10px] font-black text-[#3a6b4d]/60 mb-1"
+                      className="flex h-5 items-center justify-center text-[10px] font-black text-[#3a6b4d]/60"
                     >
                       {d}
                     </span>
                   ))}
 
                   {emptyDays.map(empty => (
-                    <div key={`empty-${empty}`} />
+                    <div key={`empty-${empty}`} className="h-8" />
                   ))}
 
-                  {firstRowDays.map(day => {
+                  {daysInMonth.map(day => {
                     const isToday = isSameDay(day, today)
                     const hasRoutine = completedDates.some(d =>
                       isSameDay(d, day)
@@ -108,29 +107,25 @@ export function RoutineDashboard({
                     return (
                       <div
                         key={day.toString()}
-                        className="relative flex flex-col items-center justify-center h-8"
+                        className="relative flex h-8 flex-col items-center justify-center"
                       >
                         <button
                           onClick={() =>
                             hasRoutine && onOpenDayDetailsAction(day)
                           }
-                          disabled={!hasRoutine && !isToday}
+                          disabled={!hasRoutine}
                           className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold transition-all
                           ${
                             isToday
                               ? 'bg-[#3a6b4d]/70 text-white shadow-md'
                               : hasRoutine
-                                ? 'text-gray-400 cursor-pointer hover:bg-[#3a6b4d]/20 active:scale-95'
+                                ? 'text-gray-400 cursor-pointer bg-[#3a6b4d]/10 active:scale-95'
                                 : 'text-gray-500 cursor-default opacity-50 hover:opacity-100'
                           } 
                         `}
                         >
                           {format(day, 'd')}
                         </button>
-
-                        {hasRoutine && !isToday && (
-                          <div className="absolute bottom-[0] w-[5px] h-[5px] bg-[#3a6b4d]/30 rounded-full" />
-                        )}
                       </div>
                     )
                   })}
