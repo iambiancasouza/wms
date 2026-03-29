@@ -113,7 +113,7 @@ export function RoutineDashboard({
                           onClick={() =>
                             hasRoutine && onOpenDayDetailsAction(day)
                           }
-                          disabled={!hasRoutine}
+                          aria-disabled={!hasRoutine}
                           className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold transition-all
                           ${
                             isToday
