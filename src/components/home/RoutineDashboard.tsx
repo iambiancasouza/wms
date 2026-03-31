@@ -8,7 +8,7 @@ import {
   startOfMonth,
   endOfMonth,
   eachDayOfInterval,
-  isSameDay,
+  startOfDay,
   addMonths,
   subMonths,
   getDay
@@ -29,8 +29,10 @@ export function RoutineDashboard({
   onOpenJournalingAction,
   onOpenDayDetailsAction
 }: RoutineDashboardProps) {
-  const today = new Date()
-  const [currentMonth, setCurrentMonth] = useState(startOfMonth(today))
+  const [today] = useState(() => startOfDay(new Date()))
+  const [currentMonth, setCurrentMonth] = useState(() =>
+    startOfMonth(startOfDay(new Date()))
+  )
 
   const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1))
   const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1))
@@ -41,6 +43,7 @@ export function RoutineDashboard({
 
   const startDayIndex = getDay(monthStart)
   const emptyDays = Array.from({ length: startDayIndex }, (_, i) => i)
+  const todayKey = format(today, 'yyyy-MM-dd')
 
   const hasDiurna = todayRoutines.some(r => r.period === 'diurna')
   const hasNoturna = todayRoutines.some(r => r.period === 'noturna')
@@ -99,9 +102,10 @@ export function RoutineDashboard({
                   ))}
 
                   {daysInMonth.map(day => {
-                    const isToday = isSameDay(day, today)
+                    const dayKey = format(day, 'yyyy-MM-dd')
+                    const isToday = dayKey === todayKey
                     const hasRoutine = completedDates.some(d =>
-                      isSameDay(d, day)
+                      format(d, 'yyyy-MM-dd') === dayKey
                     )
 
                     return (
