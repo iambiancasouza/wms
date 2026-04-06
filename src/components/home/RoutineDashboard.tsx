@@ -48,8 +48,11 @@ export function RoutineDashboard({
   const hasDiurna = todayRoutines.some(r => r.period === 'diurna')
   const hasNoturna = todayRoutines.some(r => r.period === 'noturna')
 
+  const getDateKey = (date: Date): string => {
+    return format(startOfDay(date), 'yyyy-MM-dd')
+  }
+
   return (
-   
     <section className="relative w-full py-6 z-30">
       <div className="container mx-auto px-6 relative z-10">
         <h3 className="text-lg md:text-xl lg:text-2xl font-black text-[#3a6b4d]/75 uppercase tracking-[0.1em] mb-5 text-center">
@@ -102,10 +105,10 @@ export function RoutineDashboard({
                   ))}
 
                   {daysInMonth.map(day => {
-                    const dayKey = format(day, 'yyyy-MM-dd')
+                    const dayKey = getDateKey(day)
                     const isToday = dayKey === todayKey
-                    const hasRoutine = completedDates.some(d =>
-                      format(d, 'yyyy-MM-dd') === dayKey
+                    const hasRoutine = completedDates.some(
+                      d => getDateKey(d) === dayKey
                     )
 
                     return (
@@ -117,7 +120,6 @@ export function RoutineDashboard({
                           onClick={() =>
                             hasRoutine && onOpenDayDetailsAction(day)
                           }
-                          aria-disabled={!hasRoutine}
                           className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold transition-all
                           ${
                             isToday
