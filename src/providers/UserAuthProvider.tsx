@@ -11,6 +11,7 @@ import {
 } from 'react'
 import { User } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/client'
+import { withTimeout } from '@/lib/async'
 import type { Database } from '@/types/database.types'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
@@ -38,17 +39,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchProfile = useCallback(
     async (userId: string) => {
       try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', userId)
-          .single()
+        const { data, error } = await withTimeout(
+          supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', userId)
+            .single(),
+          8000,
+          'Tempo esgotado ao buscar perfil'
+        )
 
         if (!error && data) {
           setProfile(data as Profile)
         }
       } catch (error) {
         console.error('Erro ao buscar perfil:', error)
+        setProfile(null)
       }
     },
     [supabase]
@@ -58,12 +64,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (sessionUser: User | null) => {
       if (sessionUser) {
         setUser(sessionUser)
+        setIsLoading(false)
         await fetchProfile(sessionUser.id)
       } else {
         setUser(null)
         setProfile(null)
+        setIsLoading(false)
       }
-      setIsLoading(false)
     },
     [fetchProfile]
   )
@@ -76,7 +83,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const {
           data: { session },
           error
-        } = await supabase.auth.getSession()
+        } = await withTimeout(
+          supabase.auth.getSession(),
+          8000,
+          'Tempo esgotado ao restaurar sessao'
+        )
         if (mounted && session?.user && !error) {
           await handleAuthStateChange(session.user)
         } else if (mounted) {

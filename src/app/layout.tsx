@@ -14,7 +14,6 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Where's My Skincare",
   description: 'Sua rotina de skincare merece esse cuidado a mais.',
-  manifest: '/manifest.json',
   icons: {
     apple: '/icons/apple-touch-icon.png'
   },

@@ -1,58 +1,19 @@
 'use client'
 
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { X, Menu, LogOut } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/providers/UserAuthProvider'
 // import { Notifications } from '@/components/layout/Notifications'
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [userName, setUserName] = useState<string | null>(null)
-
   const pathname = usePathname()
   const router = useRouter()
-  const supabase = createClient()
-
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const getUserName = (user: any) => {
-      if (!user) return null
-      if (user.user_metadata?.full_name) {
-        return user.user_metadata.full_name.split(' ')[0]
-      }
-      return user.email?.split('@')[0]
-    }
-
-    const checkAuth = async () => {
-      const {
-        data: { user }
-      } = await supabase.auth.getUser()
-      setIsAuthenticated(!!user)
-      setUserName(getUserName(user))
-    }
-
-    checkAuth()
-
-    const {
-      data: { subscription }
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      setIsAuthenticated(!!session?.user)
-      setUserName(getUserName(session?.user))
-
-      if (event === 'SIGNED_OUT') {
-        router.refresh()
-      }
-    })
-
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [router, supabase])
+  const { isLoggedIn, userName, supabase } = useAuth()
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
@@ -90,7 +51,7 @@ export function Navbar() {
           </Link>
 
           {/* Central Nav Links - Authenticated Only, hidden on mobile */}
-          {isAuthenticated && (
+          {isLoggedIn && (
             <nav className="hidden md:flex items-center justify-center flex-grow gap-8">
               <Link
                 href="/"
@@ -126,7 +87,7 @@ export function Navbar() {
           )}
 
           <div className="flex items-center gap-8">
-            {!isAuthenticated ? (
+            {!isLoggedIn ? (
               <div className="hidden md:flex items-center gap-5">
                 <Link
                   href="/auth/login"
@@ -171,7 +132,7 @@ export function Navbar() {
             )}
             {/* Mobile menu toggle - visible only on mobile (md:hidden) */}
             <div className="md:hidden flex gap-0.5 items-center">
-              isAuthenticated &&
+              {isLoggedIn && (
               <button
                 className="p-1"
                 onClick={toggleMenu}
@@ -183,6 +144,7 @@ export function Navbar() {
                   <Menu className="text-[#3a6b4d]" size={24} />
                 )}
               </button>
+              )}
             </div>{' '}
           </div>
         </div>
@@ -192,7 +154,7 @@ export function Navbar() {
       {isMenuOpen && (
         <div className="lg:hidden absolute top-[4.25rem] left-2 right-2 sm:left-4 sm:right-4 bg-white bg-opacity-95 backdrop-blur-sm border border-[#e0e8dd] z-40 shadow-md rounded-2xl mt-1">
           <nav className="py-4 px-4 flex flex-col space-y-4">
-            {isAuthenticated && (
+            {isLoggedIn && (
               <div className="px-2 pb-2 text-sm text-gray-500 border-b border-gray-100 mb-2">
                 Bem vindo,{' '}
                 <span className="font-semibold text-[#3a6b4d]">{userName}</span>
@@ -207,7 +169,7 @@ export function Navbar() {
               Home
             </Link>
 
-            {isAuthenticated && (
+            {isLoggedIn && (
               <>
                 <Link
                   href="/collection"
@@ -226,7 +188,7 @@ export function Navbar() {
               </>
             )}
 
-            {!isAuthenticated ? (
+            {!isLoggedIn ? (
               <>
                 <Link
                   href="/auth/login"

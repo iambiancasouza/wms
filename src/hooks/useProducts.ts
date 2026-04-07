@@ -1,9 +1,12 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Product } from '@/types/db'
 import { showToast } from '@/providers/ToasterProvider'
+import { useAuth } from '@/providers/UserAuthProvider'
+import { withTimeout } from '@/lib/async'
 import { getProducts, toggleFavoriteProduct, deleteProduct } from '@/services/product.service'
 
 export function useProducts(query: string, selectedCategory: string) {
+  const { user, isLoading: authLoading } = useAuth()
   const [products, setProducts] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -22,9 +25,19 @@ export function useProducts(query: string, selectedCategory: string) {
   }
 
   const fetchProducts = useCallback(async () => {
+    if (!user) {
+      setProducts([])
+      setIsLoading(false)
+      return
+    }
+
     try {
       setIsLoading(true)
-      const data = await getProducts()
+      const data = await withTimeout(
+        getProducts(),
+        10000,
+        'Tempo esgotado ao carregar produtos'
+      )
       setProducts(data)
     } catch (error) {
       console.error(error)
@@ -32,11 +45,12 @@ export function useProducts(query: string, selectedCategory: string) {
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [user])
 
   useEffect(() => {
+    if (authLoading) return
     fetchProducts()
-  }, [fetchProducts])
+  }, [authLoading, fetchProducts])
 
   const confirmDelete = async () => {
     if (!deletingProduct) return
