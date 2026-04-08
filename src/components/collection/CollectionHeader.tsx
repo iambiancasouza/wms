@@ -142,7 +142,7 @@ function CollectionHeaderContent() {
                 onChange={e => handleSearch(e.target.value)}
               />
             </div>
-            <Link href="/collection/newProduct">
+            <Link href="/collection/newProduct" prefetch={false}>
               <Button
                 size="icon"
                 className="rounded-full bg-[#3a6b4d] hover:bg-[#2a4f3a] text-white shadow-sm w-10 h-10 transition-all hover:scale-105 active:scale-95"
@@ -179,6 +179,7 @@ function CollectionHeaderContent() {
             </button>
             <Link
               href="/collection/procedures"
+              prefetch={false}
               className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 text-center flex items-center justify-center ${
                 isProcedures
                   ? 'bg-white text-[#3a6b4d] shadow-sm'

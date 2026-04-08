@@ -8,7 +8,7 @@ import { useNotifications } from '@/hooks/useNotifications'
 
 export function MobileHeader() {
   const { isLoggedIn, userName } = useAuth()
-  const { unreadCount } = useNotifications()
+  const { unreadCount } = useNotifications(isLoggedIn)
 
   const displayName =
     isLoggedIn && userName ? userName.split(' ')[0] : 'Skin lover'

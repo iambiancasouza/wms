@@ -1,13 +1,21 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Product } from '@/types/db'
 import { showToast } from '@/providers/ToasterProvider'
+import { useAuth } from '@/providers/UserAuthProvider'
 import { getFavoriteProducts, toggleFavoriteProduct } from '@/services/product.service'
 
 export function useFavorites() {
+  const { user, isLoading: authLoading } = useAuth()
   const [favorites, setFavorites] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   const fetchFavorites = useCallback(async () => {
+    if (!user) {
+      setFavorites([])
+      setIsLoading(false)
+      return
+    }
+
     try {
       setIsLoading(true)
       const data = await getFavoriteProducts()
@@ -18,11 +26,12 @@ export function useFavorites() {
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [user])
 
   useEffect(() => {
+    if (authLoading) return
     fetchFavorites()
-  }, [fetchFavorites])
+  }, [authLoading, fetchFavorites])
 
   const removeFavorite = async (product: Product) => {
     setFavorites(current => current.filter(p => p.id !== product.id))

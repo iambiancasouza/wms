@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { useHomeData } from '@/providers/HomeDataProvider'
+import { HomeDataProvider, useHomeData } from '@/providers/HomeDataProvider'
 import { motion } from 'framer-motion'
 import { StreakCard } from '@/components/routines/StreakCard'
 import { ViewToggle } from '@/components/routines/ViewToggle'
@@ -20,7 +20,7 @@ interface JournalingConfig {
   routineId?: string
 }
 
-export default function RotinasPage() {
+function RoutinesContent() {
   const { routines, loading, products, allProducts } = useHomeData()
   const [view, setView] = useState<ViewMode>('timeline')
   const [selectedHistoryDate, setSelectedHistoryDate] = useState<Date | null>(null)
@@ -103,5 +103,13 @@ export default function RotinasPage() {
         />
       )}
     </>
+  )
+}
+
+export default function RotinasPage() {
+  return (
+    <HomeDataProvider>
+      <RoutinesContent />
+    </HomeDataProvider>
   )
 }
