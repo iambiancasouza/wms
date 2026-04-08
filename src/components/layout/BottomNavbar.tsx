@@ -51,6 +51,7 @@ export function BottomNavbar() {
               <Link
                 key={item.path}
                 href={item.path}
+                prefetch={false}
                 onClick={e => handleNavigation(e, item.isProtected, item.label)}
                 className="flex flex-col items-center py-1 px-3 relative outline-none group"
               >

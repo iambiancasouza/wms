@@ -7,11 +7,11 @@ import { Hero } from '@/components/home/Hero'
 import { RoutineDashboard } from '@/components/home/RoutineDashboard'
 import { JournalingModal } from '@/components/modals/JournalingModal'
 import { RoutineHistoryModal } from '@/components/modals/RoutineHistoryModal'
-import { useHomeData } from '@/providers/HomeDataProvider'
+import { HomeDataProvider, useHomeData } from '@/providers/HomeDataProvider'
 import { Product } from '@/types/db'
 import { format } from 'date-fns'
 
-export default function Home() {
+function HomeContent() {
   const { routines, completedDates, allProducts, refresh } = useHomeData()
 
   const today = new Date()
@@ -118,5 +118,13 @@ export default function Home() {
         />
       )}
     </main>
+  )
+}
+
+export default function Home() {
+  return (
+    <HomeDataProvider>
+      <HomeContent />
+    </HomeDataProvider>
   )
 }

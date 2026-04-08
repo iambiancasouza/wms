@@ -7,11 +7,17 @@ import { Database } from '@/types/database.types'
 type Notification =
   Database['public']['Tables']['notifications']['Row']
 
-export function useNotifications() {
+export function useNotifications(enabled = true) {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
 
   useEffect(() => {
+    if (!enabled) {
+      setNotifications([])
+      setUnreadCount(0)
+      return
+    }
+
     const supabase = createClient()
     let mounted = true
 
@@ -37,7 +43,7 @@ export function useNotifications() {
     return () => {
       mounted = false
     }
-  }, [])
+  }, [enabled])
 
   return {
     notifications,

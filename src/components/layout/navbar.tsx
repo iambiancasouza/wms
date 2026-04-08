@@ -38,7 +38,7 @@ export function Navbar() {
     <div className="w-full px-2 sm:px-4 pt-3 relative z-50">
       <header className=" hidden md:block h-14 w-full border border-[#e0e8dd] bg-white/60 backdrop-blur-sm rounded-full shadow-md">
         <div className="h-full flex items-center justify-between px-4 sm:px-6">
-          <Link href="/" className="flex items-center">
+          <Link href="/" prefetch={false} className="flex items-center">
            <div className="relative w-[90px] h-[45px]">
              <Image
                src="/wms_logo.png"
@@ -55,6 +55,7 @@ export function Navbar() {
             <nav className="hidden md:flex items-center justify-center flex-grow gap-8">
               <Link
                 href="/"
+                prefetch={false}
                 className={`px-4 py-2 transition-colors duration-300 ease-in-out text-sm font-medium ${
                   isActive('/')
                     ? 'text-[#3a6b4d]'
@@ -65,6 +66,7 @@ export function Navbar() {
               </Link>
               <Link
                 href="/collection"
+                prefetch={false}
                 className={`px-4 py-2 transition-colors duration-300 ease-in-out text-sm font-medium ${
                   isActive('/collection')
                     ? 'text-[#3a6b4d]'
@@ -75,6 +77,7 @@ export function Navbar() {
               </Link>
               <Link
                 href="/favorites"
+                prefetch={false}
                 className={`px-4 py-2 transition-colors duration-300 ease-in-out text-sm font-medium ${
                   isActive('/collection')
                     ? 'text-[#3a6b4d]'
@@ -91,6 +94,7 @@ export function Navbar() {
               <div className="hidden md:flex items-center gap-5">
                 <Link
                   href="/auth/login"
+                  prefetch={false}
                   className="group relative px-4 py-2 transition-all duration-500 ease-in-out"
                 >
                   <span className="absolute inset-0 w-full h-full rounded-full bg-[#3a6b4d]/10 border border-[#3a6b4d]/30 backdrop-blur-md shadow-[0_0_15px_rgba(58,107,77,0.2)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out z-0"></span>
@@ -100,6 +104,7 @@ export function Navbar() {
                 </Link>
                 <Link
                   href="/auth/sign-up"
+                  prefetch={false}
                   className="group relative px-4 py-2 transition-all duration-500 ease-in-out"
                 >
                   <span className="absolute inset-0 w-full h-full rounded-full bg-[#3a6b4d]/10 border border-[#3a6b4d]/30 backdrop-blur-md shadow-[0_0_15px_rgba(58,107,77,0.2)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out z-0"></span>
@@ -163,6 +168,7 @@ export function Navbar() {
 
             <Link
               href="/"
+              prefetch={false}
               className={`text-sm font-medium ${isActive('/') ? 'text-[#3a6b4d] bg-[#f0f5ed]' : 'text-gray-500'} hover:text-[#5a9e74] hover:bg-[#f0f5ed] p-2 rounded-md transition-colors`}
               onClick={() => setIsMenuOpen(false)}
             >
@@ -173,6 +179,7 @@ export function Navbar() {
               <>
                 <Link
                   href="/collection"
+                  prefetch={false}
                   className={`text-sm font-medium ${isActive('/collection') ? 'text-[#3a6b4d] bg-[#f0f5ed]' : 'text-gray-500'} hover:text-[#5a9e74] hover:bg-[#f0f5ed] p-2 rounded-md transition-colors`}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -180,6 +187,7 @@ export function Navbar() {
                 </Link>
                 <Link
                   href="/favorites"
+                  prefetch={false}
                   className={`text-sm font-medium ${isActive('/collection') ? 'text-[#3a6b4d] bg-[#f0f5ed]' : 'text-gray-500'} hover:text-[#5a9e74] hover:bg-[#f0f5ed] p-2 rounded-md transition-colors`}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -192,6 +200,7 @@ export function Navbar() {
               <>
                 <Link
                   href="/auth/login"
+                  prefetch={false}
                   className="text-sm font-medium text-gray-500 hover:text-[#5a9e74] hover:bg-[#f0f5ed] p-2 rounded-md transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -199,6 +208,7 @@ export function Navbar() {
                 </Link>
                 <Link
                   href="/auth/sign-up"
+                  prefetch={false}
                   className="text-sm font-medium text-white bg-gradient-to-r from-[#8ec5a0] to-[#5a9e74] hover:from-[#7ab88f] hover:to-[#4a8a63] p-2 rounded-md transition-colors text-center"
                   onClick={() => setIsMenuOpen(false)}
                 >
