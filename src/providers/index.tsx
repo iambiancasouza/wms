@@ -15,7 +15,6 @@ export function GlobalProviders({ children }: GlobalProvidersProps) {
       <OnboardingProvider>
         <HomeDataProvider> 
           {children}
-          <ToasterProvider />
         </HomeDataProvider>
         <ToasterProvider />
       </OnboardingProvider>
