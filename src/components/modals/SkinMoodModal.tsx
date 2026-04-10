@@ -31,7 +31,7 @@ export function SkinMoodModal({ open, onCloseAction, onSelectAction }: Props) {
           <button onClick={() => onSelectAction("good")}>Radiante</button>
           <button onClick={() => onSelectAction("dry")}>Ressecada</button>
           <button onClick={() => onSelectAction("oily")}>Oleosa</button>
-          <button onClick={() => onSelectAction("acne")}>Acne</button>
+          <button onClick={() => onSelectAction("acne")}>Acnéica</button>
           <button onClick={() => onSelectAction("sensitive")}>Sensível</button>
           <button onClick={() => onSelectAction("dull")}>Opaca</button>
 
