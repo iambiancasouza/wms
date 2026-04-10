@@ -10,6 +10,7 @@ import { RoutineCalendar } from '@/components/routines/RoutineCalendar'
 import { RoutineHistoryModal } from '@/components/modals/RoutineHistoryModal'
 import { JournalingModal } from '@/components/modals/JournalingModal'
 import { Product, Routine } from '@/types/db'
+import { parseDateKey } from '@/lib/date'
 
 type ViewMode = 'timeline' | 'calendar'
 
@@ -30,10 +31,7 @@ function RoutinesContent() {
     if (!routines) return []
     return routines
       .filter(r => r.routine_date)
-      .map(r => {
-        const [year, month, day] = (r.routine_date as string).split('-').map(Number)
-        return new Date(year, month - 1, day)
-      })
+      .map(r => parseDateKey(r.routine_date as string))
   }, [routines])
 
   const handleRepeatRoutine = (routine: Routine) => {

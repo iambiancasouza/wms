@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Routine } from '@/types/db'
 import { getRoutineHistory } from '@/services/routineHistory.service'
+import { formatDateKey } from '@/lib/date'
 
 export function useRoutineHistory(date: Date) {
   const supabase = createClient()
@@ -17,7 +18,7 @@ export function useRoutineHistory(date: Date) {
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) return
 
-        const routineDate = date.toISOString().split('T')[0]
+        const routineDate = formatDateKey(date)
 
         const data = await getRoutineHistory(user.id, routineDate)
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { MobileHeader } from '@/components/headerMobile/MobileHeader'
 
 import { Hero } from '@/components/home/Hero'
@@ -9,13 +9,17 @@ import { JournalingModal } from '@/components/modals/JournalingModal'
 import { RoutineHistoryModal } from '@/components/modals/RoutineHistoryModal'
 import { HomeDataProvider, useHomeData } from '@/providers/HomeDataProvider'
 import { Product } from '@/types/db'
-import { format } from 'date-fns'
+import { formatDateKey, getTodayLocal } from '@/lib/date'
 
 function HomeContent() {
   const { routines, completedDates, allProducts, refresh } = useHomeData()
+  const [today, setToday] = useState<Date | null>(null)
 
-  const today = new Date()
-  const todayStr = format(today, 'yyyy-MM-dd')
+  useEffect(() => {
+    setToday(getTodayLocal())
+  }, [])
+
+  const todayStr = today ? formatDateKey(today) : ''
   const todayRoutines = routines.filter(r => r.routine_date === todayStr)
 
   const [journalingConfig, setJournalingConfig] = useState<{
@@ -30,6 +34,8 @@ function HomeContent() {
   )
 
   const handleOpenJournalingAction = (period: 'diurna' | 'noturna') => {
+    if (!today) return
+
     const existingRoutine = todayRoutines.find(r => r.period === period)
 
     setJournalingConfig({
@@ -43,7 +49,7 @@ function HomeContent() {
 
   const handleNavigateJournalingDate = (newDate: Date) => {
     if (!journalingConfig.period) return
-    const dateStr = format(newDate, 'yyyy-MM-dd')
+    const dateStr = formatDateKey(newDate)
     const existingRoutine = routines.find(
       r => r.routine_date === dateStr && r.period === journalingConfig.period
     )
@@ -87,13 +93,16 @@ function HomeContent() {
       <Hero />
       <div className="relative w-full min-h-[50vh]">
         <div className="relative z-10">
-          <RoutineDashboard
-            completedDates={completedDates}
-            todayRoutines={todayRoutines}
-            onOpenJournalingAction={handleOpenJournalingAction}
-            onOpenDayDetailsAction={date => setSelectedHistoryDate(date)}
-            // isLoading={loading} / prop para o componente no futuro/
-          />
+          {today && (
+            <RoutineDashboard
+              completedDates={completedDates}
+              todayRoutines={todayRoutines}
+              today={today}
+              onOpenJournalingAction={handleOpenJournalingAction}
+              onOpenDayDetailsAction={date => setSelectedHistoryDate(date)}
+              // isLoading={loading} / prop para o componente no futuro/
+            />
+          )}
         </div>
       </div>
 

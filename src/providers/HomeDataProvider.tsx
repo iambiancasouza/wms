@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect, useCallback, ReactNode,
 import { useAuth } from '@/providers/UserAuthProvider'
 import { Product, Routine } from '@/types/db'
 import { getUserRoutines, getActiveProducts } from '@/services/home.service'
+import { parseDateKey } from '@/lib/date'
 
 interface HomeDataContextData {
   routines: Routine[]
@@ -58,10 +59,7 @@ export function HomeDataProvider({ children }: { children: ReactNode }) {
 
         const dates = routinesArray
           .filter(r => r.routine_date !== null)
-          .map(r => {
-            const [year, month, day] = r.routine_date!.split('-').map(Number)
-            return new Date(year, month - 1, day)
-          })
+          .map(r => parseDateKey(r.routine_date!))
 
         setCompletedDates(dates)
       }

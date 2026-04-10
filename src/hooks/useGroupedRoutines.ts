@@ -1,13 +1,14 @@
 import { useMemo } from 'react'
 import { Routine } from '@/types/db'
+import { getTodayLocal, parseDateKey } from '@/lib/date'
 
 export function useGroupedRoutines(routines: Routine[]) {
   return useMemo(() => {
     if (!routines || routines.length === 0) return []
 
     const sorted = [...routines].sort((a, b) => {
-      const timeA = new Date(`${a.routine_date}T00:00:00`).getTime()
-      const timeB = new Date(`${b.routine_date}T00:00:00`).getTime()
+      const timeA = parseDateKey(a.routine_date as string).getTime()
+      const timeB = parseDateKey(b.routine_date as string).getTime()
 
       if (timeA !== timeB) {
         return timeB - timeA
@@ -27,10 +28,9 @@ export function useGroupedRoutines(routines: Routine[]) {
     })
 
     return Object.entries(grouped).map(([date, dayRoutines]) => {
-      const [year, month, day] = date.split('-').map(Number)
-      const routineDate = new Date(year, month - 1, day)
+      const routineDate = parseDateKey(date)
       
-      const today = new Date()
+      const today = getTodayLocal()
       const yesterday = new Date(today)
       yesterday.setDate(yesterday.getDate() - 1)
 

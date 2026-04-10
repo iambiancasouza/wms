@@ -8,17 +8,18 @@ import {
   startOfMonth,
   endOfMonth,
   eachDayOfInterval,
-  startOfDay,
   addMonths,
   subMonths,
   getDay
 } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Routine } from '@/types/db'
+import { formatDateKey } from '@/lib/date'
 
 interface RoutineDashboardProps {
   completedDates: Date[]
   todayRoutines: Routine[]
+  today: Date
   onOpenJournalingAction: (period: 'diurna' | 'noturna') => void
   onOpenDayDetailsAction: (date: Date) => void
 }
@@ -26,13 +27,11 @@ interface RoutineDashboardProps {
 export function RoutineDashboard({
   completedDates,
   todayRoutines,
+  today,
   onOpenJournalingAction,
   onOpenDayDetailsAction
 }: RoutineDashboardProps) {
-  const [today] = useState(() => startOfDay(new Date()))
-  const [currentMonth, setCurrentMonth] = useState(() =>
-    startOfMonth(startOfDay(new Date()))
-  )
+  const [currentMonth, setCurrentMonth] = useState(() => startOfMonth(today))
 
   const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1))
   const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1))
@@ -43,13 +42,13 @@ export function RoutineDashboard({
 
   const startDayIndex = getDay(monthStart)
   const emptyDays = Array.from({ length: startDayIndex }, (_, i) => i)
-  const todayKey = format(today, 'yyyy-MM-dd')
+  const todayKey = formatDateKey(today)
 
   const hasDiurna = todayRoutines.some(r => r.period === 'diurna')
   const hasNoturna = todayRoutines.some(r => r.period === 'noturna')
 
   const getDateKey = (date: Date): string => {
-    return format(startOfDay(date), 'yyyy-MM-dd')
+    return formatDateKey(date)
   }
 
   return (

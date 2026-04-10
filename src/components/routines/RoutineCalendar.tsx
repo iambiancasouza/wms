@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import {
   format,
@@ -13,6 +13,7 @@ import {
   getDay
 } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { getTodayLocal } from '@/lib/date'
 
 interface RoutineCalendarProps {
   completedDates: Date[]
@@ -23,8 +24,16 @@ export function RoutineCalendar({
   completedDates,
   onOpenDayDetailsAction
 }: RoutineCalendarProps) {
-  const today = new Date()
-  const [currentMonth, setCurrentMonth] = useState(startOfMonth(today))
+  const [today, setToday] = useState<Date | null>(null)
+  const [currentMonth, setCurrentMonth] = useState(() =>
+    startOfMonth(getTodayLocal())
+  )
+
+  useEffect(() => {
+    const localToday = getTodayLocal()
+    setToday(localToday)
+    setCurrentMonth(startOfMonth(localToday))
+  }, [])
 
   const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1))
   const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1))
@@ -76,7 +85,7 @@ export function RoutineCalendar({
 
         {/* Dias do Mês */}
         {daysInMonth.map(day => {
-          const isToday = isSameDay(day, today)
+          const isToday = today ? isSameDay(day, today) : false
           const hasRoutine = completedDates.some(d => isSameDay(d, day))
 
           return (
