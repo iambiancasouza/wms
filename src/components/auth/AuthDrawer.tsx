@@ -40,7 +40,6 @@ export function AuthDrawer({ isOpen, onClose, sectionName }: AuthDrawerProps) {
         </button>
 
         <div className="flex flex-col items-center text-center space-y-5 mt-1">
-          {/* Tracinho translúcido para combinar com o vidro */}
           <div className="w-12 h-1 bg-gray-400/40 rounded-full mb-4" /> 
           
           <h2 className="text-xl font-bold text-[#3a6b4d] mt-1 font-poppins">Acesse sua conta</h2>
