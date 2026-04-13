@@ -14,6 +14,7 @@ export function MobileHeader() {
     moods,
     open,
     isSaving,
+    hasMoodToday,
     openMoodModal,
     closeMoodModal,
     toggleSkinMood,
@@ -62,7 +63,9 @@ export function MobileHeader() {
               className="flex items-center gap-1 text-[#6f957a] mt-1 active:scale-95 transition-transform"
             >
               <span className="text-[13px] font-medium whitespace-nowrap">
-                Como está sua pele hoje?
+                {hasMoodToday
+                  ? 'Editar estado da pele'
+                  : 'Como está sua pele hoje?'}
               </span>
 
               <ChevronDown
@@ -97,6 +100,7 @@ export function MobileHeader() {
         open={open}
         selectedMoods={moods}
         isSaving={isSaving}
+        hasMoodToday={hasMoodToday}
         onCloseAction={closeMoodModal}
         onToggleAction={toggleSkinMood}
         onSubmitAction={submitSkinMood}

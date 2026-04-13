@@ -1,14 +1,45 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { SkinMood } from '@/types/skin'
-import { saveSkinMood } from '@/services/skinMood.service'
+import { getTodaySkinMood, saveSkinMood } from '@/services/skinMood.service'
 import { showToast } from '@/providers/ToasterProvider'
 import { useAuth } from '@/providers/UserAuthProvider'
 
 export function useSkinMood() {
   const { isLoggedIn, isLoading: authLoading } = useAuth()
   const [moods, setMoods] = useState<SkinMood[]>([])
+  const [savedMoods, setSavedMoods] = useState<SkinMood[]>([])
+  const [todayMoodId, setTodayMoodId] = useState<string | null>(null)
+  const [hasMoodToday, setHasMoodToday] = useState(false)
   const [open, setOpen] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+
+  const loadTodayMood = useCallback(async () => {
+    if (!isLoggedIn) {
+      setMoods([])
+      setSavedMoods([])
+      setTodayMoodId(null)
+      setHasMoodToday(false)
+      return
+    }
+
+    try {
+      const todayMood = await getTodaySkinMood()
+      const nextMoods = todayMood?.moods ?? []
+
+      setMoods(nextMoods)
+      setSavedMoods(nextMoods)
+      setTodayMoodId(todayMood?.id ?? null)
+      setHasMoodToday(Boolean(todayMood))
+    } catch (error) {
+      console.error('Erro ao buscar estado da pele de hoje:', error)
+    }
+  }, [isLoggedIn])
+
+  useEffect(() => {
+    if (authLoading) return
+
+    void loadTodayMood()
+  }, [authLoading, loadTodayMood])
 
   function openMoodModal() {
     if (authLoading) return
@@ -18,12 +49,13 @@ export function useSkinMood() {
       return
     }
 
+    setMoods(savedMoods)
     setOpen(true)
   }
 
   function closeMoodModal() {
     setOpen(false)
-    setMoods([])
+    setMoods(savedMoods)
   }
 
   function toggleSkinMood(value: SkinMood) {
@@ -54,10 +86,20 @@ export function useSkinMood() {
 
     try {
       setIsSaving(true)
-      await saveSkinMood(moods)
-      showToast.success('Estado da pele registrado!')
+      const result = await saveSkinMood(moods, todayMoodId)
+
       setOpen(false)
-      setMoods([])
+      setSavedMoods(moods)
+      setMoods(moods)
+      setTodayMoodId(result.recordId || todayMoodId)
+      setHasMoodToday(true)
+
+      showToast.success(
+        result.action === 'updated'
+          ? 'Estado da pele atualizado!'
+          : 'Estado da pele registrado!'
+      )
+
       return true
     } catch (error) {
       console.error('Erro ao salvar estado da pele:', error)
@@ -67,6 +109,9 @@ export function useSkinMood() {
           showToast.error('Você precisa estar logado para registrar')
         } else if (error.message === 'RLS_BLOCKED') {
           showToast.error('Registro bloqueado pelas políticas do banco')
+        } else if (error.message === 'DAILY_MOOD_ALREADY_EXISTS') {
+          showToast.error('Você já registrou o estado da pele hoje')
+          await loadTodayMood()
         } else {
           showToast.error(error.message)
         }
@@ -84,6 +129,7 @@ export function useSkinMood() {
     moods,
     open,
     isSaving,
+    hasMoodToday,
     openMoodModal,
     closeMoodModal,
     toggleSkinMood,

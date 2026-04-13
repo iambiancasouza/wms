@@ -1,49 +1,13 @@
 'use client'
 
 import { Loader2, X } from 'lucide-react'
-import { SkinMood } from '@/types/skin'
-
-const skinMoodOptions: Array<{
-  value: SkinMood
-  label: string
-  description: string
-}> = [
-  {
-    value: 'good',
-    label: 'Radiante',
-    description: 'Pele equilibrada e luminosa.'
-  },
-  {
-    value: 'dry',
-    label: 'Ressecada',
-    description: 'Sensação de secura ou repuxamento.'
-  },
-  {
-    value: 'oily',
-    label: 'Oleosa',
-    description: 'Brilho e excesso de oleosidade.'
-  },
-  {
-    value: 'acne',
-    label: 'Acneica',
-    description: 'Cravos, espinhas ou inflamações.'
-  },
-  {
-    value: 'sensitive',
-    label: 'Sensível',
-    description: 'Irritação, vermelhidão ou ardor.'
-  },
-  {
-    value: 'dull',
-    label: 'Opaca',
-    description: 'Sem viço ou aparência cansada.'
-  }
-]
+import { SKIN_MOOD_OPTIONS, SkinMood } from '@/types/skin'
 
 interface Props {
   open: boolean
   selectedMoods: SkinMood[]
   isSaving: boolean
+  hasMoodToday: boolean
   onCloseAction: () => void
   onToggleAction: (mood: SkinMood) => void
   onSubmitAction: () => void
@@ -53,6 +17,7 @@ export function SkinMoodModal({
   open,
   selectedMoods,
   isSaving,
+  hasMoodToday,
   onCloseAction,
   onToggleAction,
   onSubmitAction
@@ -90,23 +55,23 @@ export function SkinMoodModal({
           </p>
 
           <div className="w-full grid grid-cols-2 gap-3 mt-2">
-            {skinMoodOptions.map(option => {
+            {SKIN_MOOD_OPTIONS.map(option => {
               const isSelected = selectedMoods.includes(option.value)
 
               return (
                 <button
                   key={option.value}
                   onClick={() => onToggleAction(option.value)}
-                  className={`rounded-2xl border px-4 py-4 text-left transition-all active:scale-95 ${
+                  className={`rounded-2xl border px-3 py-3 text-center transition-all active:scale-95 ${
                     isSelected
                       ? 'border-[#3a6b4d] bg-[#3a6b4d]/10 text-[#2a4f3a] shadow-md'
                       : 'border-white/70 bg-white/40 text-gray-700 hover:bg-white/60'
                   }`}
                 >
-                  <span className="block font-bold text-sm">
-                    {option.label}
+                  <span className="flex items-center justify-center gap-2">
+                    <span className="font-bold text-sm">{option.label}</span>
                   </span>
-                  <span className="mt-1 block text-xs text-gray-500">
+                  <span className="mt-1.5 block text-xs text-gray-500">
                     {option.description}
                   </span>
                 </button>
@@ -121,7 +86,9 @@ export function SkinMoodModal({
               className="w-full flex items-center justify-center gap-2 bg-[#3a6b4d] hover:bg-[#2a4f3a] text-white rounded-xl py-4 font-bold shadow-lg shadow-[#3a6b4d]/50 transition-all active:scale-95 disabled:opacity-70"
             >
               {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
-              Registrar estado da pele
+              {hasMoodToday
+                ? 'Editar estado da pele'
+                : 'Registrar estado da pele'}
             </button>
           </div>
         </div>
