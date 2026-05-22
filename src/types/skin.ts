@@ -3,7 +3,7 @@ export type SkinMood =
   | 'dry'
   | 'oily'
   | 'acneic'
-  | 'irritated'
+  | 'sensitive'
   | 'dull'
 
 export interface SkinMoodOption {
@@ -15,6 +15,7 @@ export interface SkinMoodOption {
 export function normalizeSkinMood(value: string): SkinMood | null {
   switch (value) {
     case 'normal':
+    case 'good':
       return 'normal'
     case 'dry':
       return 'dry'
@@ -23,9 +24,9 @@ export function normalizeSkinMood(value: string): SkinMood | null {
     case 'acneic':
     case 'acne':
       return 'acneic'
-    case 'irritated':
     case 'sensitive':
-      return 'irritated'
+    case 'irritated':
+      return 'sensitive'
     case 'dull':
       return 'dull'
     default:
@@ -37,12 +38,12 @@ export const SKIN_MOOD_OPTIONS: SkinMoodOption[] = [
   {
     value: 'normal',
     label: 'Normal',
-    description: 'Pele est\u00E1vel, confort\u00E1vel e sem excessos.'
+    description: 'Pele estável, confortável e sem excessos.'
   },
   {
     value: 'dry',
     label: 'Ressecada',
-    description: 'Pele seca, repuxando ou com toque \u00E1spero.'
+    description: 'Pele seca, repuxando ou com toque áspero.'
   },
   {
     value: 'oily',
@@ -52,16 +53,16 @@ export const SKIN_MOOD_OPTIONS: SkinMoodOption[] = [
   {
     value: 'acneic',
     label: 'Acneica',
-    description: 'Cravos, espinhas ou inflama\u00E7\u00F5es em evid\u00EAncia.'
+    description: 'Cravos, espinhas ou inflamações em evidência.'
   },
   {
-    value: 'irritated',
-    label: 'Irritada',
-    description: 'Sensa\u00E7\u00E3o de ardor, vermelhid\u00E3o ou desconforto.'
+    value: 'sensitive',
+    label: 'Sensível',
+    description: 'Ardor, vermelhidão ou desconforto.'
   },
   {
     value: 'dull',
     label: 'Opaca',
-    description: 'Sem vi\u00E7o, com apar\u00EAncia cansada ou sem brilho.'
+    description: 'Sem viço, com aparência cansada ou sem brilho.'
   }
 ]

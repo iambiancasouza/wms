@@ -19,6 +19,7 @@ interface JournalingConfig {
   targetDate: Date
   initialProducts?: Product[]
   routineId?: string
+  initialNotes?: string
 }
 
 function RoutinesContent() {
@@ -45,7 +46,8 @@ function RoutinesContent() {
     setJournalingConfig({
       period: routine.period as 'diurna' | 'noturna',
       targetDate: new Date(), 
-      initialProducts: productsToRepeat
+      initialProducts: productsToRepeat,
+      initialNotes: (routine.notes as string | null) || ''
     })
   }
 
@@ -95,6 +97,7 @@ function RoutinesContent() {
           targetDate={journalingConfig.targetDate}
           initialSelectedProducts={journalingConfig.initialProducts}
           routineId={journalingConfig.routineId}
+          initialNotes={journalingConfig.initialNotes}
           products={products || allProducts || []}
           onCloseAction={() => setJournalingConfig(null)}
           onNavigateDateAction={(date) => setJournalingConfig(prev => prev ? { ...prev, targetDate: date } : null)}

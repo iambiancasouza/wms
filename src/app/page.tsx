@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { MobileHeader } from '@/components/headerMobile/MobileHeader'
 
 import { Hero } from '@/components/home/Hero'
@@ -13,13 +13,9 @@ import { formatDateKey, getTodayLocal } from '@/lib/date'
 
 function HomeContent() {
   const { routines, completedDates, allProducts, refresh } = useHomeData()
-  const [today, setToday] = useState<Date | null>(null)
+  const [today] = useState(() => getTodayLocal())
 
-  useEffect(() => {
-    setToday(getTodayLocal())
-  }, [])
-
-  const todayStr = today ? formatDateKey(today) : ''
+  const todayStr = formatDateKey(today)
   const todayRoutines = routines.filter(r => r.routine_date === todayStr)
 
   const [journalingConfig, setJournalingConfig] = useState<{
@@ -27,6 +23,7 @@ function HomeContent() {
     targetDate?: Date
     initialProducts?: Product[]
     routineId?: string
+    initialNotes?: string
   }>({ period: null })
 
   const [selectedHistoryDate, setSelectedHistoryDate] = useState<Date | null>(
@@ -43,7 +40,8 @@ function HomeContent() {
       targetDate: today,
       initialProducts:
         (existingRoutine?.products as unknown as Product[]) || [],
-      routineId: existingRoutine?.id
+      routineId: existingRoutine?.id,
+      initialNotes: existingRoutine?.notes || ''
     })
   }
 
@@ -59,7 +57,8 @@ function HomeContent() {
       targetDate: newDate,
       initialProducts:
         (existingRoutine?.products as unknown as Product[]) || [],
-      routineId: existingRoutine?.id
+      routineId: existingRoutine?.id,
+      initialNotes: existingRoutine?.notes || ''
     })
   }
 
@@ -67,7 +66,8 @@ function HomeContent() {
     period: 'diurna' | 'noturna',
     products: Product[],
     routineId?: string,
-    editDate?: Date
+    editDate?: Date,
+    notes?: string | null
   ) => {
     const dateToEdit = editDate || selectedHistoryDate
     if (!dateToEdit) return
@@ -78,7 +78,8 @@ function HomeContent() {
       period,
       targetDate: dateToEdit,
       initialProducts: products,
-      routineId
+      routineId,
+      initialNotes: notes || ''
     })
   }
 
@@ -114,6 +115,7 @@ function HomeContent() {
           targetDate={journalingConfig.targetDate}
           initialSelectedProducts={journalingConfig.initialProducts}
           routineId={journalingConfig.routineId}
+          initialNotes={journalingConfig.initialNotes}
           onNavigateDateAction={handleNavigateJournalingDate}
         />
       )}

@@ -11,6 +11,7 @@ import {
   ChevronRight
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
 import { format, isToday, addDays, subDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { useSaveRoutine } from '@/hooks/useSaveRoutine'
@@ -44,6 +45,7 @@ interface JournalingModalProps {
   onCloseAction: () => void
   products: Product[]
   initialSelectedProducts?: Product[]
+  initialNotes?: string
   date?: Date
   targetDate?: Date
   routineId?: string
@@ -109,6 +111,7 @@ function JournalingModalContent({
 }: JournalingModalContentProps) {
   const { saveRoutine, isSaving } = useSaveRoutine()
   const [selectedCategory, setSelectedCategory] = useState<string>('limpeza')
+  const [notes, setNotes] = useState<string>(props.initialNotes || '')
 
   const [routineItems, setRoutineItems] = useState<Product[]>(
     props.initialSelectedProducts || []
@@ -152,7 +155,8 @@ function JournalingModalContent({
       sanitizedItems,
       activeDate,
       props.onCloseAction,
-      props.routineId
+      props.routineId,
+      notes
     )
   }
 
@@ -304,6 +308,23 @@ function JournalingModalContent({
               Para remover um produto, basta clicar sobre ele.
             </p>
           )}
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex items-center justify-center ">
+          <h4 className="text-[10px] font-black text-[#3a6b4d]/40 uppercase tracking-[0.2em]">
+            Anotações
+          </h4>
+        </div>
+
+        <div className="backdrop-blur-sm border border-white/80 rounded-[28px] p-2 shadow-sm">
+          <Textarea
+            value={notes}
+            onChange={e => setNotes(e.target.value)}
+            placeholder="Ex.: retinal apenas na área dos olhos..."
+            className="min-h-[120px] resize-none border-[#8ec5a0]/50 focus-visible:ring-[#3a6b4d] bg-white/80 text-sm text-gray-500 placeholder:text-[#5f8c73]/50 rounded-2xl"
+          />
         </div>
       </div>
 

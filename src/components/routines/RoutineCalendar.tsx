@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import {
   format,
@@ -24,16 +24,10 @@ export function RoutineCalendar({
   completedDates,
   onOpenDayDetailsAction
 }: RoutineCalendarProps) {
-  const [today, setToday] = useState<Date | null>(null)
+  const [today] = useState(() => getTodayLocal())
   const [currentMonth, setCurrentMonth] = useState(() =>
     startOfMonth(getTodayLocal())
   )
-
-  useEffect(() => {
-    const localToday = getTodayLocal()
-    setToday(localToday)
-    setCurrentMonth(startOfMonth(localToday))
-  }, [])
 
   const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1))
   const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1))

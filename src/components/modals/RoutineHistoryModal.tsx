@@ -12,7 +12,7 @@ import { StaticLeaves } from '@/components/layout/staticLeaves'
 interface RoutineHistoryModalProps {
   date: Date
   onCloseAction: () => void
-  onEditAction?: (period: 'diurna' | 'noturna', products: Product[], routineId?: string, editDate?: Date) => void
+  onEditAction?: (period: 'diurna' | 'noturna', products: Product[], routineId?: string, editDate?: Date, notes?: string | null) => void
   allProducts: Product[]
   readOnly?: boolean
 }
@@ -33,6 +33,8 @@ export function RoutineHistoryModal({
 
   const morningProducts = (morningRoutine?.products as unknown as Product[]) || []
   const eveningProducts = (eveningRoutine?.products as unknown as Product[]) || []
+  const morningNotes = morningRoutine?.notes || ''
+  const eveningNotes = eveningRoutine?.notes || ''
 
   return (
     <div className="fixed inset-0 z-[120] bg-[#f0f5ed] animate-in slide-in-from-bottom duration-500 overflow-y-auto no-scrollbar">
@@ -99,7 +101,7 @@ export function RoutineHistoryModal({
                   <div className="flex items-center gap-2">
                     {!readOnly && onEditAction && (
                       <button 
-                        onClick={() => onEditAction('diurna', morningProducts, morningRoutine?.id, currentDate)}
+                        onClick={() => onEditAction('diurna', morningProducts, morningRoutine?.id, currentDate, morningNotes)}
                         className="p-2 text-gray-400 hover:text-[#c78255] transition-colors rounded-full hover:bg-orange-50 active:scale-95"
                         title={morningProducts.length > 0 ? "Editar Rotina da Manhã" : "Adicionar Rotina da Manhã"}
                       >
@@ -149,6 +151,15 @@ export function RoutineHistoryModal({
                     </div>
                   )}
                 </div>
+
+                {morningNotes && (
+                  <div className="rounded-3xl border border-[#f0d7c4] bg-[#fff8f1] p-4 text-sm text-[#8a5b3d] leading-relaxed">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#c78255] mb-2">
+                      Notas
+                    </p>
+                    <p className="whitespace-pre-wrap">{morningNotes}</p>
+                  </div>
+                )}
               </div>
 
               {/* --- ROTINA DA NOITE --- */}
@@ -166,7 +177,7 @@ export function RoutineHistoryModal({
                   <div className="flex items-center gap-2">
                     {!readOnly && onEditAction && (
                       <button 
-                        onClick={() => onEditAction('noturna', eveningProducts, eveningRoutine?.id, currentDate)}
+                        onClick={() => onEditAction('noturna', eveningProducts, eveningRoutine?.id, currentDate, eveningNotes)}
                         className="p-2 text-gray-400 hover:text-[#8695c5] transition-colors rounded-full hover:bg-indigo-50 active:scale-95"
                         title={eveningProducts.length > 0 ? "Editar Rotina da Noite" : "Adicionar Rotina da Noite"}
                       >
@@ -216,6 +227,15 @@ export function RoutineHistoryModal({
                     </div>
                   )}
                 </div>
+
+                {eveningNotes && (
+                  <div className="rounded-3xl border border-[#dde4fb] bg-[#f7f8ff] p-4 text-sm text-[#5f6c9c] leading-relaxed">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8695c5] mb-2">
+                      Notas
+                    </p>
+                    <p className="whitespace-pre-wrap">{eveningNotes}</p>
+                  </div>
+                )}
               </div>
 
             </div>

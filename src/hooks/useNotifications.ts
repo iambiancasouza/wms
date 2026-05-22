@@ -13,11 +13,8 @@ export function useNotifications(enabled = true) {
 
   useEffect(() => {
     if (!enabled) {
-      setNotifications([])
-      setUnreadCount(0)
       return
     }
-
     const supabase = createClient()
     let mounted = true
 

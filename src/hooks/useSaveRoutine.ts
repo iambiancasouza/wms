@@ -19,7 +19,8 @@ export function useSaveRoutine() {
     products: Product[],
     date: Date,
     onSuccess?: () => void,
-    routineId?: string
+    routineId?: string,
+    notes?: string
   ) => {
     setIsSaving(true)
 
@@ -36,7 +37,7 @@ export function useSaveRoutine() {
 
           showToast.success('Rotina removida com sucesso!')
         } else {
-          await updateRoutine(routineId, products, date)
+          await updateRoutine(routineId, products, date, notes)
 
           showToast.success('Rotina atualizada com sucesso!')
         }
@@ -47,7 +48,7 @@ export function useSaveRoutine() {
           return
         }
 
-        await createRoutine(user.id, period, products, date)
+        await createRoutine(user.id, period, products, date, notes)
         
 
         showToast.success('Rotina salva com sucesso!')
@@ -55,11 +56,23 @@ export function useSaveRoutine() {
 
       if (onSuccess) onSuccess()
     } catch (error) {
-      console.error('Erro completo:', error)
-      console.log('Erro JSON:', JSON.stringify(error, null, 2))
+      const message =
+        error instanceof Error
+          ? error.message
+          : typeof error === 'object' && error !== null && 'message' in error
+            ? String((error as { message?: unknown }).message || '')
+            : ''
 
-      if (error instanceof Error && error.message === 'RLS_BLOCKED') {
+      console.error('Erro completo:', error)
+      console.error('Mensagem do erro:', message)
+
+      if (message.includes('RLS_BLOCKED')) {
         showToast.error('Erro no Supabase: Ação bloqueada pelas políticas de RLS!')
+      } else if (
+        message.includes('42703') ||
+        message.toLowerCase().includes('notes') && message.toLowerCase().includes('does not exist')
+      ) {
+        showToast.error('A coluna de notas ainda não existe no banco. Aplique a migration `20260522_add_notes_to_user_routines.sql`.')
       } else {
         showToast.error('Ocorreu um erro ao processar sua rotina.')
       }

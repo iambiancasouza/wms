@@ -242,6 +242,7 @@ export type Database = {
           id: string
           period: string
           products: Json | null
+          notes: string | null
           routine_date: string | null
           user_id: string
         }
@@ -250,6 +251,7 @@ export type Database = {
           id?: string
           period: string
           products?: Json | null
+          notes?: string | null
           routine_date?: string | null
           user_id: string
         }
@@ -258,6 +260,7 @@ export type Database = {
           id?: string
           period?: string
           products?: Json | null
+          notes?: string | null
           routine_date?: string | null
           user_id?: string
         }

@@ -3,11 +3,28 @@ import { Product } from '@/types/db'
 import { openProductsIfClosed } from '@/services/product.service'
 import { format } from 'date-fns'
 
+function throwRoutineError(error: {
+  code?: string
+  message?: string
+  details?: string | null
+  hint?: string | null
+}) {
+  const parts = [
+    error.code,
+    error.message,
+    error.details,
+    error.hint
+  ].filter(Boolean)
+
+  throw new Error(parts.join(' | ') || 'Erro ao salvar rotina')
+}
+
 export async function createRoutine(
   userId: string,
   period: 'diurna' | 'noturna',
   products: Product[],
-  date: Date
+  date: Date,
+  notes?: string
 ) {
   const supabase = createClient()
 
@@ -15,14 +32,15 @@ export async function createRoutine(
 
   const { error } = await supabase
     .from('user_routines')
-    .insert({
+  .insert({
       user_id: userId,
       period,
       routine_date: routineDate,
-      products
+      products,
+      notes: notes?.trim() || null
     })
 
-  if (error) throw error
+  if (error) throwRoutineError(error)
 
   await openProductsIfClosed(supabase, products, routineDate)
 }
@@ -30,7 +48,8 @@ export async function createRoutine(
 export async function updateRoutine(
   routineId: string,
   products: Product[],
-  date: Date
+  date: Date,
+  notes?: string
 ) {
   const supabase = createClient()
 
@@ -38,12 +57,13 @@ export async function updateRoutine(
 
   const { error } = await supabase
     .from('user_routines')
-    .update({
-      products
+  .update({
+      products,
+      notes: notes?.trim() || null
     })
     .eq('id', routineId)
 
-  if (error) throw error
+  if (error) throwRoutineError(error)
 
   await openProductsIfClosed(supabase, products, routineDate)
 }
@@ -56,5 +76,5 @@ export async function deleteRoutine(routineId: string) {
     .delete()
     .eq('id', routineId)
 
-  if (error) throw error
+  if (error) throwRoutineError(error)
 }
