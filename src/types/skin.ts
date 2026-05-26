@@ -58,7 +58,7 @@ export const SKIN_MOOD_OPTIONS: SkinMoodOption[] = [
   {
     value: 'sensitive',
     label: 'Sensível',
-    description: 'Ardor, vermelhidão ou desconforto.'
+    description: 'Ardor, vermelhidão ou descamação.'
   },
   {
     value: 'dull',

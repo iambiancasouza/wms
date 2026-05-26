@@ -1,8 +1,18 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Routine } from '@/types/db'
-import { getTodayLocal, parseDateKey } from '@/lib/date'
+import { parseDateKey, getTodayLocal, getNextLocalMidnightDelay } from '@/lib/date'
 
 export function useGroupedRoutines(routines: Routine[]) {
+  const [today, setToday] = useState(() => getTodayLocal())
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setToday(getTodayLocal())
+    }, getNextLocalMidnightDelay())
+
+    return () => clearTimeout(timeoutId)
+  }, [today])
+
   return useMemo(() => {
     if (!routines || routines.length === 0) return []
 
@@ -30,7 +40,6 @@ export function useGroupedRoutines(routines: Routine[]) {
     return Object.entries(grouped).map(([date, dayRoutines]) => {
       const routineDate = parseDateKey(date)
       
-      const today = getTodayLocal()
       const yesterday = new Date(today)
       yesterday.setDate(yesterday.getDate() - 1)
 
@@ -49,5 +58,5 @@ export function useGroupedRoutines(routines: Routine[]) {
         routines: dayRoutines
       }
     })
-  }, [routines])
+  }, [routines, today])
 }
