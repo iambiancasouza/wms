@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
 import { Sun, Moon, ChevronLeft, ChevronRight } from 'lucide-react'
 import {
@@ -9,12 +9,11 @@ import {
   endOfMonth,
   eachDayOfInterval,
   addMonths,
-  subMonths,
   getDay
 } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Routine } from '@/types/db'
-import { formatDateKey, getTodayLocal, getNextLocalMidnightDelay } from '@/lib/date'
+import { formatDateKey } from '@/lib/date'
 
 interface RoutineDashboardProps {
   completedDates: Date[]
@@ -31,19 +30,11 @@ export function RoutineDashboard({
   onOpenJournalingAction,
   onOpenDayDetailsAction
 }: RoutineDashboardProps) {
-  const [liveToday, setLiveToday] = useState(() => getTodayLocal())
-  const [currentMonth, setCurrentMonth] = useState(() => startOfMonth(today))
+  const [monthOffset, setMonthOffset] = useState(0)
+  const currentMonth = addMonths(startOfMonth(today), monthOffset)
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setLiveToday(getTodayLocal())
-    }, getNextLocalMidnightDelay())
-
-    return () => clearTimeout(timeoutId)
-  }, [liveToday])
-
-  const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1))
-  const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1))
+  const nextMonth = () => setMonthOffset(current => current + 1)
+  const prevMonth = () => setMonthOffset(current => current - 1)
 
   const monthStart = startOfMonth(currentMonth)
   const monthEnd = endOfMonth(currentMonth)
@@ -51,7 +42,7 @@ export function RoutineDashboard({
 
   const startDayIndex = getDay(monthStart)
   const emptyDays = Array.from({ length: startDayIndex }, (_, i) => i)
-  const todayKey = formatDateKey(liveToday)
+  const todayKey = formatDateKey(today)
 
   const hasDiurna = todayRoutines.some(r => r.period === 'diurna')
   const hasNoturna = todayRoutines.some(r => r.period === 'noturna')

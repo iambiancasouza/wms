@@ -79,12 +79,23 @@ export function Navbar() {
                 href="/favorites"
                 prefetch={false}
                 className={`px-4 py-2 transition-colors duration-300 ease-in-out text-sm font-medium ${
-                  isActive('/collection')
+                  isActive('/favorites')
                     ? 'text-[#3a6b4d]'
                     : 'text-gray-500 hover:text-[#5a9e74]'
                 }`}
               >
                 Meus favoritos
+              </Link>
+              <Link
+                href="/profile"
+                prefetch={false}
+                className={`px-4 py-2 transition-colors duration-300 ease-in-out text-sm font-medium ${
+                  isActive('/profile')
+                    ? 'text-[#3a6b4d]'
+                    : 'text-gray-500 hover:text-[#5a9e74]'
+                }`}
+              >
+                Perfil
               </Link>
             </nav>
           )}
@@ -188,10 +199,18 @@ export function Navbar() {
                 <Link
                   href="/favorites"
                   prefetch={false}
-                  className={`text-sm font-medium ${isActive('/collection') ? 'text-[#3a6b4d] bg-[#f0f5ed]' : 'text-gray-500'} hover:text-[#5a9e74] hover:bg-[#f0f5ed] p-2 rounded-md transition-colors`}
+                  className={`text-sm font-medium ${isActive('/favorites') ? 'text-[#3a6b4d] bg-[#f0f5ed]' : 'text-gray-500'} hover:text-[#5a9e74] hover:bg-[#f0f5ed] p-2 rounded-md transition-colors`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Meus favoritos
+                </Link>
+                <Link
+                  href="/profile"
+                  prefetch={false}
+                  className={`text-sm font-medium ${isActive('/profile') ? 'text-[#3a6b4d] bg-[#f0f5ed]' : 'text-gray-500'} hover:text-[#5a9e74] hover:bg-[#f0f5ed] p-2 rounded-md transition-colors`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Perfil
                 </Link>
               </>
             )}
