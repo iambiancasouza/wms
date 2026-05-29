@@ -17,7 +17,7 @@ const navItems = [
     path: '/collection',
     isProtected: true
   },
-  { icon: User, label: 'Meu perfil', path: '/profile', isProtected: false }
+  { icon: User, label: 'Meu perfil', path: '/profile', isProtected: true }
 ]
 
 export function BottomNavbar() {

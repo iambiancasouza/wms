@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { MobileHeader } from '@/components/headerMobile/MobileHeader'
 
 import { Hero } from '@/components/home/Hero'
@@ -8,13 +8,20 @@ import { RoutineDashboard } from '@/components/home/RoutineDashboard'
 import { JournalingModal } from '@/components/modals/JournalingModal'
 import { RoutineHistoryModal } from '@/components/modals/RoutineHistoryModal'
 import { HomeDataProvider, useHomeData } from '@/providers/HomeDataProvider'
-import { useToday } from '@/providers/TodayProvider'
 import { Product } from '@/types/db'
-import { formatDateKey } from '@/lib/date'
+import { formatDateKey, getTodayLocal, getNextLocalMidnightDelay } from '@/lib/date'
 
 function HomeContent() {
   const { routines, completedDates, allProducts, refresh } = useHomeData()
-  const today = useToday()
+  const [today, setToday] = useState(() => getTodayLocal())
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setToday(getTodayLocal())
+    }, getNextLocalMidnightDelay())
+
+    return () => clearTimeout(timeoutId)
+  }, [today])
 
   const todayStr = formatDateKey(today)
   const todayRoutines = routines.filter(r => r.routine_date === todayStr)

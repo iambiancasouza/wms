@@ -9,7 +9,6 @@ import { RoutineTimeline } from '@/components/routines/RoutineTimeline'
 import { RoutineCalendar } from '@/components/routines/RoutineCalendar' 
 import { RoutineHistoryModal } from '@/components/modals/RoutineHistoryModal'
 import { JournalingModal } from '@/components/modals/JournalingModal'
-import { useToday } from '@/providers/TodayProvider'
 import { Product, Routine } from '@/types/db'
 import { parseDateKey } from '@/lib/date'
 
@@ -25,7 +24,6 @@ interface JournalingConfig {
 
 function RoutinesContent() {
   const { routines, loading, products, allProducts } = useHomeData()
-  const today = useToday()
   const [view, setView] = useState<ViewMode>('timeline')
   const [selectedHistoryDate, setSelectedHistoryDate] = useState<Date | null>(null)
   const [journalingConfig, setJournalingConfig] = useState<JournalingConfig | null>(null)
@@ -78,7 +76,6 @@ function RoutinesContent() {
           ) : (
             <RoutineCalendar 
               completedDates={completedDates}
-              today={today}
               onOpenDayDetailsAction={(date) => setSelectedHistoryDate(date)} 
             />
           )}

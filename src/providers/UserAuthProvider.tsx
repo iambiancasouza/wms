@@ -121,12 +121,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const userName = useMemo(() => {
     return (
-      profile?.full_name ||
       user?.user_metadata?.full_name ||
       user?.email?.split('@')[0] ||
       'Visitante'
     )
-  }, [profile, user])
+  }, [user])
 
   const value = useMemo(
     () => ({
