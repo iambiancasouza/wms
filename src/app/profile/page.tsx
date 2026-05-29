@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, type ChangeEvent } from 'react'
+import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import {
@@ -25,9 +25,14 @@ export default function ProfilePage() {
   const { user, profile, userName, supabase, refreshProfile } = useAuth()
   const libraryInputRef = useRef<HTMLInputElement>(null)
   const cameraInputRef = useRef<HTMLInputElement>(null)
+  const [avatarPreview, setAvatarPreview] = useState('')
   const [isPhotoMenuOpen, setIsPhotoMenuOpen] = useState(false)
 
-  const hasAvatar = Boolean(profile?.avatar_url)
+  useEffect(() => {
+    setAvatarPreview(profile?.avatar_url || '')
+  }, [profile?.avatar_url])
+
+  const hasAvatar = Boolean(avatarPreview || profile?.avatar_url)
   const isLoggedIn = Boolean(user)
 
   const handleLogin = () => {
@@ -53,6 +58,9 @@ export default function ProfilePage() {
     const file = event.target.files?.[0]
     if (!file) return
 
+    const previewUrl = URL.createObjectURL(file)
+    setAvatarPreview(previewUrl)
+
     try {
       await updateProfileAvatar(file)
       await refreshProfile()
@@ -60,7 +68,9 @@ export default function ProfilePage() {
     } catch (error) {
       console.error('Erro ao atualizar avatar:', error)
       showToast.error('Não foi possível atualizar a foto.')
+      setAvatarPreview(profile?.avatar_url || '')
     } finally {
+      URL.revokeObjectURL(previewUrl)
       event.target.value = ''
       setIsPhotoMenuOpen(false)
     }
@@ -69,6 +79,7 @@ export default function ProfilePage() {
   const handleRemoveAvatar = async () => {
     try {
       await removeProfileAvatar()
+      setAvatarPreview('')
       await refreshProfile()
       showToast.success('Foto removida com sucesso.')
     } catch (error) {
@@ -100,7 +111,7 @@ export default function ProfilePage() {
                   >
                     {hasAvatar ? (
                       <Image
-                        src={profile?.avatar_url || ''}
+                        src={avatarPreview || profile?.avatar_url || ''}
                         alt={userName}
                         fill
                         sizes="80px"
