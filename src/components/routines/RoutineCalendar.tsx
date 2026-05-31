@@ -1,22 +1,22 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import {
   format,
   startOfMonth,
   endOfMonth,
   eachDayOfInterval,
-  isSameDay,
   addMonths,
   subMonths,
   getDay
 } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { getTodayLocal, getNextLocalMidnightDelay } from '@/lib/date'
+import { formatDateKey } from '@/lib/date'
+import { useTodayLocal } from '@/hooks/useTodayLocal'
 
 interface RoutineCalendarProps {
-  completedDates: Date[]
+  completedDates: string[]
   onOpenDayDetailsAction: (date: Date) => void
 }
 
@@ -24,18 +24,10 @@ export function RoutineCalendar({
   completedDates,
   onOpenDayDetailsAction
 }: RoutineCalendarProps) {
-  const [today, setToday] = useState(() => getTodayLocal())
+  const { today, todayKey } = useTodayLocal()
   const [currentMonth, setCurrentMonth] = useState(() =>
-    startOfMonth(getTodayLocal())
+    startOfMonth(today)
   )
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setToday(getTodayLocal())
-    }, getNextLocalMidnightDelay())
-
-    return () => clearTimeout(timeoutId)
-  }, [today])
 
   const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1))
   const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1))
@@ -46,6 +38,7 @@ export function RoutineCalendar({
 
   const startDayIndex = getDay(monthStart)
   const emptyDays = Array.from({ length: startDayIndex }, (_, i) => i)
+  const completedDateSet = new Set(completedDates)
 
   return (
     <div className="w-full bg-white/40 backdrop-blur-xl rounded-[32px] p-4 md:p-6 border-2 border-white/30 shadow-xl shadow-[#3a6b4d]/5">
@@ -87,8 +80,9 @@ export function RoutineCalendar({
 
         {/* Dias do Mês */}
         {daysInMonth.map(day => {
-          const isToday = today ? isSameDay(day, today) : false
-          const hasRoutine = completedDates.some(d => isSameDay(d, day))
+          const dayKey = formatDateKey(day)
+          const isToday = dayKey === todayKey
+          const hasRoutine = completedDateSet.has(dayKey)
 
           return (
             <div

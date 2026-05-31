@@ -4,11 +4,11 @@ import { createContext, useContext, useState, useEffect, useCallback, ReactNode,
 import { useAuth } from '@/providers/UserAuthProvider'
 import { Product, Routine } from '@/types/db'
 import { getUserRoutines, getActiveProducts } from '@/services/home.service'
-import { parseDateKey } from '@/lib/date'
+import { normalizeDateKey } from '@/lib/date'
 
 interface HomeDataContextData {
   routines: Routine[]
-  completedDates: Date[]
+  completedDates: string[]
   allProducts: Product[]
   products: Product[]
   loading: boolean
@@ -24,7 +24,7 @@ export function HomeDataProvider({ children }: { children: ReactNode }) {
   const hasFetchedOnce = useRef(false)
 
   const [routines, setRoutines] = useState<Routine[]>([])
-  const [completedDates, setCompletedDates] = useState<Date[]>([])
+  const [completedDates, setCompletedDates] = useState<string[]>([])
   const [allProducts, setAllProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
@@ -57,9 +57,13 @@ export function HomeDataProvider({ children }: { children: ReactNode }) {
         const routinesArray = routinesData.value as Routine[]
         setRoutines(routinesArray)
 
-        const dates = routinesArray
-          .filter(r => r.routine_date !== null)
-          .map(r => parseDateKey(r.routine_date!))
+        const dates = Array.from(
+          new Set(
+            routinesArray
+              .filter(r => r.routine_date !== null)
+              .map(r => normalizeDateKey(r.routine_date!))
+          )
+        )
 
         setCompletedDates(dates)
       }

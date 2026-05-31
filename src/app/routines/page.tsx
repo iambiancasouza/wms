@@ -10,7 +10,8 @@ import { RoutineCalendar } from '@/components/routines/RoutineCalendar'
 import { RoutineHistoryModal } from '@/components/modals/RoutineHistoryModal'
 import { JournalingModal } from '@/components/modals/JournalingModal'
 import { Product, Routine } from '@/types/db'
-import { parseDateKey } from '@/lib/date'
+import { normalizeDateKey } from '@/lib/date'
+import { useTodayLocal } from '@/hooks/useTodayLocal'
 
 type ViewMode = 'timeline' | 'calendar'
 
@@ -24,6 +25,7 @@ interface JournalingConfig {
 
 function RoutinesContent() {
   const { routines, loading, products, allProducts } = useHomeData()
+  const { todayKey } = useTodayLocal()
   const [view, setView] = useState<ViewMode>('timeline')
   const [selectedHistoryDate, setSelectedHistoryDate] = useState<Date | null>(null)
   const [journalingConfig, setJournalingConfig] = useState<JournalingConfig | null>(null)
@@ -32,7 +34,7 @@ function RoutinesContent() {
     if (!routines) return []
     return routines
       .filter(r => r.routine_date)
-      .map(r => parseDateKey(r.routine_date as string))
+      .map(r => normalizeDateKey(r.routine_date as string))
   }, [routines])
 
   const handleRepeatRoutine = (routine: Routine) => {
@@ -75,6 +77,7 @@ function RoutinesContent() {
             <RoutineTimeline routines={routines} onRepeatAction={handleRepeatRoutine} />
           ) : (
             <RoutineCalendar 
+              key={todayKey}
               completedDates={completedDates}
               onOpenDayDetailsAction={(date) => setSelectedHistoryDate(date)} 
             />

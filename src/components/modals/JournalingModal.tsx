@@ -19,20 +19,20 @@ import { Product } from '@/types/db'
 import { StaticLeaves } from '@/components/layout/staticLeaves'
 
 const Categories = [
-  { id: "limpeza", label: "Limpeza" },
-  { id: "tônico", label: "Tônico/Essence" },
-  { id: "antioxidante", label: "Antioxidante" },
-  { id: "tratamento", label: "Tratamento/Slow-aging" },
-  { id: "tretinoina", label: "Tretinoína" },
-  { id: "acido_azelaico", label: "Ácido azeláico" },
-  { id: "hidratacao", label: "Hidratante" },
-  { id: "barreira", label: "Barreira/Reparador" },
-  { id: "olhos", label: "Área dos olhos" },
-  { id: "labios", label: "Labial" },
-  { id: "protecao", label: "Protetor" },
-  { id: "mascara", label: "Máscara" },
-  { id: "corporal", label: "Corporal" },
-  { id: "beauty_tech", label: "Dispositivo" },
+  { id: 'limpeza', label: 'Limpeza' },
+  { id: 'tônico', label: 'Tônico/Essence' },
+  { id: 'antioxidante', label: 'Antioxidante' },
+  { id: 'tratamento', label: 'Tratamento/Slow-aging' },
+  { id: 'tretinoina', label: 'Tretinoína' },
+  { id: 'acido_azelaico', label: 'Ácido azeláico' },
+  { id: 'hidratacao', label: 'Hidratante' },
+  { id: 'barreira', label: 'Barreira/Reparador' },
+  { id: 'olhos', label: 'Área dos olhos' },
+  { id: 'labios', label: 'Labial' },
+  { id: 'protecao', label: 'Protetor' },
+  { id: 'mascara', label: 'Máscara' },
+  { id: 'corporal', label: 'Corporal' },
+  { id: 'beauty_tech', label: 'Dispositivo' }
 ]
 
 const formatDayOfWeek = (date: Date) => {
@@ -268,39 +268,33 @@ function JournalingModalContent({
       <div className="space-y-4 flex-1">
         <div className="bg-[#f0f5ed]/30 border-2 border-dashed border-[#8ec5a0] rounded-[32px] p-5 min-h-[160px] flex flex-col shadow-inner w-full">
           <div className="flex flex-wrap justify-center gap-4 w-full">
-            {routineItems.length === 0 ? (
-              <div className="text-center w-full mt-6 text-gray-400">
-                <p className="text-sm">Sua caixa está vazia.</p>
-              </div>
-            ) : (
-              routineItems.map((item: Product) => (
-                <button
-                  key={item.id}
-                  onClick={() => toggleProductSelection(item)}
-                  title="Clique para remover"
-                  className="relative flex flex-col items-center justify-center rounded-full shadow-sm border border-[#8ec5a0]/30 w-[100px] h-[100px] overflow-hidden shrink-0 animate-in zoom-in bg-[#eef4f0] hover:opacity-80 transition-opacity active:scale-95"
-                >
-                  {item.image_url ? (
-                    <Image
-                      src={item.image_url}
-                      alt={item.name}
-                      fill
-                      sizes="100px"
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="relative z-10 flex flex-col items-center justify-center text-center w-full px-2">
-                      <span className="text-[8px] font-black text-[#5a9e74] uppercase tracking-wider truncate w-full">
-                        {item.brand}
-                      </span>
-                      <span className="text-[10px] font-bold text-[#1e3c2c] leading-tight line-clamp-2 w-full mt-0.5">
-                        {item.name}
-                      </span>
-                    </div>
-                  )}
-                </button>
-              ))
-            )}
+            {routineItems.map((item: Product) => (
+              <button
+                key={item.id}
+                onClick={() => toggleProductSelection(item)}
+                title="Clique para remover"
+                className="relative flex flex-col items-center justify-center rounded-full shadow-sm border border-[#8ec5a0]/30 w-[100px] h-[100px] overflow-hidden shrink-0 animate-in zoom-in bg-[#eef4f0] hover:opacity-80 transition-opacity active:scale-95"
+              >
+                {item.image_url ? (
+                  <Image
+                    src={item.image_url}
+                    alt={item.name}
+                    fill
+                    sizes="100px"
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="relative z-10 flex flex-col items-center justify-center text-center w-full px-2">
+                    <span className="text-[8px] font-black text-[#5a9e74] uppercase tracking-wider truncate w-full">
+                      {item.brand}
+                    </span>
+                    <span className="text-[10px] font-bold text-[#1e3c2c] leading-tight line-clamp-2 w-full mt-0.5">
+                      {item.name}
+                    </span>
+                  </div>
+                )}
+              </button>
+            ))}
           </div>
 
           {routineItems.length > 0 && (

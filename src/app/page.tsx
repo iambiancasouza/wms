@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { MobileHeader } from '@/components/headerMobile/MobileHeader'
 
 import { Hero } from '@/components/home/Hero'
@@ -8,22 +8,14 @@ import { RoutineDashboard } from '@/components/home/RoutineDashboard'
 import { JournalingModal } from '@/components/modals/JournalingModal'
 import { RoutineHistoryModal } from '@/components/modals/RoutineHistoryModal'
 import { HomeDataProvider, useHomeData } from '@/providers/HomeDataProvider'
+import { useTodayLocal } from '@/hooks/useTodayLocal'
 import { Product } from '@/types/db'
-import { formatDateKey, getTodayLocal, getNextLocalMidnightDelay } from '@/lib/date'
+import { formatDateKey } from '@/lib/date'
 
 function HomeContent() {
   const { routines, completedDates, allProducts, refresh } = useHomeData()
-  const [today, setToday] = useState(() => getTodayLocal())
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setToday(getTodayLocal())
-    }, getNextLocalMidnightDelay())
-
-    return () => clearTimeout(timeoutId)
-  }, [today])
-
-  const todayStr = formatDateKey(today)
+  const { today, todayKey } = useTodayLocal()
+  const todayStr = todayKey
   const todayRoutines = routines.filter(r => r.routine_date === todayStr)
 
   const [journalingConfig, setJournalingConfig] = useState<{
@@ -104,9 +96,9 @@ function HomeContent() {
         <div className="relative z-10">
           {today && (
             <RoutineDashboard
+              key={todayKey}
               completedDates={completedDates}
               todayRoutines={todayRoutines}
-              today={today}
               onOpenJournalingAction={handleOpenJournalingAction}
               onOpenDayDetailsAction={date => setSelectedHistoryDate(date)}
               // isLoading={loading} / prop para o componente no futuro/

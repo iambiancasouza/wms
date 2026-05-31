@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { Routine } from '@/types/db'
+import { parseDateKey } from '@/lib/date'
 
 export function useStreak(routines: Routine[]) {
   return useMemo(() => {
@@ -18,10 +19,9 @@ export function useStreak(routines: Routine[]) {
     )
 
     // 3. Converte para milissegundos para facilitar a matemática
-    const dateTimes = uniqueDates.map(dateStr => {
-      const [year, month, day] = dateStr.split('-').map(Number)
-      return new Date(year, month - 1, day).getTime()
-    }).sort((a, b) => b - a) // Mais recente primeiro
+    const dateTimes = uniqueDates
+      .map(dateStr => parseDateKey(dateStr).getTime())
+      .sort((a, b) => b - a) // Mais recente primeiro
 
     if (dateTimes.length === 0) {
       return { streak: 0, nextGoal: 7, progressPercent: 0, hasRoutineToday: false }

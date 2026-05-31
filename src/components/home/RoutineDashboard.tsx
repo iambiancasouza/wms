@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
 import { Sun, Moon, ChevronLeft, ChevronRight } from 'lucide-react'
 import {
@@ -14,12 +14,12 @@ import {
 } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Routine } from '@/types/db'
-import { formatDateKey, getTodayLocal, getNextLocalMidnightDelay } from '@/lib/date'
+import { formatDateKey } from '@/lib/date'
+import { useTodayLocal } from '@/hooks/useTodayLocal'
 
 interface RoutineDashboardProps {
-  completedDates: Date[]
+  completedDates: string[]
   todayRoutines: Routine[]
-  today: Date
   onOpenJournalingAction: (period: 'diurna' | 'noturna') => void
   onOpenDayDetailsAction: (date: Date) => void
 }
@@ -27,20 +27,11 @@ interface RoutineDashboardProps {
 export function RoutineDashboard({
   completedDates,
   todayRoutines,
-  today,
   onOpenJournalingAction,
   onOpenDayDetailsAction
 }: RoutineDashboardProps) {
-  const [liveToday, setLiveToday] = useState(() => getTodayLocal())
+  const { today, todayKey } = useTodayLocal()
   const [currentMonth, setCurrentMonth] = useState(() => startOfMonth(today))
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setLiveToday(getTodayLocal())
-    }, getNextLocalMidnightDelay())
-
-    return () => clearTimeout(timeoutId)
-  }, [liveToday])
 
   const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1))
   const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1))
@@ -51,14 +42,10 @@ export function RoutineDashboard({
 
   const startDayIndex = getDay(monthStart)
   const emptyDays = Array.from({ length: startDayIndex }, (_, i) => i)
-  const todayKey = formatDateKey(liveToday)
-
+  const completedDateSet = new Set(completedDates)
   const hasDiurna = todayRoutines.some(r => r.period === 'diurna')
   const hasNoturna = todayRoutines.some(r => r.period === 'noturna')
-
-  const getDateKey = (date: Date): string => {
-    return formatDateKey(date)
-  }
+  const getDateKey = (date: Date): string => formatDateKey(date)
 
   return (
     <section className="relative w-full py-6 z-30">
@@ -115,9 +102,7 @@ export function RoutineDashboard({
                   {daysInMonth.map(day => {
                     const dayKey = getDateKey(day)
                     const isToday = dayKey === todayKey
-                    const hasRoutine = completedDates.some(
-                      d => getDateKey(d) === dayKey
-                    )
+                    const hasRoutine = completedDateSet.has(dayKey)
 
                     return (
                       <div

@@ -1,17 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Routine } from '@/types/db'
-import { parseDateKey, getTodayLocal, getNextLocalMidnightDelay } from '@/lib/date'
+import { normalizeDateKey, parseDateKey } from '@/lib/date'
+import { useTodayLocal } from '@/hooks/useTodayLocal'
 
 export function useGroupedRoutines(routines: Routine[]) {
-  const [today, setToday] = useState(() => getTodayLocal())
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setToday(getTodayLocal())
-    }, getNextLocalMidnightDelay())
-
-    return () => clearTimeout(timeoutId)
-  }, [today])
+  const { today } = useTodayLocal()
 
   return useMemo(() => {
     if (!routines || routines.length === 0) return []
@@ -32,7 +25,7 @@ export function useGroupedRoutines(routines: Routine[]) {
 
     const grouped: Record<string, Routine[]> = {}
     sorted.forEach(routine => {
-      const date = routine.routine_date as string
+      const date = normalizeDateKey(routine.routine_date as string)
       if (!grouped[date]) grouped[date] = []
       grouped[date].push(routine)
     })

@@ -8,8 +8,18 @@ export function formatDateKey(date: Date) {
   return format(date, 'yyyy-MM-dd')
 }
 
+export function normalizeDateKey(date: string) {
+  return date.split('T')[0].trim()
+}
+
 export function parseDateKey(date: string) {
-  const [year, month, day] = date.split('-').map(Number)
+  const dateOnly = normalizeDateKey(date)
+  const [year, month, day] = dateOnly.split('-').map(Number)
+
+  if (!year || !month || !day) {
+    throw new Error(`Invalid date key: ${date}`)
+  }
+
   return new Date(year, month - 1, day)
 }
 
