@@ -9,9 +9,16 @@ export function useGroupedRoutines(routines: Routine[]) {
   return useMemo(() => {
     if (!routines || routines.length === 0) return []
 
-    const sorted = [...routines].sort((a, b) => {
-      const timeA = parseDateKey(a.routine_date as string).getTime()
-      const timeB = parseDateKey(b.routine_date as string).getTime()
+    const routinesWithDate = routines.filter(
+      (routine): routine is Routine & { routine_date: string } =>
+        Boolean(routine.routine_date)
+    )
+
+    if (routinesWithDate.length === 0) return []
+
+    const sorted = [...routinesWithDate].sort((a, b) => {
+      const timeA = parseDateKey(a.routine_date).getTime()
+      const timeB = parseDateKey(b.routine_date).getTime()
 
       if (timeA !== timeB) {
         return timeB - timeA
@@ -25,7 +32,7 @@ export function useGroupedRoutines(routines: Routine[]) {
 
     const grouped: Record<string, Routine[]> = {}
     sorted.forEach(routine => {
-      const date = normalizeDateKey(routine.routine_date as string)
+      const date = normalizeDateKey(routine.routine_date)
       if (!grouped[date]) grouped[date] = []
       grouped[date].push(routine)
     })
