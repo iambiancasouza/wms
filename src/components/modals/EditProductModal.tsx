@@ -1,3 +1,4 @@
+// src/components/collection/modals/EditProductModal.tsx
 import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
@@ -15,7 +16,6 @@ import {
 } from 'lucide-react'
 import { showToast } from '@/providers/ToasterProvider'
 import { Product } from '@/types/db'
-import { formatDateKey, getTodayLocal } from '@/lib/date'
 
 export const Category = [
   {id: "all", label: "Todos"},
@@ -358,7 +358,7 @@ export function EditProductModal({
                       status: 'open',
                       opened_at:
                         formData.opened_at ||
-                        formatDateKey(getTodayLocal())
+                        new Date().toISOString().split('T')[0]
                     })
                   }
                   className={`flex-1 text-xs font-bold rounded-lg transition-all duration-200 ${formData.status === 'open' ? 'bg-white text-[#3a6b4d] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}

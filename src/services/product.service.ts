@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/client'
 import { Product } from '@/types/db'
 import { createNotification } from '@/services/notification.service'
-import { formatDateKey, getTodayLocal } from '@/lib/date'
 
 export async function getProducts() {
   const supabase = createClient()
@@ -44,7 +43,7 @@ export async function deleteProduct(product: Product) {
       image_url: product.image_url,
       category: product.category,
       started_at: product.opened_at,
-      finished_at: formatDateKey(getTodayLocal()),
+      finished_at: new Date().toISOString(),
       duration_days: diffDays || null,
       review: product.review
     })
