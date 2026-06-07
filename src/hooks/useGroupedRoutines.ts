@@ -39,17 +39,23 @@ export function useGroupedRoutines(routines: Routine[]) {
 
     return Object.entries(grouped).map(([date, dayRoutines]) => {
       const routineDate = parseDateKey(date)
-      
-      const yesterday = new Date(today)
-      yesterday.setDate(yesterday.getDate() - 1)
 
       let label = ''
-      if (routineDate.toDateString() === today.toDateString()) {
+      if (today && routineDate.toDateString() === today.toDateString()) {
         label = 'Hoje'
-      } else if (routineDate.toDateString() === yesterday.toDateString()) {
-        label = 'Ontem'
       } else {
-        label = routineDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }).replace('.', '')
+        if (today) {
+          const yesterday = new Date(today)
+          yesterday.setDate(yesterday.getDate() - 1)
+
+          if (routineDate.toDateString() === yesterday.toDateString()) {
+            label = 'Ontem'
+          } else {
+            label = routineDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }).replace('.', '')
+          }
+        } else {
+          label = routineDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }).replace('.', '')
+        }
       }
 
       return {

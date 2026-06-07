@@ -15,9 +15,10 @@ import {
 import { ptBR } from 'date-fns/locale'
 import { Routine } from '@/types/db'
 import { formatDateKey } from '@/lib/date'
-import { useTodayLocal } from '@/hooks/useTodayLocal'
 
 interface RoutineDashboardProps {
+  today: Date
+  todayKey: string
   completedDates: string[]
   todayRoutines: Routine[]
   onOpenJournalingAction: (period: 'diurna' | 'noturna') => void
@@ -25,12 +26,13 @@ interface RoutineDashboardProps {
 }
 
 export function RoutineDashboard({
+  today,
+  todayKey,
   completedDates,
   todayRoutines,
   onOpenJournalingAction,
   onOpenDayDetailsAction
 }: RoutineDashboardProps) {
-  const { today, todayKey } = useTodayLocal()
   const [currentMonth, setCurrentMonth] = useState(() => startOfMonth(today))
 
   const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1))

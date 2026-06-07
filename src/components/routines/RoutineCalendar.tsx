@@ -13,18 +13,20 @@ import {
 } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { formatDateKey } from '@/lib/date'
-import { useTodayLocal } from '@/hooks/useTodayLocal'
 
 interface RoutineCalendarProps {
+  today: Date
+  todayKey: string
   completedDates: string[]
   onOpenDayDetailsAction: (date: Date) => void
 }
 
 export function RoutineCalendar({
+  today,
+  todayKey,
   completedDates,
   onOpenDayDetailsAction
 }: RoutineCalendarProps) {
-  const { today, todayKey } = useTodayLocal()
   const [currentMonth, setCurrentMonth] = useState(() =>
     startOfMonth(today)
   )

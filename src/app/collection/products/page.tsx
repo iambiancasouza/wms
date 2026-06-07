@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense } from 'react'
+import { Suspense, useMemo } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -11,6 +11,108 @@ import { DeleteConfirmModal } from '@/components/modals/DeleteConfirmModal'
 import { ProductCard } from '@/components/collection/ProductCard'
 
 import { useProducts } from '@/hooks/useProducts'
+import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
+import { Product } from '@/types/db'
+
+interface ProductsGridProps {
+  filteredProducts: Product[]
+  isLoading: boolean
+  setEditingProduct: (product: Product | null) => void
+  setDeletingProduct: (product: Product | null) => void
+  toggleFavorite: (product: Product) => Promise<void>
+}
+
+function ProductsGrid({
+  filteredProducts,
+  isLoading,
+  setEditingProduct,
+  setDeletingProduct,
+  toggleFavorite
+}: ProductsGridProps) {
+  const { visibleCount, loadMoreRef, hasMore } = useInfiniteScroll({
+    itemCount: filteredProducts.length,
+    pageSize: 6
+  })
+
+  const visibleProducts = useMemo(
+    () => filteredProducts.slice(0, visibleCount),
+    [filteredProducts, visibleCount]
+  )
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 justify-items-center">
+        {[1, 2, 3, 4, 5, 6].map(i => (
+          <div
+            key={i}
+            className="w-full aspect-[3/4] bg-gray-200 animate-pulse rounded-2xl"
+          />
+        ))}
+      </div>
+    )
+  }
+
+  if (filteredProducts.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-center animate-in zoom-in duration-300">
+        <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm">
+          <Package className="w-8 h-8 text-gray-300" />
+        </div>
+
+        <h3 className="text-lg font-bold text-gray-600">
+          Nenhum produto encontrado
+        </h3>
+
+        <p className="text-sm text-gray-400 mb-6">
+          Comece adicionando itens à sua coleção.
+        </p>
+
+        <Link href="/collection/newProduct">
+          <Button className="bg-[#3a6b4d] hover:bg-[#2a4f3a] text-white rounded-full px-8">
+            Adicionar Novo
+          </Button>
+        </Link>
+      </div>
+    )
+  }
+
+  return (
+    <>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 animate-in fade-in duration-500">
+        {visibleProducts.map(product => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            onToggleFavorite={toggleFavorite}
+            onEdit={setEditingProduct}
+            onDelete={setDeletingProduct}
+          />
+        ))}
+
+        <Link href="/collection/newProduct" className="w-full aspect-[3/4]">
+          <div className="group w-full h-full rounded-2xl border-2 border-dashed border-gray-300 hover:border-[#3a6b4d] bg-white/50 transition-all duration-300 flex flex-col items-center justify-center gap-2 cursor-pointer">
+            <div className="h-12 w-12 rounded-full bg-gray-200 group-hover:bg-[#3a6b4d]/10 flex items-center justify-center transition-colors">
+              <Plus className="h-6 w-6 text-gray-400 group-hover:text-[#3a6b4d]" />
+            </div>
+
+            <span className="text-xs font-bold text-gray-400 group-hover:text-[#3a6b4d] uppercase tracking-wide">
+              Adicionar
+            </span>
+          </div>
+        </Link>
+      </div>
+
+      {hasMore && (
+        <div ref={loadMoreRef} className="flex items-center justify-center py-6">
+          <div className="flex items-center gap-2 text-sm text-[#3a6b4d]/50">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            Carregando mais produtos...
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
 
 function ProductsContent() {
   const searchParams = useSearchParams()
@@ -49,66 +151,18 @@ function ProductsContent() {
         />
       )}
 
-      {isLoading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 justify-items-center">
-          {[1, 2, 3, 4, 5, 6].map(i => (
-            <div
-              key={i}
-              className="w-full aspect-[3/4] bg-gray-200 animate-pulse rounded-2xl"
-            />
-          ))}
-        </div>
-      ) : filteredProducts.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center animate-in zoom-in duration-300">
-          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm">
-            <Package className="w-8 h-8 text-gray-300" />
-          </div>
-
-          <h3 className="text-lg font-bold text-gray-600">
-            Nenhum produto encontrado
-          </h3>
-
-          <p className="text-sm text-gray-400 mb-6">
-            {selectedCategory === 'all'
-              ? 'Comece adicionando itens à sua coleção.'
-              : 'Não há itens nesta categoria.'}
-          </p>
-
-          <Link href="/collection/newProduct">
-            <Button className="bg-[#3a6b4d] hover:bg-[#2a4f3a] text-white rounded-full px-8">
-              Adicionar Novo
-            </Button>
-          </Link>
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 animate-in fade-in duration-500">
-          {filteredProducts.map(product => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onToggleFavorite={toggleFavorite}
-              onEdit={setEditingProduct}
-              onDelete={setDeletingProduct}
-            />
-          ))}
-
-          <Link href="/collection/newProduct" className="w-full aspect-[3/4]">
-            <div className="group w-full h-full rounded-2xl border-2 border-dashed border-gray-300 hover:border-[#3a6b4d] bg-white/50 transition-all duration-300 flex flex-col items-center justify-center gap-2 cursor-pointer">
-              <div className="h-12 w-12 rounded-full bg-gray-200 group-hover:bg-[#3a6b4d]/10 flex items-center justify-center transition-colors">
-                <Plus className="h-6 w-6 text-gray-400 group-hover:text-[#3a6b4d]" />
-              </div>
-
-              <span className="text-xs font-bold text-gray-400 group-hover:text-[#3a6b4d] uppercase tracking-wide">
-                Adicionar
-              </span>
-            </div>
-          </Link>
-        </div>
-      )}
+      <ProductsGrid
+        key={`${query}-${selectedCategory}`}
+        filteredProducts={filteredProducts}
+        isLoading={isLoading}
+        setEditingProduct={setEditingProduct}
+        setDeletingProduct={setDeletingProduct}
+        toggleFavorite={toggleFavorite}
+      />
 
       <button
         onClick={scrollToTop}
-        className={`fixed bottom-[68px] right-8 z-20 p-3 rounded-full shadow-xl bg-[#8ec5a0] text-white hover:bg-[#5a9e74]/10 hover:scale-110 transition-all duration-300 border border-white/20 ${
+        className={`fixed bottom-[85px] right-8 z-20 p-3 rounded-full shadow-xl bg-[#8ec5a0]/90 text-white hover:bg-[#5a9e74]/10 hover:scale-110 transition-all duration-300 border border-white/20 ${
           showScrollTop
             ? 'opacity-100 translate-y-0'
             : 'opacity-0 translate-y-10 pointer-events-none'
