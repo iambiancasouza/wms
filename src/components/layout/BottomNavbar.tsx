@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
 import { Leaf, Heart, Calendar, LayoutGrid, User } from 'lucide-react'
 import { useAuth } from '@/providers/UserAuthProvider'
 import { AuthDrawer } from '@/components/auth/AuthDrawer'
@@ -69,14 +70,22 @@ export function BottomNavbar() {
                   }
                 }}
                 aria-current={isActive ? 'page' : undefined}
-                className={`relative flex flex-col items-center justify-center w-[58px] h-[60px] px-0 py-1 outline-none group touch-manipulation rounded-3xl transition-all duration-200 active:scale-95 overflow-hidden flex-none ${
-                  isActive
-                    ? 'bg-white/10 backdrop-blur-2xl border border-white/28 shadow-[0_3px_9px_rgba(58,107,77,0.045),inset_0_1px_0_rgba(255,255,255,0.5)]'
-                    : 'bg-transparent'
-                }`}
+                className="relative flex flex-col items-center justify-center w-[58px] h-[60px] px-0 py-1 outline-none group touch-manipulation rounded-3xl transition-all duration-200 active:scale-95 overflow-hidden flex-none"
               >
                 {isActive && (
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/28 via-white/10 to-[#e9f3ec]/14 pointer-events-none" />
+                  <motion.div
+                    layoutId="bottom-nav-active"
+                    transition={{
+                      type: 'spring',
+                      stiffness: 340,
+                      damping: 34,
+                      mass: 0.9,
+                      restDelta: 0.001
+                    }}
+                    className="absolute inset-0 rounded-3xl bg-white/10 backdrop-blur-2xl border border-white/28 shadow-[0_3px_9px_rgba(58,107,77,0.045),inset_0_1px_0_rgba(255,255,255,0.5)]"
+                  >
+                    <div className="absolute inset-0 rounded-3xl bg-gradient-to-b from-white/28 via-white/10 to-[#e9f3ec]/14 pointer-events-none" />
+                  </motion.div>
                 )}
 
                 <div
@@ -94,8 +103,8 @@ export function BottomNavbar() {
                 <span
                   className={`relative z-10 text-[10px] font-normal tracking-tight mt-1 transition-colors duration-300 ${
                     isActive
-                      ? 'text-[#2c4c3b] font-semibold drop-shadow-[0_1px_0_rgba(255,255,255,0.55)]'
-                      : 'text-[#2c4c3b]/36'
+                      ? 'text-[#1f3d2d] font-semibold drop-shadow-[0_1px_0_rgba(255,255,255,0.45)]'
+                      : 'text-[#2c4c3b]/24'
                   }`}
                 >
                   {item.label}

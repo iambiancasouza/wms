@@ -19,7 +19,6 @@ export function RoutineDashboardSkeleton() {
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute left-[12%] top-[18%] h-40 w-40 rounded-full border border-[#3a6b4d]/10 animate-[spin_16s_linear_infinite]" />
             <div className="absolute right-[10%] top-[28%] h-24 w-24 rounded-full border border-[#8ec5a0]/20 animate-[spin_12s_linear_infinite_reverse]" />
-            <div className="absolute left-[30%] bottom-[14%] h-32 w-32 rounded-full border border-white/60 shadow-[0_0_40px_rgba(58,107,77,0.08)] animate-[pulse_2.8s_ease-in-out_infinite]" />
           </div>
 
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-12 p-4 md:p-5">

@@ -1,11 +1,12 @@
 'use client'
 
 import Image from 'next/image'
-import { ChevronDown, Bell } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import { useAuth } from '@/providers/UserAuthProvider'
 import { useNotifications } from '@/hooks/useNotifications'
 import { useSkinMood } from '@/hooks/useSkinMood'
 import { SkinMoodModal } from '@/components/modals/SkinMoodModal'
+import { NotificationBell } from '@/components/headerMobile/NotificationBell'
 
 export function MobileHeader() {
   const { isLoggedIn, userName } = useAuth()
@@ -76,22 +77,7 @@ export function MobileHeader() {
           </div>
 
           <div className="w-[90px] flex justify-end">
-            <button className="relative text-[#4f7c60] active:scale-95 transition-transform">
-              <Bell className="w-[26px] h-[26px]" strokeWidth={2.2} />
-
-              {unreadCount > 0 && (
-                <span
-                  className="
-                    absolute top-0 right-0
-                    block h-3 w-3
-                    rounded-full
-                    bg-[#7eba6b]
-                    border-[1.5px] border-white
-                    shadow-sm
-                  "
-                />
-              )}
-            </button>
+            <NotificationBell unreadCount={unreadCount} />
           </div>
         </div>
       </header>
