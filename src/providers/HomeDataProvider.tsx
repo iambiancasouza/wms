@@ -5,6 +5,7 @@ import { useAuth } from '@/providers/UserAuthProvider'
 import { Product, Routine } from '@/types/db'
 import { getUserRoutines, getActiveProducts } from '@/services/home.service'
 import { normalizeDateKey } from '@/lib/date'
+import { clearHomeDataCache, getHomeDataCache, setHomeDataCache } from '@/lib/home-data-cache'
 
 interface HomeDataContextData {
   routines: Routine[]
@@ -36,28 +37,50 @@ export function HomeDataProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  const hydrateFromCache = useCallback((userId: string) => {
+    const cachedData = getHomeDataCache(userId)
+
+    if (!cachedData) return false
+
+    setRoutines(cachedData.routines)
+    setCompletedDates(cachedData.completedDates)
+    setAllProducts(cachedData.allProducts)
+    setLoading(false)
+    hasFetchedOnce.current = true
+
+    return true
+  }, [])
+
   const fetchData = useCallback(async () => {
     if (!user || authLoading) return
 
+    if (hydrateFromCache(user.id)) {
+      return
+    }
+
     try {
       setError(null)
-      
+
       if (!hasFetchedOnce.current) {
         setLoading(true)
       }
 
       const [routinesData, productsData] = await Promise.allSettled([
         getUserRoutines(user.id),
-        getActiveProducts()
+        getActiveProducts(user.id)
       ])
 
       if (!isMounted.current) return
 
+      let routinesArray: Routine[] | null = null
+      let productsArray: Product[] | null = null
+      let dates: string[] = []
+
       if (routinesData.status === 'fulfilled' && routinesData.value) {
-        const routinesArray = routinesData.value as Routine[]
+        routinesArray = routinesData.value as Routine[]
         setRoutines(routinesArray)
 
-        const dates = Array.from(
+        dates = Array.from(
           new Set(
             routinesArray
               .filter(r => r.routine_date !== null)
@@ -69,7 +92,16 @@ export function HomeDataProvider({ children }: { children: ReactNode }) {
       }
 
       if (productsData.status === 'fulfilled' && productsData.value) {
-        setAllProducts(productsData.value)
+        productsArray = productsData.value
+        setAllProducts(productsArray)
+      }
+
+      if (routinesArray && productsArray) {
+        setHomeDataCache(user.id, {
+          routines: routinesArray,
+          completedDates: dates,
+          allProducts: productsArray
+        })
       }
 
       hasFetchedOnce.current = true
@@ -82,7 +114,7 @@ export function HomeDataProvider({ children }: { children: ReactNode }) {
         setLoading(false)
       }
     }
-  }, [user, authLoading])
+  }, [user, authLoading, hydrateFromCache])
 
   useEffect(() => {
     if (!authLoading) {
@@ -94,6 +126,7 @@ export function HomeDataProvider({ children }: { children: ReactNode }) {
         setAllProducts([])
         setCompletedDates([])
         hasFetchedOnce.current = false
+        clearHomeDataCache()
       }
     }
   }, [user, authLoading, fetchData])

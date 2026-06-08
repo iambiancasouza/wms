@@ -5,6 +5,7 @@ import { MobileHeader } from '@/components/headerMobile/MobileHeader'
 
 import { Hero } from '@/components/home/Hero'
 import { RoutineDashboard } from '@/components/home/RoutineDashboard'
+import { RoutineDashboardSkeleton } from '@/components/home/RoutineDashboardSkeleton'
 import { JournalingModal } from '@/components/modals/JournalingModal'
 import { RoutineHistoryModal } from '@/components/modals/RoutineHistoryModal'
 import { HomeDataProvider, useHomeData } from '@/providers/HomeDataProvider'
@@ -13,7 +14,7 @@ import { Product } from '@/types/db'
 import { formatDateKey } from '@/lib/date'
 
 function HomeContent() {
-  const { routines, completedDates, allProducts, refresh } = useHomeData()
+  const { routines, completedDates, allProducts, refresh, loading } = useHomeData()
   const { today, todayKey } = useTodayLocal()
   const todayStr = todayKey
   const todayRoutines = routines.filter(r => r.routine_date === todayStr)
@@ -94,9 +95,13 @@ function HomeContent() {
       <Hero />
       <div className="relative w-full min-h-[50vh]">
         <div className="relative z-10">
-          {today && (
+          {loading || !today ? (
+            <RoutineDashboardSkeleton />
+          ) : (
             <RoutineDashboard
               key={todayKey}
+              today={today}
+              todayKey={todayKey}
               completedDates={completedDates}
               todayRoutines={todayRoutines}
               onOpenJournalingAction={handleOpenJournalingAction}

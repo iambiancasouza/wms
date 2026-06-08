@@ -8,15 +8,13 @@ import {
 } from '@/lib/date'
 
 type TodaySnapshot = {
-  today: Date
+  today: Date | null
   todayKey: string
 }
 
-const initialToday = getTodayLocal()
-
 let snapshot: TodaySnapshot = {
-  today: initialToday,
-  todayKey: formatDateKey(initialToday)
+  today: null,
+  todayKey: ''
 }
 
 const listeners = new Set<() => void>()
@@ -38,7 +36,11 @@ function emitChange() {
 function syncToday() {
   const nextSnapshot = computeSnapshot()
 
-  if (nextSnapshot.today.getTime() === snapshot.today.getTime()) {
+  if (
+    snapshot.today &&
+    nextSnapshot.today &&
+    snapshot.today.getTime() === nextSnapshot.today.getTime()
+  ) {
     return
   }
 

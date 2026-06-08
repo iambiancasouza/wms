@@ -29,7 +29,9 @@ export function AuthDrawer({ isOpen, onClose, sectionName }: AuthDrawerProps) {
 
       <div
         className={`fixed inset-x-0 bottom-0 z-[110] bg-white/30 backdrop-blur-2xl border-t border-white/60 rounded-t-3xl p-7 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] ring-1 ring-inset ring-white/50 transform transition-transform duration-500 ease-out ${
-          isOpen ? 'translate-y-0 ' : 'translate-y-full'
+          isOpen
+            ? 'translate-y-0 pointer-events-auto'
+            : 'translate-y-full pointer-events-none'
         }`}
       >
         <button 
