@@ -14,7 +14,7 @@ interface HomeDataContextData {
   products: Product[]
   loading: boolean
   error: Error | null
-  refresh: () => Promise<void>
+  refresh: (options?: { force?: boolean }) => Promise<void>
 }
 
 const HomeDataContext = createContext<HomeDataContextData>({} as HomeDataContextData)
@@ -51,17 +51,23 @@ export function HomeDataProvider({ children }: { children: ReactNode }) {
     return true
   }, [])
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (options?: { force?: boolean }) => {
+    const forceRefresh = options?.force ?? false
+
     if (!user || authLoading) return
 
-    if (hydrateFromCache(user.id)) {
+    if (!forceRefresh && hydrateFromCache(user.id)) {
       return
+    }
+
+    if (forceRefresh) {
+      clearHomeDataCache(user.id)
     }
 
     try {
       setError(null)
 
-      if (!hasFetchedOnce.current) {
+      if (!hasFetchedOnce.current && !forceRefresh) {
         setLoading(true)
       }
 

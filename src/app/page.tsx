@@ -86,7 +86,6 @@ function HomeContent() {
 
   const handleCloseJournalingAction = () => {
     setJournalingConfig({ period: null })
-    refresh()
   }
 
   return (
@@ -117,6 +116,7 @@ function HomeContent() {
           period={journalingConfig.period}
           products={allProducts}
           onCloseAction={handleCloseJournalingAction}
+          onSavedAction={() => refresh({ force: true })}
           targetDate={journalingConfig.targetDate}
           initialSelectedProducts={journalingConfig.initialProducts}
           routineId={journalingConfig.routineId}

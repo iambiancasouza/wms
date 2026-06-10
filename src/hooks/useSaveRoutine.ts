@@ -18,7 +18,7 @@ export function useSaveRoutine() {
     period: 'diurna' | 'noturna',
     products: Product[],
     date: Date,
-    onSuccess?: () => void,
+    onSuccess?: () => void | Promise<void>,
     routineId?: string,
     notes?: string
   ) => {
@@ -54,7 +54,9 @@ export function useSaveRoutine() {
         showToast.success('Rotina salva com sucesso!')
       }
 
-      if (onSuccess) onSuccess()
+      if (onSuccess) {
+        await onSuccess()
+      }
     } catch (error) {
       const message =
         error instanceof Error

@@ -43,6 +43,7 @@ const formatDayOfWeek = (date: Date) => {
 interface JournalingModalProps {
   period: 'diurna' | 'noturna'
   onCloseAction: () => void
+  onSavedAction?: () => Promise<void> | void
   products: Product[]
   initialSelectedProducts?: Product[]
   initialNotes?: string
@@ -150,11 +151,19 @@ function JournalingModalContent({
       image_url: item.image_url
     })) as Product[]
 
-    saveRoutine(
+    void saveRoutine(
       props.period,
       sanitizedItems,
       activeDate,
-      props.onCloseAction,
+      async () => {
+        try {
+          await props.onSavedAction?.()
+        } catch (error) {
+          console.error('Erro ao atualizar dados após salvar rotina:', error)
+        } finally {
+          props.onCloseAction()
+        }
+      },
       props.routineId,
       notes
     )

@@ -25,7 +25,7 @@ interface JournalingConfig {
 }
 
 function RoutinesContent() {
-  const { routines, loading, products, allProducts } = useHomeData()
+  const { routines, loading, products, allProducts, refresh } = useHomeData()
   const { today, todayKey } = useTodayLocal()
   const [view, setView] = useState<ViewMode>('timeline')
   const [selectedHistoryDate, setSelectedHistoryDate] = useState<Date | null>(null)
@@ -113,6 +113,7 @@ function RoutinesContent() {
           initialNotes={journalingConfig.initialNotes}
           products={products || allProducts || []}
           onCloseAction={() => setJournalingConfig(null)}
+          onSavedAction={() => refresh({ force: true })}
           onNavigateDateAction={date =>
             setJournalingConfig(prev => (prev ? { ...prev, targetDate: date } : null))
           }
