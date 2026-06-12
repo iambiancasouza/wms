@@ -20,7 +20,7 @@ const Category = [
   { id: 'protecao', label: 'Protetor', icon: '☀️' },
   { id: 'olhos', label: 'Área dos Olhos', icon: '👁️' },
   { id: 'corporal', label: 'Corporal', icon: '🫧' },
-  { id: 'beauty_tech', label: 'Beuty techs', icon: '⚡' }
+  { id: 'beauty_tech', label: 'Beauty tech device', icon: '⚡' }
 ]
 
 const CategoryMenu = memo(

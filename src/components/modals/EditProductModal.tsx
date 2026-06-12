@@ -34,7 +34,7 @@ export const Category = [
   { id: "protecao", label: "Protetor" },
   { id: "mascara", label: "Máscara" },
   { id: "corporal", label: "Corporal" },
-  { id: "beauty_tech", label: "Beuty techs" },
+  { id: "beauty_tech", label: "Beauty tech device" },
 ]
 
 export function EditProductModal({

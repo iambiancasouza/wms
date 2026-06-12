@@ -241,7 +241,7 @@ export default function NewProductPage() {
                   <option value="protecao">Protetor</option>
                   <option value="mascara">Máscara</option>
                   <option value="corporal">Corporal</option>
-                  <option value="beauty_tech">Beuty techs</option>
+                  <option value="beauty_tech">Beauty tech device</option>
                 </select>
               </div>
             </div>
