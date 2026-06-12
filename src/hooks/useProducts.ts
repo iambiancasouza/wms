@@ -4,6 +4,7 @@ import { showToast } from '@/providers/ToasterProvider'
 import { useAuth } from '@/providers/UserAuthProvider'
 import { withTimeout } from '@/lib/async'
 import { getProducts, toggleFavoriteProduct, deleteProduct } from '@/services/product.service'
+import { normalizeCategoryKey } from '@/lib/category'
 
 export function useProducts(query: string, selectedCategory: string) {
   const { user, isLoading: authLoading } = useAuth()
@@ -115,7 +116,8 @@ export function useProducts(query: string, selectedCategory: string) {
       (product.brand ?? '').toLowerCase().includes(query.toLowerCase())
 
     const matchesCategory =
-      selectedCategory === 'all' || product.category === selectedCategory
+      selectedCategory === 'all' ||
+      normalizeCategoryKey(product.category) === normalizeCategoryKey(selectedCategory)
 
     return matchesQuery && matchesCategory
   })

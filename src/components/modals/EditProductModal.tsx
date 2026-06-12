@@ -16,11 +16,13 @@ import {
 } from 'lucide-react'
 import { showToast } from '@/providers/ToasterProvider'
 import { Product } from '@/types/db'
+import { clearHomeDataCache } from '@/lib/home-data-cache'
+import { normalizeCategoryKey } from '@/lib/category'
 
 export const Category = [
   {id: "all", label: "Todos"},
   { id: "limpeza", label: "Limpeza" },
-  { id: "tônico", label: "Tônico/Essence" },
+  { id: "tonico", label: "Tônico/Essence" },
   { id: "antioxidante", label: "Antioxidante" },
   { id: "tratamento", label: "Tratamento/Slow-aging" },
   { id: "tretinoina", label: "Tretinoína" },
@@ -32,7 +34,7 @@ export const Category = [
   { id: "protecao", label: "Protetor" },
   { id: "mascara", label: "Máscara" },
   { id: "corporal", label: "Corporal" },
-  { id: "beauty_tech", label: "Dispositivo" },
+  { id: "beauty_tech", label: "Beuty techs" },
 ]
 
 export function EditProductModal({
@@ -56,7 +58,7 @@ export function EditProductModal({
   const [formData, setFormData] = useState({
     name: product.name,
     brand: product.brand,
-    category: product.category,
+    category: normalizeCategoryKey(product.category),
     usage: product.usage_frequency || 'both',
     status: product.status,
     quantity: product.quantity,
@@ -134,6 +136,7 @@ export function EditProductModal({
 
       if (error) throw error
       showToast.success('Produto atualizado!')
+      clearHomeDataCache(product.user_id)
       onUpdate()
       onClose()
     } catch (error) {

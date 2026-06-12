@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/client'
 import { Product } from '@/types/db'
 import { createNotification } from '@/services/notification.service'
+import { clearHomeDataCache } from '@/lib/home-data-cache'
 
 export async function getProducts() {
   const supabase = createClient()
@@ -64,6 +65,7 @@ export async function deleteProduct(product: Product) {
       .eq('id', product.id)
 
     if (error) throw error
+    clearHomeDataCache(product.user_id)
     return { action: 'decremented', newQty, diffDays }
   } else {
     const { error } = await supabase
@@ -72,6 +74,7 @@ export async function deleteProduct(product: Product) {
       .eq('id', product.id)
 
     if (error) throw error
+    clearHomeDataCache(product.user_id)
     return { action: 'deleted', diffDays }
   }
 }

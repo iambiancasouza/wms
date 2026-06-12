@@ -20,6 +20,7 @@ import {
 import { showToast } from '@/providers/ToasterProvider'
 import { StaticLeaves } from '@/components/layout/staticLeaves'
 import { Product } from '@/types/db'
+import { clearHomeDataCache } from '@/lib/home-data-cache'
 
 interface ProductFormData {
   name: string
@@ -123,6 +124,7 @@ export default function NewProductPage() {
 
       if (error) throw error
 
+      clearHomeDataCache(user.id)
       showToast.success('Produto salvo!')
       router.push('/collection/products')
       router.refresh()
@@ -227,19 +229,19 @@ export default function NewProductPage() {
                   }
                 >
                   <option value="limpeza">Limpeza</option>
-                  <option value="tônico">Tônico/Essence</option>
+                  <option value="tonico">Tônico/Essence</option>
                   <option value="antioxidante">Antioxidante</option>
                   <option value="tratamento">Tratamento/Slow-aging</option>
-                  <option value="tratamento">Tretinoína</option>
-                  <option value="tratamento">Ácido azeláico</option>
-                  <option value="hidratação">Hidratante</option>
+                  <option value="tretinoina">Tretinoína</option>
+                  <option value="acido_azelaico">Ácido azeláico</option>
+                  <option value="hidratacao">Hidratante</option>
                   <option value="barreira">Barreira/Reparador</option>
                   <option value="olhos">Área dos olhos</option>
                   <option value="labios">Labial</option>
                   <option value="protecao">Protetor</option>
                   <option value="mascara">Máscara</option>
                   <option value="corporal">Corporal</option>
-                  <option value="beauty_tech">Dispositivo</option>
+                  <option value="beauty_tech">Beuty techs</option>
                 </select>
               </div>
             </div>

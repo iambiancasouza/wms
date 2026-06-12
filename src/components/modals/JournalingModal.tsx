@@ -17,10 +17,11 @@ import { ptBR } from 'date-fns/locale'
 import { useSaveRoutine } from '@/hooks/useSaveRoutine'
 import { Product } from '@/types/db'
 import { StaticLeaves } from '@/components/layout/staticLeaves'
+import { normalizeCategoryKey } from '@/lib/category'
 
 const Categories = [
   { id: 'limpeza', label: 'Limpeza' },
-  { id: 'tônico', label: 'Tônico/Essence' },
+  { id: 'tonico', label: 'Tônico/Essence' },
   { id: 'antioxidante', label: 'Antioxidante' },
   { id: 'tratamento', label: 'Tratamento/Slow-aging' },
   { id: 'tretinoina', label: 'Tretinoína' },
@@ -32,7 +33,7 @@ const Categories = [
   { id: 'protecao', label: 'Protetor' },
   { id: 'mascara', label: 'Máscara' },
   { id: 'corporal', label: 'Corporal' },
-  { id: 'beauty_tech', label: 'Dispositivo' }
+  { id: 'beauty_tech', label: 'Beuty techs' }
 ]
 
 const formatDayOfWeek = (date: Date) => {
@@ -128,7 +129,8 @@ function JournalingModalContent({
       : 'Registrar rotina'
 
   const filteredProducts = props.products.filter(
-    (p: Product) => p.category === selectedCategory
+    (p: Product) =>
+      normalizeCategoryKey(p.category) === normalizeCategoryKey(selectedCategory)
   )
 
   const toggleProductSelection = (product: Product) => {

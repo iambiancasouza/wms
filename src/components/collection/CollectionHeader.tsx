@@ -14,10 +14,13 @@ const Category = [
   { id: 'hidratacao', label: 'Hidratação', icon: '🧴' },
   { id: 'antioxidante', label: 'Antioxidante', icon: '🍊' },
   { id: 'tratamento', label: 'Tratamento/Slow-aging', icon: '🧪' },
+  { id: 'tretinoina', label: 'Tretinoína', icon: '🧬' },
+  { id: 'acido_azelaico', label: 'Ácido azeláico', icon: '🔬' },
   { id: 'barreira', label: 'Barreira/Reparador', icon: '🛡️' },
   { id: 'protecao', label: 'Protetor', icon: '☀️' },
   { id: 'olhos', label: 'Área dos Olhos', icon: '👁️' },
-  { id: 'beauty_tech', label: 'Dispositivo', icon: '⚡' }
+  { id: 'corporal', label: 'Corporal', icon: '🫧' },
+  { id: 'beauty_tech', label: 'Beuty techs', icon: '⚡' }
 ]
 
 const CategoryMenu = memo(
