@@ -50,9 +50,9 @@ export function Hero() {
                     ? 'Cadastrar Produto'
                     : 'Começar Agora'}
               </button>
-              <button className="w-full sm:w-auto border-2 border-[#5a9e74] text-[#3a6b4d] px-8 py-3 rounded-xl font-bold transition-all active:scale-95 cursor-pointer">
-                Saber Mais
-              </button>
+              {/* <button className="w-full sm:w-auto border-2 border-[#5a9e74] text-[#3a6b4d] px-8 py-3 rounded-xl font-bold transition-all active:scale-95 cursor-pointer"> */}
+                {/* Saber Mais */}
+              {/* </button> */}
             </div>
           </div>
           <div className="hidden lg:flex relative items-center justify-center w-full min-h-[500px]">
