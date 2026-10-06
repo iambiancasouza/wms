@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, Poppins } from 'next/font/google'
 import './globals.css'
 import ClientLayout from '@/components/layout/ClientLayout'
+import { Analytics } from "@vercel/analytics/next"
 
 const inter = Inter({ subsets: ['latin'] })
 const poppins = Poppins({
@@ -47,6 +48,8 @@ export default function RootLayout({
         <ClientLayout>
           <div className="w-full flex flex-col">{children}</div>
         </ClientLayout>
+
+        <Analytics />
       </body>
     </html>
   )
