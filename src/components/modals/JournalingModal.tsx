@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
 import {
   X,
   Plus,
@@ -18,6 +17,7 @@ import { useSaveRoutine } from '@/hooks/useSaveRoutine'
 import { Product } from '@/types/db'
 import { StaticLeaves } from '@/components/layout/staticLeaves'
 import { normalizeCategoryKey } from '@/lib/category'
+import { RoutineProductGrid } from '@/components/routines/RoutineProductGrid'
 
 const Categories = [
   { id: 'limpeza', label: 'Limpeza' },
@@ -278,40 +278,17 @@ function JournalingModalContent({
 
       <div className="space-y-4 flex-1">
         <div className="bg-[#f0f5ed]/30 border-2 border-dashed border-[#8ec5a0] rounded-[32px] p-5 min-h-[160px] flex flex-col shadow-inner w-full">
-          <div className="flex flex-wrap justify-center gap-4 w-full">
-            {routineItems.map((item: Product) => (
-              <button
-                key={item.id}
-                onClick={() => toggleProductSelection(item)}
-                title="Clique para remover"
-                className="relative flex flex-col items-center justify-center rounded-full shadow-sm border border-[#8ec5a0]/30 w-[100px] h-[100px] overflow-hidden shrink-0 animate-in zoom-in bg-[#eef4f0] hover:opacity-80 transition-opacity active:scale-95"
-              >
-                {item.image_url ? (
-                  <Image
-                    src={item.image_url}
-                    alt={item.name}
-                    fill
-                    sizes="100px"
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="relative z-10 flex flex-col items-center justify-center text-center w-full px-2">
-                    <span className="text-[8px] font-black text-[#5a9e74] uppercase tracking-wider truncate w-full">
-                      {item.brand}
-                    </span>
-                    <span className="text-[10px] font-bold text-[#1e3c2c] leading-tight line-clamp-2 w-full mt-0.5">
-                      {item.name}
-                    </span>
-                  </div>
-                )}
-              </button>
-            ))}
-          </div>
+          <RoutineProductGrid products={routineItems} onChangeAction={setRoutineItems} />
 
           {routineItems.length > 0 && (
-            <p className="text-[10px] text-[#5a9e74]/70 text-center mt-auto pt-6 font-light tracking-wide">
+            <div className="mt-auto space-y-1 pt-6 text-center text-[10px] font-light tracking-wide text-[#5a9e74]/70">
+            <p>
               Para remover um produto, basta clicar sobre ele.
             </p>
+            <p className="text-[10px] text-[#5a9e74]/70 text-center font-light tracking-wide">
+              Para ordenar, clique, segure e arraste até o local desejado.
+            </p>
+            </div>
           )}
         </div>
       </div>
